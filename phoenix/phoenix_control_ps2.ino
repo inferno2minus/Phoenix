@@ -152,19 +152,15 @@ void ControlInput() {
       }
 
       if (PS2.ButtonPressed(PSB_PAD_UP)) { //D-Up Button Test
-        if (BodyYOffset < cMaxBodyY) {
-          BodyYOffset += 10;
-        }
-        else {
+        BodyYOffset += 10;
+        if (BodyYOffset > cMaxBodyY) {
           BodyYOffset = cMaxBodyY;
         }
       }
 
       if (PS2.ButtonPressed(PSB_PAD_DOWN)) { //D-Down Button Test
-        if (BodyYOffset > 10) {
-          BodyYOffset -= 10;
-        }
-        else {
+        BodyYOffset -= 10;
+        if (BodyYOffset < 0) {
           BodyYOffset = 0;
         }
       }
@@ -258,7 +254,6 @@ void ControlInput() {
       }
 
       //[Translate functions]
-      //BodyYShift = 0;
       if (ControlMode == TRANSLATEMODE) {
         BodyPosX = (PS2.Analog(PSS_LX) - 128) / 2;
         BodyPosZ = -(PS2.Analog(PSS_LY) - 128) / 3;
