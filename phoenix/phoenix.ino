@@ -174,6 +174,7 @@ bool     Prev_HexOn;         //Previous loop state
 word     CoxaPWM;
 word     FemurPWM;
 word     TibiaPWM;
+byte     Array[3];
 
 //[BALANCE]
 bool     BalanceMode;
@@ -903,7 +904,6 @@ void ServoDriverUpdate() {
 
 //[SERVO DRIVER COMMIT] Commit the positions of the servos
 void ServoDriverCommit() {
-  byte Array[3];
   Array[0] = 0xA1;
   Array[1] = SSCTime >> 8;
   Array[2] = SSCTime & 0xFF;
@@ -912,7 +912,6 @@ void ServoDriverCommit() {
 
 //[FREE SERVOS] Frees all the servos
 void FreeServos() {
-  byte Array[3];
   for (LegIndex = 0; LegIndex <= 31; LegIndex++) {
     Array[0] = LegIndex + 0x80;
     Array[1] = 0x00;
