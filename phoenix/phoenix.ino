@@ -353,6 +353,7 @@ void loop() {
       SSCTime = 200 + SpeedControl;
     }
 
+    //Update servo positions without commiting
     ServoDriverUpdate();
 
     //Sync BAP with SSC while walking to ensure the prev is completed before sending the next one
@@ -366,9 +367,10 @@ void loop() {
       CycleTime = (lTimerEnd - lTimerStart);
 
       //Wait for previous commands to be completed while walking
-      delay(max(Prev_SSCTime - CycleTime - 10, 1)); //Min 1 ensures that there alway is a value in the pause command
+      delay(max(Prev_SSCTime - CycleTime, 1)); //Min 1 ensures that there alway is a value in the pause command
     }
 
+    //Commit servo positions
     ServoDriverCommit();
   }
   else if (Prev_HexOn || !AllDown) { //Turn the bot off
@@ -890,37 +892,29 @@ void ServoDriverUpdate() {
       TibiaPWM = ((word)(pgm_read_byte(&TibiaAngle1[LegIndex]) + 900)) * 1000 / cPWMDiv + cPFCons;
     }
 
-    SSCSerial.write(pgm_read_byte(&cCoxaPin[LegIndex]) + 0x80);
-    SSCSerial.write(CoxaPWM >> 8);
-    SSCSerial.write(CoxaPWM & 0xFF);
-    SSCSerial.write(pgm_read_byte(&cFemurPin[LegIndex]) + 0x80);
-    SSCSerial.write(FemurPWM >> 8);
-    SSCSerial.write(FemurPWM & 0xFF);
-    SSCSerial.write(pgm_read_byte(&cTibiaPin[LegIndex]) + 0x80);
-    SSCSerial.write(TibiaPWM >> 8);
-    SSCSerial.write(TibiaPWM & 0xFF);
+    SSCWrite(pgm_read_byte(&cCoxaPin[LegIndex]) + 0x80, CoxaPWM >> 8, CoxaPWM & 0xFF);
+    SSCWrite(pgm_read_byte(&cFemurPin[LegIndex]) + 0x80, FemurPWM >> 8, FemurPWM & 0xFF);
+    SSCWrite(pgm_read_byte(&cTibiaPin[LegIndex]) + 0x80, TibiaPWM >> 8, TibiaPWM & 0xFF);
   }
 }
 
 //[SERVO DRIVER COMMIT] Commit the positions of the servos
 void ServoDriverCommit() {
-  Array[0] = 0xA1;
-  Array[1] = SSCTime >> 8;
-  Array[2] = SSCTime & 0xFF;
-  SSCSerial.write(Array, 3);
+  SSCWrite(0xA1, SSCTime >> 8, SSCTime & 0xFF);
 }
 
 //[FREE SERVOS] Frees all the servos
 void FreeServos() {
   for (LegIndex = 0; LegIndex <= 31; LegIndex++) {
-    Array[0] = LegIndex + 0x80;
-    Array[1] = 0x00;
-    Array[2] = 0x00;
-    SSCSerial.write(Array, 3);
+    SSCWrite(LegIndex + 0x80, 0x00, 0x00);
   }
-  Array[0] = 0xA1;
-  Array[1] = 0x00;
-  Array[2] = 0xC8;
-  SSCSerial.write(Array, 3);
+  SSCWrite(0xA1, 0x00, 0xC8);
 }
 
+//[SSC WRITE] Write bytes to SSC
+void SSCWrite(byte a, byte b, byte c) {
+  Array[0] = a;
+  Array[1] = b;
+  Array[2] = c;
+  SSCSerial.write(Array, 3);
+}
