@@ -219,7 +219,7 @@ short    GaitRotY[6];        //Array containing Relative Y rotation correspondin
 extern void MSound(byte cNotes, ...);
 #endif
 
-//[INIT]
+//Init
 void setup() {
   SSCSerial.begin(cSSC_BAUD);
 
@@ -264,7 +264,7 @@ void setup() {
   HexOn = 0;
 }
 
-//[MAIN]
+//Main
 void loop() {
   //Start time
   lTimerStart = millis();
@@ -397,7 +397,7 @@ void loop() {
   }
 }
 
-//[SINGLE LEG CONTROL]
+//Single leg control
 void SingleLegControl() {
   //Check if all legs are down
   AllDown = (LegPosY[cRF] == (short)pgm_read_word(&cInitPosY[cRF])) &&
@@ -442,7 +442,7 @@ void SingleLegControl() {
   }
 }
 
-//[GAIT SELECT]
+//Gait select
 void GaitSelect() {
   //Gait selector
   switch (GaitType) {
@@ -519,7 +519,7 @@ void GaitSelect() {
   }
 }
 
-//[GAIT SEQUENCE]
+//Gait sequence
 void GaitSeq() {
   //Check IF the Gait is in motion
   TravelRequest = (abs(TravelLengthX) > cTravelDeadZone) || (abs(TravelLengthZ) > cTravelDeadZone) || (abs(TravelRotationY) > cTravelDeadZone);
@@ -541,7 +541,7 @@ void GaitSeq() {
   }
 }
 
-//[GAIT]
+//Gait
 void Gait(byte GaitCurrentLegNr) {
   //Clear values under the cTravelDeadZone
   if (!TravelRequest) {
@@ -621,7 +621,7 @@ void Gait(byte GaitCurrentLegNr) {
   }
 }
 
-//[BALCALCONELEG]
+//Balance calculation one leg
 void BalCalcOneLeg (long PosX, long PosZ, long PosY, byte BalLegNr) {
   //Calculating totals from center of the body to the feet
   TotalZ = (short)pgm_read_word(&cOffsetZ[BalLegNr]) + PosZ;
@@ -641,7 +641,7 @@ void BalCalcOneLeg (long PosX, long PosZ, long PosY, byte BalLegNr) {
   TotalXBal += ((Atan4 * 1800) / 31415) - 900; //Rotate balance circle 90 deg
 }
 
-//[BALANCE BODY]
+//Balance body
 void BalanceBody() {
   TotalTransZ = TotalTransZ / 6;
   TotalTransX = TotalTransX / 6;
@@ -668,10 +668,7 @@ void BalanceBody() {
   TotalZBal = TotalZBal / 6;
 }
 
-//[GETSINCOS] Get the sinus and cosinus from the angle +/- multiple circles
-//AngleDeg1 - Input Angle in degrees
-//Sin4 - Output Sinus of AngleDeg
-//Cos4 - Output Cosinus of AngleDeg
+//Get the sinus and cosinus from the angle +/- multiple circles
 void GetSinCos(short AngleDeg1) {
   //Get the absolute value of AngleDeg
   if (AngleDeg1 < 0) {
@@ -707,9 +704,7 @@ void GetSinCos(short AngleDeg1) {
   }
 }
 
-//[GETARCCOS] Get the sinus and cosinus from the angle +/- multiple circles
-//Cos4 - Input Cosinus
-//AngleRad4 - Output Angle in AngleRad4
+//Get the sinus and cosinus from the angle +/- multiple circles
 long GetArcCos(short Cos4) {
   //Check for negative value
   if (Cos4 < 0) {
@@ -743,11 +738,7 @@ long GetArcCos(short Cos4) {
   return AngleRad4;
 }
 
-//[GETATAN2] Simplified ArcTan2 function based on fixed point ArcCos
-//ArcTanX - Input X
-//ArcTanY - Input Y
-//ArcTan4 - Output ARCTAN2(X/Y)
-//XYhyp2 - Output presenting Hypotenuse of X and Y
+//Simplified ArcTan2 function based on fixed point ArcCos
 short GetATan2 (short AtanX, short AtanY) {
   XYhyp2 = sqrt((AtanX * AtanX * c4DEC) + (AtanY * AtanY * c4DEC));
   AngleRad4 = GetArcCos((AtanX * c6DEC) / XYhyp2);
@@ -761,20 +752,7 @@ short GetATan2 (short AtanX, short AtanY) {
   return Atan4;
 }
 
-//[BODY FORWARD KINEMATICS]
-//BodyRotX - Global Input pitch of the body
-//BodyRotY - Global Input rotation of the body
-//BodyRotZ - Global Input roll of the body
-//RotationY - Input Rotation for the gait
-//PosX - Input position of the feet X 
-//PosZ - Input position of the feet Z
-//SinB - Sin buffer for BodyRotX
-//CosB - Cos buffer for BodyRotX
-//SinG - Sin buffer for BodyRotZ
-//CosG - Cos buffer for BodyRotZ
-//BodyFKPosX - Output Position X of feet with Rotation
-//BodyFKPosY - Output Position Y of feet with Rotation
-//BodyFKPosZ - Output Position Z of feet with Rotation
+//Body forward kinematics
 void BodyFK (short PosX, short PosZ, short PosY, short RotationY, byte BodyFKLeg) {
   //Calculating totals from center of the body to the feet 
   TotalZ = (short)pgm_read_word(&cOffsetZ[BodyFKLeg]) + PosZ;
@@ -811,16 +789,7 @@ void BodyFK (short PosX, short PosZ, short PosY, short RotationY, byte BodyFKLeg
     TotalZ * c2DEC * CosG4 / c4DEC * SinA4 / c4DEC * SinB4 / c4DEC + PosY * c2DEC * CosB4 / c4DEC * CosG4 / c4DEC )) / c2DEC;
 }
 
-//[LEG INVERSE KINEMATICS] Calculates the angles of the coxa, femur and tibia for the given position of the feet
-//IKFeetPosX - Input position of the Feet X
-//IKFeetPosY - Input position of the Feet Y
-//IKFeetPosZ - Input Position of the Feet Z
-//IKSolution - Output true if the solution is possible
-//IKSolutionWarning - Output true if the solution is NEARLY possible
-//IKSolutionError - Output true if the solution is NOT possible
-//FemurAngle1 - Output Angle of Femur in degrees
-//TibiaAngle1 - Output Angle of Tibia in degrees
-//CoxaAngle1 - Output Angle of Coxa in degrees
+//Calculates the angles of the coxa, femur and tibia for the given position of the feet
 void LegIK (short IKFeetPosX, short IKFeetPosY, short IKFeetPosZ, byte LegIKLegNr) {
   //Calculate IKCoxaAngle and IKFeetPosXZ
   Atan4 = GetATan2(IKFeetPosX, IKFeetPosZ);
@@ -862,7 +831,7 @@ void LegIK (short IKFeetPosX, short IKFeetPosY, short IKFeetPosZ, byte LegIKLegN
   //}
 }
 
-//[CHECK ANGLES] Checks the mechanical limits of the servos
+//Checks the mechanical limits of the servos
 void CheckAngles() {
   for (LegIndex = 0; LegIndex <= 5; LegIndex++) {
     CoxaAngle1[LegIndex] = min(max(CoxaAngle1[LegIndex], (short)pgm_read_word(&cCoxaMin1[LegIndex])),
@@ -876,7 +845,7 @@ void CheckAngles() {
   }
 }
 
-//[SERVO DRIVER UPDATE] Update the positions of the servos
+//Update the positions of the servos
 void ServoDriverUpdate() {
   for (LegIndex = 0; LegIndex <= 5; LegIndex++) {
     //Update Right Legs
@@ -898,12 +867,12 @@ void ServoDriverUpdate() {
   }
 }
 
-//[SERVO DRIVER COMMIT] Commit the positions of the servos
+//Commit the positions of the servos
 void ServoDriverCommit() {
   SSCWrite(0xA1, SSCTime >> 8, SSCTime & 0xFF);
 }
 
-//[FREE SERVOS] Frees all the servos
+//Frees all the servos
 void FreeServos() {
   for (LegIndex = 0; LegIndex <= 31; LegIndex++) {
     SSCWrite(LegIndex + 0x80, 0x00, 0x00);
@@ -911,7 +880,7 @@ void FreeServos() {
   SSCWrite(0xA1, 0x00, 0xC8);
 }
 
-//[SSC WRITE] Write bytes to SSC
+//Write bytes to SSC
 void SSCWrite(byte a, byte b, byte c) {
   Array[0] = a;
   Array[1] = b;

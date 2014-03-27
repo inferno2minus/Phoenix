@@ -35,7 +35,7 @@ bool    WalkMethod;
 extern void MSound(byte cNotes, ...);
 #endif
 
-//[InitController] Initialize the PS2 controller
+//Initialize the PS2 controller
 void InitController() {
   PS2.config_gamepad(cPS2_CLK, cPS2_CMD, cPS2_SEL, cPS2_DAT);
 
@@ -51,7 +51,7 @@ void InitController() {
   SpeedControl = 100;
 }
 
-//[ControlInput] Reads the input data from the PS2 controller and processes the data to the parameters.
+//Reads the input data from the PS2 controller and processes the data to the parameters
 void ControlInput() {
   PS2.read_gamepad();
 
