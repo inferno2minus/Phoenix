@@ -67,6 +67,9 @@ void ControlInput() {
       }
       else {
         HexOn = 1; //Turn on
+#ifdef DBGSerial
+        DBGSerial.println("Power: Turn on");
+#endif
       }
     }
 
@@ -79,12 +82,21 @@ void ControlInput() {
 #endif
         if (ControlMode != TRANSLATEMODE) {
           ControlMode = TRANSLATEMODE;
+#ifdef DBGSerial
+          DBGSerial.println("ControlMode: TRANSLATEMODE");
+#endif
         }
         else if (SelectedLeg == 255) {
           ControlMode = WALKMODE;
+#ifdef DBGSerial
+          DBGSerial.println("ControlMode: WALKMODE");
+#endif
         }
         else {
           ControlMode = SINGLELEGMODE;
+#ifdef DBGSerial
+          DBGSerial.println("ControlMode: SINGLELEGMODE");
+#endif
         }
       }
 
@@ -95,12 +107,21 @@ void ControlInput() {
 #endif
         if (ControlMode != ROTATEMODE) {
           ControlMode = ROTATEMODE;
+#ifdef DBGSerial
+          DBGSerial.println("ControlMode: ROTATEMODE");
+#endif
         }
         else if (SelectedLeg == 255) {
           ControlMode = WALKMODE;
+#ifdef DBGSerial
+          DBGSerial.println("ControlMode: WALKMODE");
+#endif
         }
         else {
           ControlMode = SINGLELEGMODE;
+#ifdef DBGSerial
+          DBGSerial.println("ControlMode: SINGLELEGMODE");
+#endif
         }
       }
 
@@ -114,12 +135,18 @@ void ControlInput() {
 #endif
           if (ControlMode != SINGLELEGMODE) {
             ControlMode = SINGLELEGMODE;
+#ifdef DBGSerial
+            DBGSerial.println("ControlMode: SINGLELEGMODE");
+#endif
             if (SelectedLeg == 255) { //Select leg if none is selected
               SelectedLeg = cRF; //Startleg
             }
           }
           else {
             ControlMode = WALKMODE;
+#ifdef DBGSerial
+            DBGSerial.println("ControlMode: WALKMODE");
+#endif
             SelectedLeg = 255;
           }
         }
@@ -130,11 +157,17 @@ void ControlInput() {
       if (PS2.ButtonPressed(PSB_SQUARE)) { //Square Button Test
         BalanceMode = !BalanceMode;
         if (BalanceMode) {
+#ifdef DBGSerial
+          DBGSerial.println("BalanceMode: On");
+#endif
 #ifdef cBUZZER
           MSound(1, 250, 1500);
 #endif
         }
         else {
+#ifdef DBGSerial
+          DBGSerial.println("BalanceMode: Off");
+#endif
 #ifdef cBUZZER
           MSound(2, 100, 2000, 50, 4000);
 #endif
@@ -147,27 +180,41 @@ void ControlInput() {
           BodyYOffset = 0;
         }
         else {
-          BodyYOffset = 35;
+          BodyYOffset = 40;
         }
+#ifdef DBGSerial
+        DBGSerial.print("BodyYOffset: ");
+        DBGSerial.println(BodyYOffset, DEC);
+#endif
       }
 
       if (PS2.ButtonPressed(PSB_PAD_UP)) { //D-Up Button Test
-        BodyYOffset += 10;
-        if (BodyYOffset > cMaxBodyY) {
-          BodyYOffset = cMaxBodyY;
+        if (BodyYOffset < cMaxBodyY) {
+          BodyYOffset += 10;
+#ifdef DBGSerial
+          DBGSerial.print("BodyYOffset: ");
+          DBGSerial.println(BodyYOffset, DEC);
+#endif
         }
       }
 
       if (PS2.ButtonPressed(PSB_PAD_DOWN)) { //D-Down Button Test
-        BodyYOffset -= 10;
-        if (BodyYOffset < 0) {
-          BodyYOffset = 0;
+        if (BodyYOffset > 0) {
+          BodyYOffset -= 10;
+#ifdef DBGSerial
+          DBGSerial.print("BodyYOffset: ");
+          DBGSerial.println(BodyYOffset, DEC);
+#endif
         }
       }
 
       if (PS2.ButtonPressed(PSB_PAD_RIGHT)) { //D-Right Button Test
         if (SpeedControl > 0) {
           SpeedControl -= 50;
+#ifdef DBGSerial
+          DBGSerial.print("SpeedControl: ");
+          DBGSerial.println(SpeedControl, DEC);
+#endif
 #ifdef cBUZZER
           MSound(1, 50, 2000);
 #endif
@@ -177,6 +224,10 @@ void ControlInput() {
       if (PS2.ButtonPressed(PSB_PAD_LEFT)) { //D-Left Button Test
         if (SpeedControl < 2000) {
           SpeedControl += 50;
+#ifdef DBGSerial
+          DBGSerial.print("SpeedControl: ");
+          DBGSerial.println(SpeedControl, DEC);
+#endif
 #ifdef cBUZZER
           MSound(1, 50, 2000);
 #endif
@@ -203,6 +254,10 @@ void ControlInput() {
 #endif
             GaitType = 0;
           }
+#ifdef DBGSerial
+          DBGSerial.print("GaitType: ");
+          DBGSerial.println(GaitType, DEC);
+#endif
           GaitSelect();
         }
 
@@ -214,9 +269,15 @@ void ControlInput() {
           DoubleHeightOn = !DoubleHeightOn;
           if (DoubleHeightOn) {
             LegLiftHeight = 80;
+#ifdef DBGSerial
+            DBGSerial.println("DoubleHeight: On");
+#endif
           }
           else {
             LegLiftHeight = 50;
+#ifdef DBGSerial
+            DBGSerial.println("DoubleHeight: Off");
+#endif
           }
         }
 
@@ -226,6 +287,14 @@ void ControlInput() {
           MSound(1, 50, 2000);
 #endif
           DoubleTravelOn = !DoubleTravelOn;
+#ifdef DBGSerial
+          if (DoubleTravelOn) {
+            DBGSerial.println("DoubleTravel: On");
+          }
+          else {
+            DBGSerial.println("DoubleTravel: Off");
+          }
+#endif
         }
 
         //Switch between Walk method 1 and Walk method 2
@@ -234,6 +303,14 @@ void ControlInput() {
           MSound(1, 50, 2000);
 #endif
           WalkMethod = !WalkMethod;
+#ifdef DBGSerial
+          if (WalkMethod) {
+            DBGSerial.println("WalkMethod: 1");
+          }
+          else {
+            DBGSerial.println("WalkMethod: 2");
+          }
+#endif
         }
 
         //Walking
@@ -283,6 +360,10 @@ void ControlInput() {
           else {
             SelectedLeg = 0;
           }
+#ifdef DBGSerial
+          DBGSerial.print("SelectedLeg: ");
+          DBGSerial.println(SelectedLeg, DEC);
+#endif
         }
 
         SLLegX = (PS2.Analog(PSS_LX) - 128) / 2; //Left Stick Right/Left
@@ -295,6 +376,14 @@ void ControlInput() {
           MSound(1, 50, 2000);
 #endif
           SLHold = !SLHold;
+#ifdef DBGSerial
+          if (SLHold) {
+            DBGSerial.println("SLHold: On");
+          }
+          else {
+            DBGSerial.println("SLHold: Off");
+          }
+#endif
         }
       }
 
@@ -303,7 +392,7 @@ void ControlInput() {
     }
 
     //Calculate BodyPosY
-    BodyPosY = min(max(BodyYOffset + BodyYShift, 0), cMaxBodyY);
+    BodyPosY = max(BodyYOffset + BodyYShift, 0);
   }
   else if (PS2ErrorCount < cMaxPS2Error) {
     PS2ErrorCount++;
@@ -314,6 +403,9 @@ void ControlInput() {
 }
 
 void PS2TurnRobotOff() {
+#ifdef DBGSerial
+  DBGSerial.println("Power: Turn off");
+#endif
   BodyPosX = 0;
   BodyPosY = 0;
   BodyPosZ = 0;
@@ -328,4 +420,3 @@ void PS2TurnRobotOff() {
   SelectedLeg = 255;
   HexOn = 0;
 }
-

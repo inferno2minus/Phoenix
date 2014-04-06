@@ -225,7 +225,7 @@ void setup() {
 
 #ifdef DBGSerial
   DBGSerial.begin(cDBG_BAUD);
-  DBGSerial.println("START DEBUGGING");
+  DBGSerial.println("Start Debugging");
 #endif
 
   //Tars Init Positions

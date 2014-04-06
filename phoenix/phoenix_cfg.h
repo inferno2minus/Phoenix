@@ -16,13 +16,13 @@
 #define cDBG_BAUD          115200 //DEBUG BAUD rate
 
 //[DEBUG CONNECTIONS]
-//#define DBGSerial Serial
+#define DBGSerial          Serial
 
 //[ARDUINO PIN NUMBERS]
-#define cPS2_DAT           6  //PS2 Controller DAT (Brown)
-#define cPS2_CMD           7  //PS2 Controller CMD (Orange)
-#define cPS2_SEL           8  //PS2 Controller SEL (Blue)
-#define cPS2_CLK           9  //PS2 Controller CLK (White)
+#define cPS2_DAT           6  //PS2 Controller DAT
+#define cPS2_CMD           7  //PS2 Controller CMD
+#define cPS2_SEL           8  //PS2 Controller SEL
+#define cPS2_CLK           9  //PS2 Controller CLK
 #define cSSC_TX            10 //(SSC32 TX -> Arduino RX)
 #define cSSC_RX            11 //(SSC32 RX <- Arduino TX)
 #define cBUZZER            12 //Buzzer module
@@ -31,7 +31,7 @@
 #ifndef UBRR1H
 SoftwareSerial SSCSerial(cSSC_TX, cSSC_RX);
 #else
-#define SSCSerial Serial1
+#define SSCSerial          Serial1
 #endif
 
 //[SSC PIN NUMBERS]
