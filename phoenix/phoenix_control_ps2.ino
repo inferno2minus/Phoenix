@@ -396,6 +396,10 @@ void ControlInput() {
   }
   else if (PS2ErrorCount < cMaxPS2Error) {
     PS2ErrorCount++;
+#ifdef DBGSerial
+    DBGSerial.print("PS2ErrorCount: ");
+    DBGSerial.println(PS2ErrorCount, DEC);
+#endif
   }
   else if (HexOn) {
     PS2TurnRobotOff();
