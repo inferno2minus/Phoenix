@@ -542,6 +542,7 @@ void GaitSeq() {
   }
 
   //Calculate Gait sequence
+  LastLeg = 0;
   for (LegIndex = 0; LegIndex <= 5; LegIndex++) {
     if (LegIndex == 5) {
       LastLeg = 1;
