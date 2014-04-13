@@ -50,7 +50,7 @@ static const byte GetACos[] PROGMEM = {
   18,18,18,17,17,17,17,16,16,16,15,15,15,14,14,13,13,13,12,12,11,11,10,10,9,9,8,7,6,6,
   5,3,0 };
 
-//Sin table 90 deg, persision 0.5 deg [180 values]
+//Sin table 90 deg, precision 0.5 deg [180 values]
 static const word GetSin[] PROGMEM = {
   0,87,174,261,348,436,523,610,697,784,871,958,1045,1132,1218,1305,1391,1478,1564,1650,
   1736,1822,1908,1993,2079,2164,2249,2334,2419,2503,2588,2672,2756,2840,2923,3007,3090,
@@ -214,6 +214,8 @@ short    GaitPosX[6];        //Array containing Relative X position correspondin
 short    GaitPosY[6];        //Array containing Relative Y position corresponding to the Gait
 short    GaitPosZ[6];        //Array containing Relative Z position corresponding to the Gait
 short    GaitRotY[6];        //Array containing Relative Y rotation corresponding to the Gait  
+byte     ExtraCycle;         //Forcing some extra timed cycles for avoiding "end of gait bug"
+bool     Walking;            //True if the robot are walking
 
 #ifdef cBUZZER
 extern void MSound(byte cNotes, ...);
@@ -353,21 +355,29 @@ void loop() {
       SSCTime = 200 + SpeedControl;
     }
 
-    //Update servo positions without commiting
+    //Update servo positions without committing
     ServoDriverUpdate();
 
-    //Sync BAP with SSC while walking to ensure the prev is completed before sending the next one
-    if (GaitPosX[cRF] || GaitPosX[cRM] || GaitPosX[cRR] || GaitPosX[cLF] || GaitPosX[cLM] || GaitPosX[cLR] ||
-      GaitPosY[cRF] || GaitPosY[cRM] || GaitPosY[cRR] || GaitPosY[cLF] || GaitPosY[cLM] || GaitPosY[cLR] ||
-      GaitPosZ[cRF] || GaitPosZ[cRM] || GaitPosZ[cRR] || GaitPosZ[cLF] || GaitPosZ[cLM] || GaitPosZ[cLR] ||
-      GaitRotY[cRF] || GaitRotY[cRM] || GaitRotY[cRR] || GaitRotY[cLF] || GaitRotY[cLM] || GaitRotY[cLR]) {
+    //Finding any the biggest value for GaitPos/Rot
+    for (LegIndex = 0; LegIndex <= 5; LegIndex++) {
+      if ((GaitPosX[LegIndex] > 2) || (GaitPosX[LegIndex] < -2) ||
+        (GaitPosZ[LegIndex] > 2) || (GaitPosZ[LegIndex] < -2) ||
+        (GaitRotY[LegIndex] > 2) || (GaitRotY[LegIndex] < -2)) {
+        ExtraCycle = NrLiftedPos + 1; //For making sure that we are using timed move until all legs are down
+        break;
+      }
+    }
+
+    if (ExtraCycle > 0) {
+      ExtraCycle--;
+      Walking = !(ExtraCycle == 0);
 
       //Get endtime and calculate wait time
       lTimerEnd = millis();
       CycleTime = (lTimerEnd - lTimerStart);
 
       //Wait for previous commands to be completed while walking
-      delay(max(Prev_SSCTime - CycleTime, 1)); //Min 1 ensures that there alway is a value in the pause command
+      delay(max(Prev_SSCTime - CycleTime, 1)); //Min 1 ensures that there always is a value in the pause command
     }
 
     //Commit servo positions
@@ -522,7 +532,7 @@ void GaitSelect() {
 //Gait sequence
 void GaitSeq() {
   //Check IF the Gait is in motion
-  TravelRequest = (abs(TravelLengthX) > cTravelDeadZone) || (abs(TravelLengthZ) > cTravelDeadZone) || (abs(TravelRotationY) > cTravelDeadZone);
+  TravelRequest = (abs(TravelLengthX) > cTravelDeadZone) || (abs(TravelLengthZ) > cTravelDeadZone) || (abs(TravelRotationY) > cTravelDeadZone) || Walking;
 
   if (NrLiftedPos == 5) {
     LiftDivFactor = 4;
@@ -532,7 +542,6 @@ void GaitSeq() {
   }
 
   //Calculate Gait sequence
-  LastLeg = 0;
   for (LegIndex = 0; LegIndex <= 5; LegIndex++) {
     if (LegIndex == 5) {
       LastLeg = 1;
@@ -687,19 +696,19 @@ void GetSinCos(short AngleDeg1) {
   }
 
   if (AngleDeg1 >= 0 && AngleDeg1 <= 900) { //0 to 90 deg
-    Sin4 = pgm_read_word(&GetSin[AngleDeg1 / 5]); //5 is the presision (0.5) of the table
+    Sin4 = pgm_read_word(&GetSin[AngleDeg1 / 5]); //5 is the precision (0.5) of the table
     Cos4 = pgm_read_word(&GetSin[(900 - (AngleDeg1)) / 5]);
   }
   else if (AngleDeg1 > 900 && AngleDeg1 <= 1800) { //90 to 180 deg
-    Sin4 = pgm_read_word(&GetSin[(900 - (AngleDeg1 - 900)) / 5]); //5 is the presision (0.5) of the table 
+    Sin4 = pgm_read_word(&GetSin[(900 - (AngleDeg1 - 900)) / 5]); //5 is the precision (0.5) of the table 
     Cos4 = -pgm_read_word(&GetSin[(AngleDeg1 - 900) / 5]);
   }
   else if (AngleDeg1 > 1800 && AngleDeg1 <= 2700) { //180 to 270 deg
-    Sin4 = -pgm_read_word(&GetSin[(AngleDeg1 - 1800) / 5]); //5 is the presision (0.5) of the table
+    Sin4 = -pgm_read_word(&GetSin[(AngleDeg1 - 1800) / 5]); //5 is the precision (0.5) of the table
     Cos4 = -pgm_read_word(&GetSin[(2700 - AngleDeg1) / 5]);
   }
   else if(AngleDeg1 > 2700 && AngleDeg1 <= 3600) { //270 to 360 deg
-    Sin4 = -pgm_read_word(&GetSin[(3600 - AngleDeg1) / 5]); //5 is the presision (0.5) of the table 
+    Sin4 = -pgm_read_word(&GetSin[(3600 - AngleDeg1) / 5]); //5 is the precision (0.5) of the table 
     Cos4 = pgm_read_word(&GetSin[(AngleDeg1 - 2700) / 5]);
   }
 }
@@ -723,11 +732,11 @@ long GetArcCos(short Cos4) {
     AngleRad4 = (AngleRad4 * 616) / c1DEC; //616=acos resolution (pi/2/255)
   }
   else if (Cos4 >= 9000 && Cos4 < 9900) {
-    AngleRad4 = (byte)pgm_read_byte(&GetACos[(Cos4 - 9000) / 8 + 114]); //8=table resolution (0.1/127), 114 start address 2nd bytetable range
+    AngleRad4 = (byte)pgm_read_byte(&GetACos[(Cos4 - 9000) / 8 + 114]); //8=table resolution (0.1/127), 114 start address 2nd byte table range
     AngleRad4 = (AngleRad4 * 616) / c1DEC; //616=acos resolution (pi/2/255) 
   }
   else if (Cos4 >= 9900 && Cos4 <= 10000) {
-    AngleRad4 = (byte)pgm_read_byte(&GetACos[(Cos4 - 9900) / 2 + 227]); //2=table resolution (0.01/64), 227 start address 3rd bytetable range 
+    AngleRad4 = (byte)pgm_read_byte(&GetACos[(Cos4 - 9900) / 2 + 227]); //2=table resolution (0.01/64), 227 start address 3rd byte table range 
     AngleRad4 = (AngleRad4 * 616) / c1DEC; //616=acos resolution (pi/2/255) 
   }
 
