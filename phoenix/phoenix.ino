@@ -217,6 +217,10 @@ short    GaitRotY[6];        //Array containing Relative Y rotation correspondin
 byte     ExtraCycle;         //Forcing some extra timed cycles for avoiding "end of gait bug"
 bool     Walking;            //True if the robot are walking
 
+#ifdef DBGSerial
+bool     Prev_Walking;
+#endif
+
 #ifdef cBUZZER
 extern void MSound(byte cNotes, ...);
 #endif
@@ -375,6 +379,17 @@ void loop() {
       //Get endtime and calculate wait time
       lTimerEnd = millis();
       CycleTime = (lTimerEnd - lTimerStart);
+
+#ifdef DBGSerial
+      if (Walking && !Prev_Walking) {
+        DBGSerial.println("Walking: Start");
+        Prev_Walking = true;
+      }
+      else if (!Walking) {
+        DBGSerial.println("Walking: Finish");
+        Prev_Walking = false;
+      }
+#endif
 
       //Wait for previous commands to be completed while walking
       delay(max(Prev_SSCTime - CycleTime, 1)); //Min 1 ensures that there always is a value in the pause command

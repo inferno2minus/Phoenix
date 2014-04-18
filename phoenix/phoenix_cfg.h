@@ -12,7 +12,7 @@
 #define PHOENIX_CFG_H
 
 //[SERIAL CONNECTIONS]
-#define cSSC_BAUD          38400  //SSC32 BAUD rate
+#define cSSC_BAUD          115200 //SSC32 BAUD rate
 #define cDBG_BAUD          115200 //DEBUG BAUD rate
 
 //[DEBUG CONNECTIONS]
