@@ -143,6 +143,7 @@ short    CosB4;              //Cos buffer for BodyRotX calculations
 short    SinG4;              //Sin buffer for BodyRotZ calculations
 short    CosG4;              //Cos buffer for BodyRotZ calculations
 short    TotalX;             //Total X distance between the center of the body and the feet
+short    TotalY;             //Total Y distance between the center of the body and the feet
 short    TotalZ;             //Total Z distance between the center of the body and the feet
 short    BodyFKPosX;         //Output Position X of feet with Rotation
 short    BodyFKPosY;         //Output Position Y of feet with Rotation
@@ -166,7 +167,7 @@ word     Prev_SSCTime;       //Previous time for the servo updates
 byte     InputTimeDelay;     //Delay that depends on the input to get the "sneaking" effect
 word     SpeedControl;       //Adjustable Delay
 
-//[GLOABAL]
+//[POWER]
 bool     HexOn;              //Switch to turn on Phoenix
 bool     Prev_HexOn;         //Previous loop state 
 
@@ -184,7 +185,6 @@ short    TotalTransY;
 short    TotalYBal;
 short    TotalXBal;
 short    TotalZBal;
-short    TotalY;             //Total Y distance between the center of the body and the feet
 
 //[SINGLE LEG CONTROL]
 byte     SelectedLeg;
@@ -234,7 +234,7 @@ void setup() {
   DBGSerial.println("Start Debugging");
 #endif
 
-  //Tars Init Positions
+  //Setup Init Positions
   for (LegIndex = 0; LegIndex <= 5; LegIndex++) {
     LegPosX[LegIndex] = (short)pgm_read_word(&cInitPosX[LegIndex]); //Set start positions for each leg
     LegPosY[LegIndex] = (short)pgm_read_word(&cInitPosY[LegIndex]);
@@ -471,7 +471,7 @@ void SingleLegControl() {
 void GaitSelect() {
   //Gait selector
   switch (GaitType) {
-  case 0: //Ripple Gait 12 steps
+  case 0: //Ripple 12 steps
     GaitLegNr[cLR] = 1;
     GaitLegNr[cRF] = 3;
     GaitLegNr[cLM] = 5;
@@ -499,7 +499,7 @@ void GaitSelect() {
     StepsInGait = 8;
     NomGaitSpeed = 70;
     break;
-  case 2: //Triple Tripod 12 steps
+  case 2: //Tripod 12 steps
     GaitLegNr[cRF] = 3;
     GaitLegNr[cLM] = 4;
     GaitLegNr[cRR] = 5;
@@ -513,7 +513,7 @@ void GaitSelect() {
     StepsInGait = 12;
     NomGaitSpeed = 60;
     break;
-  case 3: //Triple Tripod 16 steps, use 5 lifted positions!
+  case 3: //Tripod 16 steps, use 5 lifted positions!
     GaitLegNr[cLR] = 4;
     GaitLegNr[cRF] = 5;
     GaitLegNr[cLM] = 6;
@@ -540,6 +540,20 @@ void GaitSelect() {
     TLDivFactor = 20;
     StepsInGait = 24;
     NomGaitSpeed = 70;
+    break;
+  case 5: //Tripod 6 steps
+    GaitLegNr[cLR] = 4;
+    GaitLegNr[cRF] = 1;
+    GaitLegNr[cLM] = 1;
+    GaitLegNr[cRR] = 1;
+    GaitLegNr[cLF] = 4;
+    GaitLegNr[cRM] = 4;
+
+    NrLiftedPos = 2;
+    HalfLiftHeigth = 1;
+    TLDivFactor = 4;
+    StepsInGait = 6;
+    NomGaitSpeed = 60;
     break;
   }
 }

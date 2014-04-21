@@ -17,7 +17,7 @@
 #define SINGLELEGMODE    3
 //#define GPPLAYERMODE   4
 
-#define cGaitsNumber     5
+#define cGaitsNumber     6
 #define cMaxPS2Error     5 //How many times through the loop will we go before shutting off robot?
 #define cMaxBodyY        100
 
@@ -256,7 +256,26 @@ void ControlInput() {
           }
 #ifdef DBGSerial
           DBGSerial.print("GaitType: ");
-          DBGSerial.println(GaitType, DEC);
+          switch(GaitType) {
+          case 0:
+            DBGSerial.println("Ripple 12");
+            break;
+          case 1:
+            DBGSerial.println("Tripod 8");
+            break;
+          case 2:
+            DBGSerial.println("Tripod 12");
+            break;
+          case 3:
+            DBGSerial.println("Tripod 16");
+            break;
+          case 4:
+            DBGSerial.println("Wave 24");
+            break;
+          case 5:
+            DBGSerial.println("Tripod 6");
+            break;
+          }
 #endif
           GaitSelect();
         }
@@ -362,7 +381,26 @@ void ControlInput() {
           }
 #ifdef DBGSerial
           DBGSerial.print("SelectedLeg: ");
-          DBGSerial.println(SelectedLeg, DEC);
+          switch(SelectedLeg) {
+          case 0:
+            DBGSerial.println("RR");
+            break;
+          case 1:
+            DBGSerial.println("RM");
+            break;
+          case 2:
+            DBGSerial.println("RF");
+            break;
+          case 3:
+            DBGSerial.println("LR");
+            break;
+          case 4:
+            DBGSerial.println("LM");
+            break;
+          case 5:
+            DBGSerial.println("LF");
+            break;
+          }
 #endif
         }
 
