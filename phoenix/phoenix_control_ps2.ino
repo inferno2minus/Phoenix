@@ -139,7 +139,7 @@ void ControlInput() {
             DBGSerial.println("ControlMode: SINGLELEGMODE");
 #endif
             if (SelectedLeg == 255) { //Select leg if none is selected
-              SelectedLeg = cRF; //Startleg
+              SelectedLeg = cRF; //Start leg
             }
           }
           else {
