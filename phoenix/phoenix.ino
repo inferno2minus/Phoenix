@@ -485,7 +485,21 @@ void GaitSelect() {
     StepsInGait = 12;
     NomGaitSpeed = 70;
     break;
-  case 1: //Tripod 8 steps
+  case 1: //Tripod 6 steps
+    GaitLegNr[cLR] = 4;
+    GaitLegNr[cRF] = 1;
+    GaitLegNr[cLM] = 1;
+    GaitLegNr[cRR] = 1;
+    GaitLegNr[cLF] = 4;
+    GaitLegNr[cRM] = 4;
+
+    NrLiftedPos = 2;
+    HalfLiftHeigth = 1;
+    TLDivFactor = 4;
+    StepsInGait = 6;
+    NomGaitSpeed = 60;
+    break;
+  case 2: //Tripod 8 steps
     GaitLegNr[cLR] = 5;
     GaitLegNr[cRF] = 1;
     GaitLegNr[cLM] = 1;
@@ -499,7 +513,7 @@ void GaitSelect() {
     StepsInGait = 8;
     NomGaitSpeed = 70;
     break;
-  case 2: //Tripod 12 steps
+  case 3: //Tripod 12 steps
     GaitLegNr[cRF] = 3;
     GaitLegNr[cLM] = 4;
     GaitLegNr[cRR] = 5;
@@ -513,7 +527,7 @@ void GaitSelect() {
     StepsInGait = 12;
     NomGaitSpeed = 60;
     break;
-  case 3: //Tripod 16 steps, use 5 lifted positions!
+  case 4: //Tripod 16 steps, use 5 lifted positions!
     GaitLegNr[cLR] = 4;
     GaitLegNr[cRF] = 5;
     GaitLegNr[cLM] = 6;
@@ -527,7 +541,7 @@ void GaitSelect() {
     StepsInGait = 16;
     NomGaitSpeed = 60;
     break;
-  case 4: //Wave 24 steps
+  case 5: //Wave 24 steps
     GaitLegNr[cLR] = 1;
     GaitLegNr[cRF] = 21;
     GaitLegNr[cLM] = 5;
@@ -540,20 +554,6 @@ void GaitSelect() {
     TLDivFactor = 20;
     StepsInGait = 24;
     NomGaitSpeed = 70;
-    break;
-  case 5: //Tripod 6 steps
-    GaitLegNr[cLR] = 4;
-    GaitLegNr[cRF] = 1;
-    GaitLegNr[cLM] = 1;
-    GaitLegNr[cRR] = 1;
-    GaitLegNr[cLF] = 4;
-    GaitLegNr[cRM] = 4;
-
-    NrLiftedPos = 2;
-    HalfLiftHeigth = 1;
-    TLDivFactor = 4;
-    StepsInGait = 6;
-    NomGaitSpeed = 60;
     break;
   }
 }

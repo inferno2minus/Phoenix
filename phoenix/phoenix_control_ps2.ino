@@ -261,19 +261,19 @@ void ControlInput() {
             DBGSerial.println("Ripple 12");
             break;
           case 1:
-            DBGSerial.println("Tripod 8");
+            DBGSerial.println("Tripod 6");
             break;
           case 2:
-            DBGSerial.println("Tripod 12");
+            DBGSerial.println("Tripod 8");
             break;
           case 3:
-            DBGSerial.println("Tripod 16");
+            DBGSerial.println("Tripod 12");
             break;
           case 4:
-            DBGSerial.println("Wave 24");
+            DBGSerial.println("Tripod 16");
             break;
           case 5:
-            DBGSerial.println("Tripod 6");
+            DBGSerial.println("Wave 24");
             break;
           }
 #endif
