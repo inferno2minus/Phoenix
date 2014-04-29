@@ -209,8 +209,8 @@ void ControlInput() {
       }
 
       if (PS2.ButtonPressed(PSB_PAD_RIGHT)) { //D-Right Button Test
-        if (SpeedControl > 0) {
-          SpeedControl -= 50;
+        if (SpeedControl < 1000) {
+          SpeedControl += 50;
 #ifdef DBGSerial
           DBGSerial.print("SpeedControl: ");
           DBGSerial.println(SpeedControl, DEC);
@@ -222,8 +222,8 @@ void ControlInput() {
       }
 
       if (PS2.ButtonPressed(PSB_PAD_LEFT)) { //D-Left Button Test
-        if (SpeedControl < 1000) {
-          SpeedControl += 50;
+        if (SpeedControl > 0) {
+          SpeedControl -= 50;
 #ifdef DBGSerial
           DBGSerial.print("SpeedControl: ");
           DBGSerial.println(SpeedControl, DEC);
