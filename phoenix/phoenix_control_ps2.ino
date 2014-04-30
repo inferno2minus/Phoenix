@@ -157,19 +157,19 @@ void ControlInput() {
       if (PS2.ButtonPressed(PSB_SQUARE)) { //Square Button Test
         BalanceMode = !BalanceMode;
         if (BalanceMode) {
+#ifdef cBUZZER
+          MSound(2, 80, 2000, 100, 2250);
+#endif
 #ifdef DBGSerial
           DBGSerial.println("BalanceMode: On");
 #endif
-#ifdef cBUZZER
-          MSound(1, 250, 1500);
-#endif
         }
         else {
+#ifdef cBUZZER
+          MSound(2, 100, 2250, 80, 2000);
+#endif
 #ifdef DBGSerial
           DBGSerial.println("BalanceMode: Off");
-#endif
-#ifdef cBUZZER
-          MSound(2, 100, 2000, 50, 4000);
 #endif
         }
       }
@@ -210,26 +210,26 @@ void ControlInput() {
 
       if (PS2.ButtonPressed(PSB_PAD_RIGHT)) { //D-Right Button Test
         if (SpeedControl < 1000) {
+#ifdef cBUZZER
+          MSound(1, 50, 2000);
+#endif
           SpeedControl += 50;
 #ifdef DBGSerial
           DBGSerial.print("SpeedControl: ");
           DBGSerial.println(SpeedControl, DEC);
-#endif
-#ifdef cBUZZER
-          MSound(1, 50, 2000);
 #endif
         }
       }
 
       if (PS2.ButtonPressed(PSB_PAD_LEFT)) { //D-Left Button Test
         if (SpeedControl > 0) {
+#ifdef cBUZZER
+          MSound(1, 50, 2000);
+#endif
           SpeedControl -= 50;
 #ifdef DBGSerial
           DBGSerial.print("SpeedControl: ");
           DBGSerial.println(SpeedControl, DEC);
-#endif
-#ifdef cBUZZER
-          MSound(1, 50, 2000);
 #endif
         }
       }
@@ -250,7 +250,7 @@ void ControlInput() {
           }
           else {
 #ifdef cBUZZER
-            MSound(2, 50, 2000, 50, 2250);
+            MSound(1, 150, 1500);
 #endif
             GaitType = 0;
           }
@@ -282,17 +282,20 @@ void ControlInput() {
 
         //Double leg lift height
         if (PS2.ButtonPressed(PSB_R1)) { //R1 Button Test
-#ifdef cBUZZER
-          MSound(1, 50, 2000);
-#endif
           DoubleHeightOn = !DoubleHeightOn;
           if (DoubleHeightOn) {
+#ifdef cBUZZER
+            MSound(2, 80, 2000, 100, 2250);
+#endif
             LegLiftHeight = 80;
 #ifdef DBGSerial
             DBGSerial.println("DoubleHeight: On");
 #endif
           }
           else {
+#ifdef cBUZZER
+            MSound(2, 100, 2250, 80, 2000);
+#endif
             LegLiftHeight = 50;
 #ifdef DBGSerial
             DBGSerial.println("DoubleHeight: Off");
@@ -302,34 +305,44 @@ void ControlInput() {
 
         //Double Travel Length
         if (PS2.ButtonPressed(PSB_R2)) { //R2 Button Test
-#ifdef cBUZZER
-          MSound(1, 50, 2000);
-#endif
           DoubleTravelOn = !DoubleTravelOn;
-#ifdef DBGSerial
           if (DoubleTravelOn) {
+#ifdef cBUZZER
+            MSound(2, 80, 2000, 100, 2250);
+#endif
+#ifdef DBGSerial
             DBGSerial.println("DoubleTravel: On");
+#endif
           }
           else {
-            DBGSerial.println("DoubleTravel: Off");
-          }
+#ifdef cBUZZER
+            MSound(2, 100, 2250, 80, 2000);
 #endif
+#ifdef DBGSerial
+            DBGSerial.println("DoubleTravel: Off");
+#endif
+          }
         }
 
         //Switch between Walk method 1 and Walk method 2
         if (PS2.ButtonPressed(PSB_R3)) { //R3 Button Test
-#ifdef cBUZZER
-          MSound(1, 50, 2000);
-#endif
           WalkMethod = !WalkMethod;
-#ifdef DBGSerial
           if (WalkMethod) {
+#ifdef cBUZZER
+            MSound(2, 80, 2000, 100, 2250);
+#endif
+#ifdef DBGSerial
             DBGSerial.println("WalkMethod: 1");
+#endif
           }
           else {
-            DBGSerial.println("WalkMethod: 2");
-          }
+#ifdef cBUZZER
+            MSound(2, 100, 2250, 80, 2000);
 #endif
+#ifdef DBGSerial
+            DBGSerial.println("WalkMethod: 2");
+#endif
+          }
         }
 
         //Walking
@@ -410,18 +423,23 @@ void ControlInput() {
 
         //Hold single leg in place
         if (PS2.ButtonPressed(PSB_R2)) { //R2 Button Test
-#ifdef cBUZZER
-          MSound(1, 50, 2000);
-#endif
           SLHold = !SLHold;
-#ifdef DBGSerial
           if (SLHold) {
+#ifdef cBUZZER
+            MSound(2, 80, 2000, 100, 2250);
+#endif
+#ifdef DBGSerial
             DBGSerial.println("SLHold: On");
+#endif
           }
           else {
-            DBGSerial.println("SLHold: Off");
-          }
+#ifdef cBUZZER
+            MSound(2, 100, 2250, 80, 2000);
 #endif
+#ifdef DBGSerial
+            DBGSerial.println("SLHold: Off");
+#endif
+          }
         }
       }
 
