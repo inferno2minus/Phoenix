@@ -115,67 +115,61 @@ short    CoxaAngle1[6];      //Actual Angle of the horizontal hip, decimals = 1
 short    FemurAngle1[6];     //Actual Angle of the vertical hip, decimals = 1
 short    TibiaAngle1[6];     //Actual Angle of the knee, decimals = 1
 
-//[POSITIONS SINGLE LEG CONTROL]
-bool     SLHold;             //Single leg control mode
-short    LegPosX[6];         //Actual X Position of the Leg
-short    LegPosY[6];         //Actual Y Position of the Leg
-short    LegPosZ[6];         //Actual Z Position of the Leg
-
 //[VARIABLES]
-byte     LegIndex;           //Index used for leg Index Number
-word     ABSAngleDeg1;       //Absolute value of the Angle in Degrees, decimals = 1
-short    Sin4;               //Output Sinus of the given Angle, decimals = 4
-short    Cos4;               //Output Cosinus of the given Angle, decimals = 4
-short    AngleRad4;          //Output Angle in radials, decimals = 4
+//bool   IKSolution;         //Output true if the solution is possible
+//bool   IKSolutionError;    //Output true if the solution is NOT possible
+//bool   IKSolutionWarning;  //Output true if the solution is NEARLY possible
 bool     NegativeValue;      //If the the value is Negative
-short    Atan4;              //ArcTan2 output
-short    XYhyp2;             //Output presenting Hypotenuse of X and Y
+byte     LegIndex;           //Index used for leg Index Number
+long     AngleRad4;          //Output Angle in radials, decimals = 4
+long     Atan4;              //ArcTan2 output
+long     IKA14;              //Angle of the line S>W with respect to the ground in radians, decimals = 4
+long     IKA24;              //Angle of the line S>W with respect to the femur in radians, decimals = 4
+long     IKSW2;              //Length between Shoulder and Wrist, decimals = 2
+long     Temp1;
+long     Temp2;
+short    BodyFKPosX;         //Output Position X of feet with Rotation
+short    BodyFKPosY;         //Output Position Y of feet with Rotation
+short    BodyFKPosZ;         //Output Position Z of feet with Rotation
 short    BodyPosX;           //Global Input for the position of the body
 short    BodyPosY;
 short    BodyPosZ;
 short    BodyRotX;           //Global Input pitch of the body
 short    BodyRotY;           //Global Input rotation of the body
 short    BodyRotZ;           //Global Input roll of the body
-short    SinA4;              //Sin buffer for BodyRotX calculations
+short    Cos4;               //Output Cosinus of the given Angle, decimals = 4
 short    CosA4;              //Cos buffer for BodyRotX calculations
-short    SinB4;              //Sin buffer for BodyRotX calculations
 short    CosB4;              //Cos buffer for BodyRotX calculations
-short    SinG4;              //Sin buffer for BodyRotZ calculations
 short    CosG4;              //Cos buffer for BodyRotZ calculations
+short    IKFeetPosXZ;        //Diagonal direction from Input X and Z
+short    Sin4;               //Output Sinus of the given Angle, decimals = 4
+short    SinA4;              //Sin buffer for BodyRotX calculations
+short    SinB4;              //Sin buffer for BodyRotX calculations
+short    SinG4;              //Sin buffer for BodyRotZ calculations
 short    TotalX;             //Total X distance between the center of the body and the feet
 short    TotalY;             //Total Y distance between the center of the body and the feet
 short    TotalZ;             //Total Z distance between the center of the body and the feet
-short    BodyFKPosX;         //Output Position X of feet with Rotation
-short    BodyFKPosY;         //Output Position Y of feet with Rotation
-short    BodyFKPosZ;         //Output Position Z of feet with Rotation
-short    IKFeetPosXZ;        //Diagonal direction from Input X and Z
-long     IKSW2;              //Length between Shoulder and Wrist, decimals = 2
-long     IKA14;              //Angle of the line S>W with respect to the ground in radians, decimals = 4
-long     IKA24;              //Angle of the line S>W with respect to the femur in radians, decimals = 4
-long     Temp1;
-long     Temp2;
-//bool   IKSolution;         //Output true if the solution is possible
-//bool   IKSolutionWarning;  //Output true if the solution is NEARLY possible
-//bool   IKSolutionError;    //Output true if the solution is NOT possible
+short    XYhyp2;             //Output presenting Hypotenuse of X and Y
+word     ABSAngleDeg1;       //Absolute value of the Angle in Degrees, decimals = 1
 
 //[TIMING]
-long     lTimerStart;        //Start time of the calculation cycles
-long     lTimerEnd;          //End time of the calculation cycles
 byte     CycleTime;          //Total Cycle time
-word     SSCTime;            //Time for servo updates
-word     Prev_SSCTime;       //Previous time for the servo updates
 byte     InputTimeDelay;     //Delay that depends on the input to get the "sneaking" effect
+long     lTimerEnd;          //End time of the calculation cycles
+long     lTimerStart;        //Start time of the calculation cycles
+word     Prev_SSCTime;       //Previous time for the servo updates
 word     SpeedControl;       //Adjustable Delay
+word     SSCTime;            //Time for servo updates
 
 //[POWER]
 bool     HexOn;              //Switch to turn on Phoenix
 bool     Prev_HexOn;         //Previous loop state 
 
 //[SERVO DRIVER]
+byte     Array[3];
 word     CoxaPWM;
 word     FemurPWM;
 word     TibiaPWM;
-byte     Array[3];
 
 //[BALANCE]
 bool     BalanceMode;
@@ -187,39 +181,42 @@ short    TotalXBal;
 short    TotalZBal;
 
 //[SINGLE LEG CONTROL]
-byte     SelectedLeg;
+bool     AllDown;
+bool     SLHold;             //Single leg control mode
 byte     Prev_SelectedLeg;
+byte     SelectedLeg;
+short    LegPosX[6];         //Actual X Position of the Leg
+short    LegPosY[6];         //Actual Y Position of the Leg
+short    LegPosZ[6];         //Actual Z Position of the Leg
 short    SLLegX;
 short    SLLegY;
 short    SLLegZ;
-bool     AllDown;
 
 //[GAIT]
-byte     GaitType;           //Gait type
-byte     NomGaitSpeed;       //Nominal speed of the gait
-byte     LegLiftHeight;      //Current Travel height
-short    TravelLengthX;      //Current Travel length X
-short    TravelLengthZ;      //Current Travel length Z
-short    TravelRotationY;    //Current Travel Rotation Y
-byte     TLDivFactor;        //Number of steps that a leg is on the floor while walking
-byte     NrLiftedPos;        //Number of positions that a single leg is lifted (1-3)
 bool     HalfLiftHeigth;     //If TRUE the outer positions of the lighted legs will be half height
-byte     LiftDivFactor;      //Normally: 2, when NrLiftedPos=5: 4
-bool     TravelRequest;      //Temp to check if the gait is in motion
-byte     StepsInGait;        //Number of steps in gait
 bool     LastLeg;            //TRUE when the current leg is the last leg of the sequence
-byte     GaitStep;           //Actual Gait step
+bool     TravelRequest;      //Temp to check if the gait is in motion
+#ifdef DBGSerial
+bool     Prev_Walking;
+#endif
+bool     Walking;            //True if the robot are walking
+byte     ExtraCycle;         //Forcing some extra timed cycles for avoiding "end of gait bug"
 byte     GaitLegNr[6];       //Init position of the leg
+byte     GaitStep;           //Actual Gait step
+byte     GaitType;           //Gait type
+byte     LegLiftHeight;      //Current Travel height
+byte     LiftDivFactor;      //Normally: 2, when NrLiftedPos=5: 4
+byte     NomGaitSpeed;       //Nominal speed of the gait
+byte     NrLiftedPos;        //Number of positions that a single leg is lifted (1-3)
+byte     StepsInGait;        //Number of steps in gait
+byte     TLDivFactor;        //Number of steps that a leg is on the floor while walking
 short    GaitPosX[6];        //Array containing Relative X position corresponding to the Gait
 short    GaitPosY[6];        //Array containing Relative Y position corresponding to the Gait
 short    GaitPosZ[6];        //Array containing Relative Z position corresponding to the Gait
 short    GaitRotY[6];        //Array containing Relative Y rotation corresponding to the Gait  
-byte     ExtraCycle;         //Forcing some extra timed cycles for avoiding "end of gait bug"
-bool     Walking;            //True if the robot are walking
-
-#ifdef DBGSerial
-bool     Prev_Walking;
-#endif
+short    TravelLengthX;      //Current Travel length X
+short    TravelLengthZ;      //Current Travel length Z
+short    TravelRotationY;    //Current Travel Rotation Y
 
 #ifdef cBUZZER
 extern void MSound(byte cNotes, ...);
@@ -409,6 +406,7 @@ void loop() {
   }
   else {
     FreeServos();
+    delay(20);
   }
 
   Prev_SSCTime = SSCTime;
@@ -640,7 +638,7 @@ void Gait(byte GaitCurrentLegNr) {
     GaitPosX[GaitCurrentLegNr] = TravelLengthX / 2;
     GaitPosZ[GaitCurrentLegNr] = TravelLengthZ / 2;
     GaitRotY[GaitCurrentLegNr] = TravelRotationY / 2;
-    GaitPosY[GaitCurrentLegNr] = 0; //Only move leg down at once if terrain adaptation is turned off
+    GaitPosY[GaitCurrentLegNr] = 0;
   }
 
   //Move body forward
@@ -666,6 +664,7 @@ void BalCalcOneLeg (long PosX, long PosZ, long PosY, byte BalLegNr) {
   TotalZ = (short)pgm_read_word(&cOffsetZ[BalLegNr]) + PosZ;
   TotalX = (short)pgm_read_word(&cOffsetX[BalLegNr]) + PosX;
   TotalY = 150 + PosY; //Using the value 150 to lower the center point of rotation BodyPosY
+
   TotalTransY += PosY;
   TotalTransZ += TotalZ;
   TotalTransX += TotalX;
@@ -778,7 +777,7 @@ long GetArcCos(short Cos4) {
 }
 
 //Simplified ArcTan2 function based on fixed point ArcCos
-short GetATan2 (short AtanX, short AtanY) {
+long GetATan2 (long AtanX, long AtanY) {
   XYhyp2 = sqrt((AtanX * AtanX * c4DEC) + (AtanY * AtanY * c4DEC));
   AngleRad4 = GetArcCos((AtanX * c6DEC) / XYhyp2);
 
@@ -816,16 +815,16 @@ void BodyFK (short PosX, short PosZ, short PosY, short RotationY, byte BodyFKLeg
   CosA4 = Cos4;
 
   //Calculation of rotation matrix:
-  BodyFKPosX = (TotalX * c2DEC - (TotalX * c2DEC * CosA4 / c4DEC * CosB4 / c4DEC -
-    TotalZ * c2DEC * CosB4 / c4DEC * SinA4 / c4DEC + PosY * c2DEC * SinB4 / c4DEC )) / c2DEC;
+  BodyFKPosX = ((long)TotalX * c2DEC - ((long)TotalX * c2DEC * CosA4 / c4DEC * CosB4 / c4DEC -
+    (long)TotalZ * c2DEC * CosB4 / c4DEC * SinA4 / c4DEC + (long)PosY * c2DEC * SinB4 / c4DEC )) / c2DEC;
 
-  BodyFKPosZ = (TotalZ * c2DEC - (TotalX * c2DEC * CosG4 / c4DEC * SinA4 / c4DEC +
-    TotalX * c2DEC * CosA4 / c4DEC * SinB4 / c4DEC * SinG4 / c4DEC + TotalZ * c2DEC * CosA4 / c4DEC * CosG4 / c4DEC -
-    TotalZ * c2DEC * SinA4 / c4DEC * SinB4 / c4DEC * SinG4 / c4DEC - PosY * c2DEC * CosB4 / c4DEC * SinG4 / c4DEC )) / c2DEC;
+  BodyFKPosZ = ((long)TotalZ * c2DEC - ((long)TotalX * c2DEC * CosG4 / c4DEC * SinA4 / c4DEC +
+    (long)TotalX * c2DEC * CosA4 / c4DEC * SinB4 / c4DEC * SinG4 / c4DEC + (long)TotalZ * c2DEC * CosA4 / c4DEC * CosG4 / c4DEC -
+    (long)TotalZ * c2DEC * SinA4 / c4DEC * SinB4 / c4DEC * SinG4 / c4DEC - (long)PosY * c2DEC * CosB4 / c4DEC * SinG4 / c4DEC )) / c2DEC;
 
-  BodyFKPosY = (PosY * c2DEC - (TotalX * c2DEC * SinA4 / c4DEC * SinG4 / c4DEC -
-    TotalX * c2DEC * CosA4 / c4DEC * CosG4 / c4DEC * SinB4 / c4DEC + TotalZ * c2DEC * CosA4 / c4DEC * SinG4 / c4DEC +
-    TotalZ * c2DEC * CosG4 / c4DEC * SinA4 / c4DEC * SinB4 / c4DEC + PosY * c2DEC * CosB4 / c4DEC * CosG4 / c4DEC )) / c2DEC;
+  BodyFKPosY = ((long)PosY * c2DEC - ((long)TotalX * c2DEC * SinA4 / c4DEC * SinG4 / c4DEC -
+    (long)TotalX * c2DEC * CosA4 / c4DEC * CosG4 / c4DEC * SinB4 / c4DEC + (long)TotalZ * c2DEC * CosA4 / c4DEC * SinG4 / c4DEC +
+    (long)TotalZ * c2DEC * CosG4 / c4DEC * SinA4 / c4DEC * SinB4 / c4DEC + (long)PosY * c2DEC * CosB4 / c4DEC * CosG4 / c4DEC )) / c2DEC;
 }
 
 //Calculates the angles of the coxa, femur and tibia for the given position of the feet
@@ -845,7 +844,7 @@ void LegIK (short IKFeetPosX, short IKFeetPosY, short IKFeetPosZ, byte LegIKLegN
   IKSW2 = XYhyp2;
 
   //IKA2 - Angle of the line S>W with respect to the femur in radians
-  Temp1 = (((cFemurLength * cFemurLength) - (cTibiaLength * cTibiaLength)) * c4DEC + (IKSW2 * IKSW2));
+  Temp1 = ((((long)cFemurLength * cFemurLength) - ((long)cTibiaLength * cTibiaLength)) * c4DEC + (IKSW2 * IKSW2));
   Temp2 = ((2 * cFemurLength) * c2DEC * IKSW2);
   IKA24 = GetArcCos(Temp1 / (Temp2 / c4DEC));
 
@@ -853,7 +852,7 @@ void LegIK (short IKFeetPosX, short IKFeetPosY, short IKFeetPosZ, byte LegIKLegN
   FemurAngle1[LegIKLegNr] = -(IKA14 + IKA24) * 180 / 3141 + 900;
 
   //IKTibiaAngle
-  Temp1 = (((cFemurLength * cFemurLength) + (cTibiaLength * cTibiaLength)) * c4DEC - (IKSW2 * IKSW2));
+  Temp1 = ((((long)cFemurLength * cFemurLength) + ((long)cTibiaLength * cTibiaLength)) * c4DEC - (IKSW2 * IKSW2));
   Temp2 = (2 * cFemurLength * cTibiaLength);
   AngleRad4 = GetArcCos(Temp1 / Temp2);
   TibiaAngle1[LegIKLegNr] = -(900 - AngleRad4 * 180 / 3141);
@@ -889,26 +888,26 @@ void ServoDriverUpdate() {
   for (LegIndex = 0; LegIndex <= 5; LegIndex++) {
     //Update Right Legs
     if (LegIndex <= 2) {
-      CoxaPWM = ((word)(-pgm_read_byte(&CoxaAngle1[LegIndex]) + 900)) * 1000 / cPWMDiv + cPFCons;
-      FemurPWM = ((word)(-pgm_read_byte(&FemurAngle1[LegIndex]) + 900)) * 1000 / cPWMDiv + cPFCons;
-      TibiaPWM = ((word)(-pgm_read_byte(&TibiaAngle1[LegIndex]) + 900)) * 1000 / cPWMDiv + cPFCons;
+      CoxaPWM = ((long)(-CoxaAngle1[LegIndex] + 900)) * 1000 / cPWMDiv + cPFCons;
+      FemurPWM = ((long)(-FemurAngle1[LegIndex] + 900)) * 1000 / cPWMDiv + cPFCons;
+      TibiaPWM = ((long)(-TibiaAngle1[LegIndex] + 900)) * 1000 / cPWMDiv + cPFCons;
     }
     else {
       //Update Left Legs
-      CoxaPWM = ((word)(pgm_read_byte(&CoxaAngle1[LegIndex]) + 900)) * 1000 / cPWMDiv + cPFCons;
-      FemurPWM = ((word)(pgm_read_byte(&FemurAngle1[LegIndex]) + 900)) * 1000 / cPWMDiv + cPFCons;
-      TibiaPWM = ((word)(pgm_read_byte(&TibiaAngle1[LegIndex]) + 900)) * 1000 / cPWMDiv + cPFCons;
+      CoxaPWM = ((long)(CoxaAngle1[LegIndex] + 900)) * 1000 / cPWMDiv + cPFCons;
+      FemurPWM = ((long)(FemurAngle1[LegIndex] + 900)) * 1000 / cPWMDiv + cPFCons;
+      TibiaPWM = ((long)(TibiaAngle1[LegIndex] + 900)) * 1000 / cPWMDiv + cPFCons;
     }
 
-    SSCWrite(pgm_read_byte(&cCoxaPin[LegIndex]) + 0x80, CoxaPWM >> 8, CoxaPWM & 0xFF);
-    SSCWrite(pgm_read_byte(&cFemurPin[LegIndex]) + 0x80, FemurPWM >> 8, FemurPWM & 0xFF);
-    SSCWrite(pgm_read_byte(&cTibiaPin[LegIndex]) + 0x80, TibiaPWM >> 8, TibiaPWM & 0xFF);
+    SSCWrite(pgm_read_byte(&cCoxaPin[LegIndex]) + 0x80, highByte(CoxaPWM), lowByte(CoxaPWM));
+    SSCWrite(pgm_read_byte(&cFemurPin[LegIndex]) + 0x80, highByte(FemurPWM), lowByte(FemurPWM));
+    SSCWrite(pgm_read_byte(&cTibiaPin[LegIndex]) + 0x80, highByte(TibiaPWM), lowByte(TibiaPWM));
   }
 }
 
 //Commit the positions of the servos
 void ServoDriverCommit() {
-  SSCWrite(0xA1, SSCTime >> 8, SSCTime & 0xFF);
+  SSCWrite(0xA1, highByte(SSCTime), lowByte(SSCTime));
 }
 
 //Frees all the servos
