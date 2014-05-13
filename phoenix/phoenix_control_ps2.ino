@@ -129,7 +129,7 @@ void ControlInput() {
       if (PS2.ButtonPressed(PSB_CIRCLE)) { //Circle Button Test
         if (abs(TravelLengthX) < cTravelDeadZone &&
           abs(TravelLengthZ) < cTravelDeadZone &&
-          abs(TravelRotationY * 2) < cTravelDeadZone) {
+          abs(TravelLengthY * 2) < cTravelDeadZone) {
 #ifdef cBUZZER
           MSound(1, 50, 2000);
 #endif
@@ -241,7 +241,7 @@ void ControlInput() {
         if (PS2.ButtonPressed(PSB_SELECT) && //Select Button Test
         abs(TravelLengthX) < cTravelDeadZone && //No movement
         abs(TravelLengthZ) < cTravelDeadZone &&
-          abs(TravelRotationY * 2) < cTravelDeadZone) {
+          abs(TravelLengthY * 2) < cTravelDeadZone) {
           if (GaitType < cGaitsNumber - 1) {
 #ifdef cBUZZER
             MSound(1, 50, 2000);
@@ -359,7 +359,7 @@ void ControlInput() {
           TravelLengthZ /= 2;
         }
 
-        TravelRotationY = -(PS2.Analog(PSS_RX) - 128) / 4; //Right Stick Left/Right
+        TravelLengthY = -(PS2.Analog(PSS_RX) - 128) / 4; //Right Stick Left/Right
       }
 
       //[Translate functions]
@@ -474,7 +474,7 @@ void PS2TurnRobotOff() {
   BodyRotZ = 0;
   TravelLengthX = 0;
   TravelLengthZ = 0;
-  TravelRotationY = 0;
+  TravelLengthY = 0;
   BodyYOffset = 0;
   BodyYShift = 0;
   SelectedLeg = 255;

@@ -60,59 +60,59 @@ SoftwareSerial SSCSerial(cSSC_TX, cSSC_RX);
 #define cLFTibiaPin        26 //Front Left leg Knee
 
 //[MIN/MAX ANGLES]
-#define cRRCoxaMin1       -260 //Mechanical limits of the Right Rear Leg, decimals = 1
-#define cRRCoxaMax1        740
-#define cRRFemurMin1      -1010
-#define cRRFemurMax1       950
-#define cRRTibiaMin1      -1060
-#define cRRTibiaMax1       770
+#define cRRCoxaMin        -260 //Mechanical limits of the Right Rear Leg, decimals = 1
+#define cRRCoxaMax         740
+#define cRRFemurMin       -1010
+#define cRRFemurMax        950
+#define cRRTibiaMin       -1060
+#define cRRTibiaMax        770
 
-#define cRMCoxaMin1       -530 //Mechanical limits of the Right Middle Leg, decimals = 1
-#define cRMCoxaMax1        530
-#define cRMFemurMin1      -1010
-#define cRMFemurMax1       950
-#define cRMTibiaMin1      -1060
-#define cRMTibiaMax1       770
+#define cRMCoxaMin        -530 //Mechanical limits of the Right Middle Leg, decimals = 1
+#define cRMCoxaMax         530
+#define cRMFemurMin       -1010
+#define cRMFemurMax        950
+#define cRMTibiaMin       -1060
+#define cRMTibiaMax        770
 
-#define cRFCoxaMin1       -580 //Mechanical limits of the Right Front Leg, decimals = 1
-#define cRFCoxaMax1        740
-#define cRFFemurMin1      -1010
-#define cRFFemurMax1       950
-#define cRFTibiaMin1      -1060
-#define cRFTibiaMax1       770
+#define cRFCoxaMin        -580 //Mechanical limits of the Right Front Leg, decimals = 1
+#define cRFCoxaMax         740
+#define cRFFemurMin       -1010
+#define cRFFemurMax        950
+#define cRFTibiaMin       -1060
+#define cRFTibiaMax        770
 
-#define cLRCoxaMin1       -740 //Mechanical limits of the Left Rear Leg, decimals = 1
-#define cLRCoxaMax1        260
-#define cLRFemurMin1      -950
-#define cLRFemurMax1       1010
-#define cLRTibiaMin1      -770
-#define cLRTibiaMax1       1060
+#define cLRCoxaMin        -740 //Mechanical limits of the Left Rear Leg, decimals = 1
+#define cLRCoxaMax         260
+#define cLRFemurMin       -950
+#define cLRFemurMax        1010
+#define cLRTibiaMin       -770
+#define cLRTibiaMax        1060
 
-#define cLMCoxaMin1       -530 //Mechanical limits of the Left Middle Leg, decimals = 1
-#define cLMCoxaMax1        530
-#define cLMFemurMin1      -950
-#define cLMFemurMax1       1010
-#define cLMTibiaMin1      -770
-#define cLMTibiaMax1       1060
+#define cLMCoxaMin        -530 //Mechanical limits of the Left Middle Leg, decimals = 1
+#define cLMCoxaMax         530
+#define cLMFemurMin       -950
+#define cLMFemurMax        1010
+#define cLMTibiaMin       -770
+#define cLMTibiaMax        1060
 
-#define cLFCoxaMin1       -740 //Mechanical limits of the Left Front Leg, decimals = 1
-#define cLFCoxaMax1        580
-#define cLFFemurMin1      -950
-#define cLFFemurMax1       1010
-#define cLFTibiaMin1      -770
-#define cLFTibiaMax1       1060
+#define cLFCoxaMin        -740 //Mechanical limits of the Left Front Leg, decimals = 1
+#define cLFCoxaMax         580
+#define cLFFemurMin       -950
+#define cLFFemurMax        1010
+#define cLFTibiaMin       -770
+#define cLFTibiaMax        1060
 
 //[BODY DIMENSIONS]
 #define cCoxaLength        29  //Length of the Coxa [mm]
 #define cFemurLength       76  //Length of the Femur [mm]
 #define cTibiaLength       106 //Length of the Tibia [mm]
 
-#define cRRCoxaAngle1     -600 //Default Coxa setup angle, decimals = 1
-#define cRMCoxaAngle1      0   //Default Coxa setup angle, decimals = 1
-#define cRFCoxaAngle1      600 //Default Coxa setup angle, decimals = 1
-#define cLRCoxaAngle1     -600 //Default Coxa setup angle, decimals = 1
-#define cLMCoxaAngle1      0   //Default Coxa setup angle, decimals = 1
-#define cLFCoxaAngle1      600 //Default Coxa setup angle, decimals = 1
+#define cRRCoxaAngle      -600 //Default Coxa setup angle, decimals = 1
+#define cRMCoxaAngle       0   //Default Coxa setup angle, decimals = 1
+#define cRFCoxaAngle       600 //Default Coxa setup angle, decimals = 1
+#define cLRCoxaAngle      -600 //Default Coxa setup angle, decimals = 1
+#define cLMCoxaAngle       0   //Default Coxa setup angle, decimals = 1
+#define cLFCoxaAngle       600 //Default Coxa setup angle, decimals = 1
 
 #define cRROffsetX        -43  //Distance X from center of the body to the Right Rear coxa
 #define cRROffsetZ         82  //Distance Z from center of the body to the Right Rear coxa
