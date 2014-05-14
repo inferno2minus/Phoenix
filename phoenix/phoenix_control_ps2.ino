@@ -363,6 +363,7 @@ void ControlInput() {
       }
 
       //[Translate functions]
+      BodyYShift = 0;
       if (ControlMode == TRANSLATEMODE) {
         BodyPosX = (PS2.Analog(PSS_LX) - 128) / 2;
         BodyPosZ = -(PS2.Analog(PSS_LY) - 128) / 3;

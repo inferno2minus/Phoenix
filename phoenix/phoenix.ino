@@ -270,12 +270,14 @@ void loop() {
     for (LegIndex = 0; LegIndex <= 5; LegIndex++) {
       if (LegIndex <= 2) {
         //Balance calculations for all Right legs
-        BalCalcOneLeg(-LegPosX[LegIndex] + GaitPosX[LegIndex], (LegPosY[LegIndex] - (short)pgm_read_word(&cInitPosY[LegIndex])) + GaitPosY[LegIndex],
+        BalCalcOneLeg(-LegPosX[LegIndex] + GaitPosX[LegIndex],
+        (LegPosY[LegIndex] - (short)pgm_read_word(&cInitPosY[LegIndex])) + GaitPosY[LegIndex],
         LegPosZ[LegIndex] + GaitPosZ[LegIndex], LegIndex);
       }
       else {
         //Balance calculations for all Left legs
-        BalCalcOneLeg(LegPosX[LegIndex] + GaitPosX[LegIndex], (LegPosY[LegIndex] - (short)pgm_read_word(&cInitPosY[LegIndex])) + GaitPosY[LegIndex],
+        BalCalcOneLeg(LegPosX[LegIndex] + GaitPosX[LegIndex],
+        (LegPosY[LegIndex] - (short)pgm_read_word(&cInitPosY[LegIndex])) + GaitPosY[LegIndex],
         LegPosZ[LegIndex] + GaitPosZ[LegIndex], LegIndex);
       }
     }
@@ -692,7 +694,7 @@ void GetSinCos(short AngleDeg) {
 
   if (AngleDeg >= 0 && AngleDeg <= 900) { //0 to 90 deg
     Sin = pgm_read_word(&cSin[AngleDeg / 5]); //5 is the precision (0.5) of the table
-    Cos = pgm_read_word(&cSin[(900 - (AngleDeg)) / 5]);
+    Cos = pgm_read_word(&cSin[(900 - AngleDeg) / 5]);
   }
   else if (AngleDeg > 900 && AngleDeg <= 1800) { //90 to 180 deg
     Sin = pgm_read_word(&cSin[(900 - (AngleDeg - 900)) / 5]); //5 is the precision (0.5) of the table 
