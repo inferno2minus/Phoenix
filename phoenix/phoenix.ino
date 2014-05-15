@@ -490,12 +490,12 @@ void GaitSelect() {
     NomGaitSpeed = 70;
     break;
   case 3: //Tripod 12 steps
+    GaitLegNr[cLR] = 11;
     GaitLegNr[cRF] = 3;
     GaitLegNr[cLM] = 4;
     GaitLegNr[cRR] = 5;
     GaitLegNr[cLF] = 9;
     GaitLegNr[cRM] = 10;
-    GaitLegNr[cLR] = 11;
 
     NrLiftedPos = 3;
     HalfLiftHeigth = 3;
@@ -504,12 +504,12 @@ void GaitSelect() {
     NomGaitSpeed = 60;
     break;
   case 4: //Tripod 16 steps, use 5 lifted positions!
-    GaitLegNr[cLR] = 4;
-    GaitLegNr[cRF] = 5;
-    GaitLegNr[cLM] = 6;
-    GaitLegNr[cRR] = 12;
-    GaitLegNr[cLF] = 13;
-    GaitLegNr[cRM] = 14;
+    GaitLegNr[cLR] = 14;
+    GaitLegNr[cRF] = 4;
+    GaitLegNr[cLM] = 5;
+    GaitLegNr[cRR] = 6;
+    GaitLegNr[cLF] = 12;
+    GaitLegNr[cRM] = 13;
 
     NrLiftedPos = 5;
     HalfLiftHeigth = 1;
@@ -614,9 +614,9 @@ void Gait(byte LegIndex) {
   else if ((GaitStep == GaitLegNr[LegIndex] + NrLiftedPos ||
     GaitStep == GaitLegNr[LegIndex] - (StepsInGait - NrLiftedPos)) && GaitPosY[LegIndex] < 0) {
     GaitPosX[LegIndex] = TravelLengthX / 2;
+    GaitPosY[LegIndex] = 0;
     GaitPosZ[LegIndex] = TravelLengthZ / 2;
     GaitRotY[LegIndex] = TravelLengthY / 2;
-    GaitPosY[LegIndex] = 0;
   }
 
   //Move body forward
