@@ -175,6 +175,7 @@ bool     LastLeg;            //TRUE when the current leg is the last leg of the 
 bool     TravelRequest;      //Temp to check if the gait is in motion
 #ifdef DBGSerial
 bool     Prev_Walking;
+bool     DebugOutputOn;
 #endif
 bool     Walking;            //True if the robot are walking
 byte     ExtraCycle;         //Forcing some extra timed cycles for avoiding "end of gait bug"
@@ -829,6 +830,24 @@ void ServoDriverUpdate() {
       FemurPWM = ((long)(FemurAngle[LegIndex] + 900)) * 1000 / cPWMDiv + cPFCons;
       TibiaPWM = ((long)(TibiaAngle[LegIndex] + 900)) * 1000 / cPWMDiv + cPFCons;
     }
+
+#ifdef DBGSerial
+    if(DebugOutputOn) {
+      DBGSerial.print(LegIndex + 1, DEC);
+      DBGSerial.print(": ");
+      DBGSerial.print(CoxaPWM, DEC);
+      DBGSerial.print(" ");
+      DBGSerial.print(FemurPWM, DEC);
+      DBGSerial.print(" ");
+      DBGSerial.print(TibiaPWM, DEC);
+      if (LegIndex != 5) {
+        DBGSerial.print(" | ");
+      }
+      if (LegIndex == 5) {
+        DBGSerial.println();
+      }
+    }
+#endif
 
     SSCWrite(pgm_read_byte(&cCoxaPin[LegIndex]) + 0x80, highByte(CoxaPWM), lowByte(CoxaPWM));
     SSCWrite(pgm_read_byte(&cFemurPin[LegIndex]) + 0x80, highByte(FemurPWM), lowByte(FemurPWM));
