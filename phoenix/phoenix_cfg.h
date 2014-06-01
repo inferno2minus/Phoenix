@@ -11,12 +11,9 @@
 #ifndef PHOENIX_CFG_H
 #define PHOENIX_CFG_H
 
-//[SERIAL CONNECTIONS]
-#define cSSC_BAUD          115200 //SSC32 BAUD rate
-#define cDBG_BAUD          115200 //DEBUG BAUD rate
-
-//[DEBUG CONNECTIONS]
-#define DBGSerial          Serial
+//[CONDITIONAL COMPILING]
+#define DEBUG_MODE
+#define SOUND_MODE
 
 //[ARDUINO PIN NUMBERS]
 #define cPS2_DAT           6  //PS2 Controller DAT
@@ -27,11 +24,18 @@
 #define cSSC_RX            11 //(SSC32 RX <- Arduino TX)
 #define cBUZZER            12 //Buzzer module
 
-//Add support for running on non-mega Arduino boards as well.
-#ifndef UBRR1H
-SoftwareSerial SSCSerial(cSSC_TX, cSSC_RX);
-#else
+//[SERIAL BAUD RATES]
+#define cDBG_BAUD          115200 //DEBUG BAUD rate
+#define cSSC_BAUD          115200 //SSC32 BAUD rate
+
+//[SERIAL CONNECTIONS]
+#define DBGSerial          Serial
+
+//Add support for running on non-mega Arduino boards as well
+#ifdef UBRR1H
 #define SSCSerial          Serial1
+#else
+SoftwareSerial SSCSerial(cSSC_TX, cSSC_RX);
 #endif
 
 //[SSC PIN NUMBERS]

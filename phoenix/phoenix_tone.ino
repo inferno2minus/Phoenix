@@ -8,7 +8,7 @@
  * Hardware setup: Buzzer module
  */
 
-#ifdef cBUZZER
+#ifdef SOUND_MODE
 
 //Quick and dirty tone function to try to output a frequency to a speaker for some simple sounds
 void SoundNoTimer(unsigned long duration, unsigned int frequency) {

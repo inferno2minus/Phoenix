@@ -173,7 +173,7 @@ short    SLLegZ;
 bool     HalfLiftHeigth;     //If TRUE the outer positions of the lighted legs will be half height
 bool     LastLeg;            //TRUE when the current leg is the last leg of the sequence
 bool     TravelRequest;      //Temp to check if the gait is in motion
-#ifdef DBGSerial
+#ifdef DEBUG_MODE
 bool     Prev_Walking;
 bool     DebugOutputOn;
 #endif
@@ -196,7 +196,7 @@ short    TravelLengthX;      //Current Travel length X
 short    TravelLengthZ;      //Current Travel length Z
 short    TravelLengthY;      //Current Travel Rotation Y
 
-#ifdef cBUZZER
+#ifdef SOUND_MODE
 extern void MSound(byte cNotes, ...);
 #endif
 
@@ -204,7 +204,7 @@ extern void MSound(byte cNotes, ...);
 void setup() {
   SSCSerial.begin(cSSC_BAUD);
 
-#ifdef DBGSerial
+#ifdef DEBUG_MODE
   DBGSerial.begin(cDBG_BAUD);
   DBGSerial.println("Start Debugging");
 #endif
@@ -316,7 +316,7 @@ void loop() {
   //Drive Servos
   if (HexOn) {
     if (HexOn && !Prev_HexOn) {
-#ifdef cBUZZER
+#ifdef SOUND_MODE
       MSound(3, 60, 2000, 80, 2250, 100, 2500);
 #endif
     }
@@ -356,7 +356,7 @@ void loop() {
       lTimerEnd = millis();
       CycleTime = (lTimerEnd - lTimerStart);
 
-#ifdef DBGSerial
+#ifdef DEBUG_MODE
       if (Walking && !Prev_Walking) {
         DBGSerial.println("Walking: Start");
         Prev_Walking = true;
@@ -378,7 +378,7 @@ void loop() {
     SSCTime = 600;
     ServoDriverUpdate();
     ServoDriverCommit();
-#ifdef cBUZZER
+#ifdef SOUND_MODE
     MSound(3, 100, 2500, 80, 2250, 60, 2000);
 #endif
     delay(600);
@@ -831,7 +831,7 @@ void ServoDriverUpdate() {
       TibiaPWM = ((long)(TibiaAngle[LegIndex] + 900)) * 1000 / cPWMDiv + cPFCons;
     }
 
-#ifdef DBGSerial
+#ifdef DEBUG_MODE
     if(DebugOutputOn) {
       DBGSerial.print(LegIndex + 1, DEC);
       DBGSerial.print(": ");

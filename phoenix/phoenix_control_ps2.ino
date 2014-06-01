@@ -31,7 +31,7 @@ bool    DoubleHeightOn;
 bool    DoubleTravelOn;
 bool    WalkMethod;
 
-#ifdef cBUZZER
+#ifdef SOUND_MODE
 extern void MSound(byte cNotes, ...);
 #endif
 
@@ -67,7 +67,7 @@ void ControlInput() {
       }
       else {
         HexOn = 1; //Turn on
-#ifdef DBGSerial
+#ifdef DEBUG_MODE
         DBGSerial.println("Power: Turn on");
 #endif
       }
@@ -77,24 +77,24 @@ void ControlInput() {
 
       //Translate mode
       if (PS2.ButtonPressed(PSB_L1)) { //L1 Button Test
-#ifdef cBUZZER
+#ifdef SOUND_MODE
         MSound(1, 40, 2000);
 #endif
         if (ControlMode != TRANSLATEMODE) {
           ControlMode = TRANSLATEMODE;
-#ifdef DBGSerial
+#ifdef DEBUG_MODE
           DBGSerial.println("ControlMode: TRANSLATEMODE");
 #endif
         }
         else if (SelectedLeg == 255) {
           ControlMode = WALKMODE;
-#ifdef DBGSerial
+#ifdef DEBUG_MODE
           DBGSerial.println("ControlMode: WALKMODE");
 #endif
         }
         else {
           ControlMode = SINGLELEGMODE;
-#ifdef DBGSerial
+#ifdef DEBUG_MODE
           DBGSerial.println("ControlMode: SINGLELEGMODE");
 #endif
         }
@@ -102,24 +102,24 @@ void ControlInput() {
 
       //Rotate mode
       if (PS2.ButtonPressed(PSB_L2)) { //L2 Button Test
-#ifdef cBUZZER
+#ifdef SOUND_MODE
         MSound(1, 40, 2000);
 #endif
         if (ControlMode != ROTATEMODE) {
           ControlMode = ROTATEMODE;
-#ifdef DBGSerial
+#ifdef DEBUG_MODE
           DBGSerial.println("ControlMode: ROTATEMODE");
 #endif
         }
         else if (SelectedLeg == 255) {
           ControlMode = WALKMODE;
-#ifdef DBGSerial
+#ifdef DEBUG_MODE
           DBGSerial.println("ControlMode: WALKMODE");
 #endif
         }
         else {
           ControlMode = SINGLELEGMODE;
-#ifdef DBGSerial
+#ifdef DEBUG_MODE
           DBGSerial.println("ControlMode: SINGLELEGMODE");
 #endif
         }
@@ -127,12 +127,12 @@ void ControlInput() {
 
       //Single leg mode
       if (PS2.ButtonPressed(PSB_CIRCLE) && !TravelRequest) { //Circle Button Test
-#ifdef cBUZZER
+#ifdef SOUND_MODE
         MSound(1, 40, 2000);
 #endif
         if (ControlMode != SINGLELEGMODE) {
           ControlMode = SINGLELEGMODE;
-#ifdef DBGSerial
+#ifdef DEBUG_MODE
           DBGSerial.println("ControlMode: SINGLELEGMODE");
 #endif
           if (SelectedLeg == 255) { //Select leg if none is selected
@@ -141,16 +141,16 @@ void ControlInput() {
         }
         else {
           ControlMode = WALKMODE;
-#ifdef DBGSerial
+#ifdef DEBUG_MODE
           DBGSerial.println("ControlMode: WALKMODE");
 #endif
           SelectedLeg = 255;
         }
       }
 
-#ifdef DBGSerial
+#ifdef DEBUG_MODE
       if (PS2.ButtonPressed(PSB_L3)) { //R3 Button Test
-#ifdef cBUZZER
+#ifdef SOUND_MODE
         MSound(1, 40, 2000);
 #endif
         DebugOutputOn = !DebugOutputOn;
@@ -160,11 +160,11 @@ void ControlInput() {
       //[Common functions]
       //Switch Balance mode on/off 
       if (PS2.ButtonPressed(PSB_SQUARE)) { //Square Button Test
-#ifdef cBUZZER
+#ifdef SOUND_MODE
         MSound(1, 40, 2000);
 #endif
         BalanceMode = !BalanceMode;
-#ifdef DBGSerial
+#ifdef DEBUG_MODE
         if (BalanceMode) {
           DBGSerial.println("BalanceMode: On");
         }
@@ -182,7 +182,7 @@ void ControlInput() {
         else {
           BodyYOffset = 40;
         }
-#ifdef DBGSerial
+#ifdef DEBUG_MODE
         DBGSerial.print("BodyYOffset: ");
         DBGSerial.println(BodyYOffset, DEC);
 #endif
@@ -191,7 +191,7 @@ void ControlInput() {
       if (PS2.ButtonPressed(PSB_PAD_UP)) { //D-Up Button Test
         if (BodyYOffset < cMaxBodyY) {
           BodyYOffset += 10;
-#ifdef DBGSerial
+#ifdef DEBUG_MODE
           DBGSerial.print("BodyYOffset: ");
           DBGSerial.println(BodyYOffset, DEC);
 #endif
@@ -201,7 +201,7 @@ void ControlInput() {
       if (PS2.ButtonPressed(PSB_PAD_DOWN)) { //D-Down Button Test
         if (BodyYOffset > 0) {
           BodyYOffset -= 10;
-#ifdef DBGSerial
+#ifdef DEBUG_MODE
           DBGSerial.print("BodyYOffset: ");
           DBGSerial.println(BodyYOffset, DEC);
 #endif
@@ -210,11 +210,11 @@ void ControlInput() {
 
       if (PS2.ButtonPressed(PSB_PAD_RIGHT)) { //D-Right Button Test
         if (SpeedControl < 1000) {
-#ifdef cBUZZER
+#ifdef SOUND_MODE
           MSound(1, 40, 2000);
 #endif
           SpeedControl += 50;
-#ifdef DBGSerial
+#ifdef DEBUG_MODE
           DBGSerial.print("SpeedControl: ");
           DBGSerial.println(SpeedControl, DEC);
 #endif
@@ -223,11 +223,11 @@ void ControlInput() {
 
       if (PS2.ButtonPressed(PSB_PAD_LEFT)) { //D-Left Button Test
         if (SpeedControl > 0) {
-#ifdef cBUZZER
+#ifdef SOUND_MODE
           MSound(1, 40, 2000);
 #endif
           SpeedControl -= 50;
-#ifdef DBGSerial
+#ifdef DEBUG_MODE
           DBGSerial.print("SpeedControl: ");
           DBGSerial.println(SpeedControl, DEC);
 #endif
@@ -240,18 +240,18 @@ void ControlInput() {
         //Switch gates
         if (PS2.ButtonPressed(PSB_SELECT) && !TravelRequest) { //Select Button Test
           if (GaitType < cGaitsNumber - 1) {
-#ifdef cBUZZER
+#ifdef SOUND_MODE
             MSound(1, 40, 2000);
 #endif
             GaitType++;
           }
           else {
-#ifdef cBUZZER
+#ifdef SOUND_MODE
             MSound(1, 80, 1500);
 #endif
             GaitType = 0;
           }
-#ifdef DBGSerial
+#ifdef DEBUG_MODE
           DBGSerial.print("GaitType: ");
           switch(GaitType) {
           case 0:
@@ -279,19 +279,19 @@ void ControlInput() {
 
         //Double leg lift height
         if (PS2.ButtonPressed(PSB_R1)) { //R1 Button Test
-#ifdef cBUZZER
+#ifdef SOUND_MODE
           MSound(1, 40, 2000);
 #endif
           DoubleHeightOn = !DoubleHeightOn;
           if (DoubleHeightOn) {
             LegLiftHeight = 80;
-#ifdef DBGSerial
+#ifdef DEBUG_MODE
             DBGSerial.println("DoubleHeight: On");
 #endif
           }
           else {
             LegLiftHeight = 50;
-#ifdef DBGSerial
+#ifdef DEBUG_MODE
             DBGSerial.println("DoubleHeight: Off");
 #endif
           }
@@ -299,11 +299,11 @@ void ControlInput() {
 
         //Double Travel Length
         if (PS2.ButtonPressed(PSB_R2)) { //R2 Button Test
-#ifdef cBUZZER
+#ifdef SOUND_MODE
           MSound(1, 40, 2000);
 #endif
           DoubleTravelOn = !DoubleTravelOn;
-#ifdef DBGSerial
+#ifdef DEBUG_MODE
           if (DoubleTravelOn) {
             DBGSerial.println("DoubleTravel: On");
           }
@@ -315,11 +315,11 @@ void ControlInput() {
 
         //Switch between Walk method 1 and Walk method 2
         if (PS2.ButtonPressed(PSB_R3)) { //R3 Button Test
-#ifdef cBUZZER
+#ifdef SOUND_MODE
           MSound(1, 40, 2000);
 #endif
           WalkMethod = !WalkMethod;
-#ifdef DBGSerial
+#ifdef DEBUG_MODE
           if (WalkMethod) {
             DBGSerial.println("WalkMethod: 1");
           }
@@ -368,7 +368,7 @@ void ControlInput() {
 
         //Switch leg for single leg control
         if (PS2.ButtonPressed(PSB_SELECT)) { //Select Button Test
-#ifdef cBUZZER
+#ifdef SOUND_MODE
           MSound(1, 40, 2000);
 #endif
           if (SelectedLeg < 5) {
@@ -377,7 +377,7 @@ void ControlInput() {
           else {
             SelectedLeg = 0;
           }
-#ifdef DBGSerial
+#ifdef DEBUG_MODE
           DBGSerial.print("SelectedLeg: ");
           switch(SelectedLeg) {
           case 0:
@@ -408,11 +408,11 @@ void ControlInput() {
 
         //Hold single leg in place
         if (PS2.ButtonPressed(PSB_R2)) { //R2 Button Test
-#ifdef cBUZZER
+#ifdef SOUND_MODE
           MSound(1, 40, 2000);
 #endif
           SLHold = !SLHold;
-#ifdef DBGSerial
+#ifdef DEBUG_MODE
           if (SLHold) {
             DBGSerial.println("SLHold: On");
           }
@@ -432,7 +432,7 @@ void ControlInput() {
   }
   else if (PS2ErrorCount < cMaxPS2Error) {
     PS2ErrorCount++;
-#ifdef DBGSerial
+#ifdef DEBUG_MODE
     DBGSerial.print("PS2ErrorCount: ");
     DBGSerial.println(PS2ErrorCount, DEC);
 #endif
@@ -443,7 +443,7 @@ void ControlInput() {
 }
 
 void PS2TurnRobotOff() {
-#ifdef DBGSerial
+#ifdef DEBUG_MODE
   DBGSerial.println("Power: Turn off");
 #endif
   BodyPosX = 0;
