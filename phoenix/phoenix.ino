@@ -38,7 +38,7 @@
 //- Cos 0.9 to 0.99 is done by steps of 0.0008 rad [0.1/127]
 //- Cos 0.99 to 1 is done by step of 0.0002 rad [0.01/64]
 //Since the tables are overlapping the full range of 127+127+64 is not necessary. Total bytes: 277
-static const byte cACos[] PROGMEM = {
+static const byte cACosTable[] PROGMEM = {
   255,254,252,251,250,249,247,246,245,243,242,241,240,238,237,236,234,233,232,231,229,
   228,227,225,224,223,221,220,219,217,216,215,214,212,211,210,208,207,206,204,203,201,
   200,199,197,196,195,193,192,190,189,188,186,185,183,182,181,179,178,176,175,173,172,
@@ -53,7 +53,7 @@ static const byte cACos[] PROGMEM = {
   5,3,0 };
 
 //Sin table 90 deg, precision 0.5 deg [180 values]
-static const word cSin[] PROGMEM = {
+static const word cSinTable[] PROGMEM = {
   0,87,174,261,348,436,523,610,697,784,871,958,1045,1132,1218,1305,1391,1478,1564,1650,
   1736,1822,1908,1993,2079,2164,2249,2334,2419,2503,2588,2672,2756,2840,2923,3007,3090,
   3173,3255,3338,3420,3502,3583,3665,3746,3826,3907,3987,4067,4146,4226,4305,4383,4461,
@@ -173,10 +173,6 @@ short    SLLegZ;
 bool     HalfLiftHeigth;     //If TRUE the outer positions of the lighted legs will be half height
 bool     LastLeg;            //TRUE when the current leg is the last leg of the sequence
 bool     TravelRequest;      //Temp to check if the gait is in motion
-#ifdef DEBUG_MODE
-bool     Prev_Walking;
-bool     DebugOutputOn;
-#endif
 bool     Walking;            //True if the robot are walking
 byte     ExtraCycle;         //Forcing some extra timed cycles for avoiding "end of gait bug"
 byte     GaitLegNr[6];       //Init position of the leg
@@ -195,6 +191,11 @@ short    GaitRotY[6];        //Array containing Relative Y rotation correspondin
 short    TravelLengthX;      //Current Travel length X
 short    TravelLengthZ;      //Current Travel length Z
 short    TravelLengthY;      //Current Travel Rotation Y
+
+#ifdef DEBUG_MODE
+bool     Prev_Walking;
+bool     DebugOutputOn;
+#endif
 
 #ifdef SOUND_MODE
 extern void MSound(byte cNotes, ...);
@@ -694,20 +695,20 @@ void GetSinCos(short AngleDeg) {
   }
 
   if (AngleDeg >= 0 && AngleDeg <= 900) { //0 to 90 deg
-    Sin = pgm_read_word(&cSin[AngleDeg / 5]); //5 is the precision (0.5) of the table
-    Cos = pgm_read_word(&cSin[(900 - AngleDeg) / 5]);
+    Sin = pgm_read_word(&cSinTable[AngleDeg / 5]); //5 is the precision (0.5) of the table
+    Cos = pgm_read_word(&cSinTable[(900 - AngleDeg) / 5]);
   }
   else if (AngleDeg > 900 && AngleDeg <= 1800) { //90 to 180 deg
-    Sin = pgm_read_word(&cSin[(900 - (AngleDeg - 900)) / 5]); //5 is the precision (0.5) of the table 
-    Cos = -pgm_read_word(&cSin[(AngleDeg - 900) / 5]);
+    Sin = pgm_read_word(&cSinTable[(900 - (AngleDeg - 900)) / 5]); //5 is the precision (0.5) of the table 
+    Cos = -pgm_read_word(&cSinTable[(AngleDeg - 900) / 5]);
   }
   else if (AngleDeg > 1800 && AngleDeg <= 2700) { //180 to 270 deg
-    Sin = -pgm_read_word(&cSin[(AngleDeg - 1800) / 5]); //5 is the precision (0.5) of the table
-    Cos = -pgm_read_word(&cSin[(2700 - AngleDeg) / 5]);
+    Sin = -pgm_read_word(&cSinTable[(AngleDeg - 1800) / 5]); //5 is the precision (0.5) of the table
+    Cos = -pgm_read_word(&cSinTable[(2700 - AngleDeg) / 5]);
   }
   else if(AngleDeg > 2700 && AngleDeg <= 3600) { //270 to 360 deg
-    Sin = -pgm_read_word(&cSin[(3600 - AngleDeg) / 5]); //5 is the precision (0.5) of the table 
-    Cos = pgm_read_word(&cSin[(AngleDeg - 2700) / 5]);
+    Sin = -pgm_read_word(&cSinTable[(3600 - AngleDeg) / 5]); //5 is the precision (0.5) of the table 
+    Cos = pgm_read_word(&cSinTable[(AngleDeg - 2700) / 5]);
   }
 }
 
@@ -726,15 +727,15 @@ long GetACos(short Cos) {
   Cos = min(Cos, c4DEC);
 
   if (Cos >= 0 && Cos < 9000) {
-    AngleRad = (byte)pgm_read_byte(&cACos[Cos / 79]); //79=table resolution (1/127)
+    AngleRad = (byte)pgm_read_byte(&cACosTable[Cos / 79]); //79=table resolution (1/127)
     AngleRad = (AngleRad * 616) / c1DEC; //616=acos resolution (pi/2/255)
   }
   else if (Cos >= 9000 && Cos < 9900) {
-    AngleRad = (byte)pgm_read_byte(&cACos[(Cos - 9000) / 8 + 114]); //8=table resolution (0.1/127), 114 start address 2nd byte table range
+    AngleRad = (byte)pgm_read_byte(&cACosTable[(Cos - 9000) / 8 + 114]); //8=table resolution (0.1/127), 114 start address 2nd byte table range
     AngleRad = (AngleRad * 616) / c1DEC; //616=acos resolution (pi/2/255) 
   }
   else if (Cos >= 9900 && Cos <= 10000) {
-    AngleRad = (byte)pgm_read_byte(&cACos[(Cos - 9900) / 2 + 227]); //2=table resolution (0.01/64), 227 start address 3rd byte table range 
+    AngleRad = (byte)pgm_read_byte(&cACosTable[(Cos - 9900) / 2 + 227]); //2=table resolution (0.01/64), 227 start address 3rd byte table range 
     AngleRad = (AngleRad * 616) / c1DEC; //616=acos resolution (pi/2/255) 
   }
 
@@ -875,3 +876,4 @@ void SSCWrite(byte a, byte b, byte c) {
   Array[2] = c;
   SSCSerial.write(Array, 3);
 }
+

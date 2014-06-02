@@ -32,10 +32,10 @@
 #define DBGSerial          Serial
 
 //Add support for running on non-mega Arduino boards as well
-#ifdef UBRR1H
-#define SSCSerial          Serial1
-#else
+#ifndef UBRR1H
 SoftwareSerial SSCSerial(cSSC_TX, cSSC_RX);
+#else
+#define SSCSerial          Serial1
 #endif
 
 //[SSC PIN NUMBERS]
