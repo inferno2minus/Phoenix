@@ -100,7 +100,7 @@ short    FemurAngle[6];      //Actual Angle of the vertical hip, decimals = 1
 short    TibiaAngle[6];      //Actual Angle of the knee, decimals = 1
 
 //[VARIABLES]
-bool     NegativeValue;      //If the the value is Negative
+bool     NegativeValue;      //If the value is Negative
 byte     LegIndex;           //Index used for leg Index Number
 long     AngleRad;           //Output Angle in radials, decimals = 4
 long     IKA1;               //Angle of the line S>W with respect to the ground in radians, decimals = 4
@@ -170,7 +170,6 @@ short    SLLegY;
 short    SLLegZ;
 
 //[GAIT]
-bool     HalfLiftHeigth;     //If TRUE the outer positions of the lighted legs will be half height
 bool     LastLeg;            //TRUE when the current leg is the last leg of the sequence
 bool     TravelRequest;      //Temp to check if the gait is in motion
 bool     Walking;            //True if the robot are walking
@@ -178,6 +177,7 @@ byte     ExtraCycle;         //Forcing some extra timed cycles for avoiding "end
 byte     GaitLegNr[6];       //Init position of the leg
 byte     GaitStep;           //Actual Gait step
 byte     GaitType;           //Gait type
+byte     HalfLiftHeight;     //How high to lift at halfway up
 byte     LegLiftHeight;      //Current Travel height
 byte     LiftDivFactor;      //Normally: 2, when NrLiftedPos=5: 4
 byte     NomGaitSpeed;       //Nominal speed of the gait
@@ -458,7 +458,7 @@ void GaitSelect() {
     GaitLegNr[cRM] = 11;
 
     NrLiftedPos = 3;
-    HalfLiftHeigth = 3;
+    HalfLiftHeight = 3;
     TLDivFactor = 8;
     StepsInGait = 12;
     NomGaitSpeed = 70;
@@ -472,7 +472,7 @@ void GaitSelect() {
     GaitLegNr[cRM] = 4;
 
     NrLiftedPos = 2;
-    HalfLiftHeigth = 1;
+    HalfLiftHeight = 1;
     TLDivFactor = 4;
     StepsInGait = 6;
     NomGaitSpeed = 60;
@@ -486,7 +486,7 @@ void GaitSelect() {
     GaitLegNr[cRM] = 5;
 
     NrLiftedPos = 3;
-    HalfLiftHeigth = 3;
+    HalfLiftHeight = 3;
     TLDivFactor = 4;
     StepsInGait = 8;
     NomGaitSpeed = 70;
@@ -500,7 +500,7 @@ void GaitSelect() {
     GaitLegNr[cRM] = 10;
 
     NrLiftedPos = 3;
-    HalfLiftHeigth = 3;
+    HalfLiftHeight = 3;
     TLDivFactor = 8;
     StepsInGait = 12;
     NomGaitSpeed = 60;
@@ -514,7 +514,7 @@ void GaitSelect() {
     GaitLegNr[cRM] = 13;
 
     NrLiftedPos = 5;
-    HalfLiftHeigth = 1;
+    HalfLiftHeight = 1;
     TLDivFactor = 10;
     StepsInGait = 16;
     NomGaitSpeed = 60;
@@ -528,7 +528,7 @@ void GaitSelect() {
     GaitLegNr[cRM] = 17;
 
     NrLiftedPos = 3;
-    HalfLiftHeigth = 3;
+    HalfLiftHeight = 3;
     TLDivFactor = 20;
     StepsInGait = 24;
     NomGaitSpeed = 70;
@@ -581,7 +581,7 @@ void Gait(byte LegIndex) {
   else if (((NrLiftedPos == 2 && GaitStep==GaitLegNr[LegIndex]) || (NrLiftedPos >= 3 &&
     (GaitStep == GaitLegNr[LegIndex] - 1 || GaitStep == GaitLegNr[LegIndex] + (StepsInGait - 1)))) && TravelRequest) {
     GaitPosX[LegIndex] = -TravelLengthX / LiftDivFactor;
-    GaitPosY[LegIndex] = -3 * LegLiftHeight / (3 + HalfLiftHeigth); //Easier to shift between div factor: /1 (3/3), /2 (3/6) and 3/4
+    GaitPosY[LegIndex] = -3 * LegLiftHeight / (3 + HalfLiftHeight); //Easier to shift between div factor: /1 (3/3), /2 (3/6) and 3/4
     GaitPosZ[LegIndex] = -TravelLengthZ / LiftDivFactor;
     GaitRotY[LegIndex] = -TravelLengthY / LiftDivFactor;
   }
@@ -590,7 +590,7 @@ void Gait(byte LegIndex) {
   else if ((NrLiftedPos >= 2) && (GaitStep == GaitLegNr[LegIndex] + 1 ||
     GaitStep == GaitLegNr[LegIndex] - (StepsInGait - 1)) && TravelRequest) {
     GaitPosX[LegIndex] = TravelLengthX / LiftDivFactor;
-    GaitPosY[LegIndex] = -3 * LegLiftHeight / (3 + HalfLiftHeigth); //Easier to shift between div factor: /1 (3/3), /2 (3/6) and 3/4
+    GaitPosY[LegIndex] = -3 * LegLiftHeight / (3 + HalfLiftHeight); //Easier to shift between div factor: /1 (3/3), /2 (3/6) and 3/4
     GaitPosZ[LegIndex] = TravelLengthZ / LiftDivFactor;
     GaitRotY[LegIndex] = TravelLengthY / LiftDivFactor;
   }
