@@ -318,7 +318,7 @@ void loop() {
   if (HexOn) {
     if (HexOn && !Prev_HexOn) {
 #ifdef SOUND_MODE
-      MSound(3, 60, 2000, 80, 2250, 100, 2500);
+      MSound(3, 60, 1661, 80, 2217, 100, 2794);
 #endif
     }
 
@@ -380,7 +380,7 @@ void loop() {
     ServoDriverUpdate();
     ServoDriverCommit();
 #ifdef SOUND_MODE
-    MSound(3, 100, 2500, 80, 2250, 60, 2000);
+    MSound(3, 100, 2794, 80, 2217, 60, 1661);
 #endif
     delay(600);
   }
