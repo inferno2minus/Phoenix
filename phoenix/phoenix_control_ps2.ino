@@ -76,7 +76,7 @@ void ControlInput() {
     if (HexOn) {
 
       //Translate mode
-      if (PS2.ButtonPressed(PSB_L1)) { //L1 Button Test
+      if (PS2.ButtonPressed(PSB_L1) && !TravelRequest) { //L1 Button Test
 #ifdef SOUND_MODE
         MSound(1, 40, 2217);
 #endif
@@ -101,7 +101,7 @@ void ControlInput() {
       }
 
       //Rotate mode
-      if (PS2.ButtonPressed(PSB_L2)) { //L2 Button Test
+      if (PS2.ButtonPressed(PSB_L2) && !TravelRequest) { //L2 Button Test
 #ifdef SOUND_MODE
         MSound(1, 40, 2217);
 #endif
@@ -149,7 +149,7 @@ void ControlInput() {
       }
 
 #ifdef DEBUG_MODE
-      if (PS2.ButtonPressed(PSB_L3)) { //R3 Button Test
+      if (PS2.ButtonPressed(PSB_L3) && !TravelRequest) { //R3 Button Test
 #ifdef SOUND_MODE
         MSound(1, 40, 2217);
 #endif
@@ -159,7 +159,7 @@ void ControlInput() {
 
       //[Common functions]
       //Switch Balance mode on/off 
-      if (PS2.ButtonPressed(PSB_SQUARE)) { //Square Button Test
+      if (PS2.ButtonPressed(PSB_SQUARE) && !TravelRequest) { //Square Button Test
 #ifdef SOUND_MODE
         MSound(1, 40, 2217);
 #endif
@@ -247,7 +247,7 @@ void ControlInput() {
           }
           else {
 #ifdef SOUND_MODE
-            MSound(1, 80, 1661);
+            MSound(1, 80, 2794);
 #endif
             GaitType = 0;
           }
@@ -278,7 +278,7 @@ void ControlInput() {
         }
 
         //Double leg lift height
-        if (PS2.ButtonPressed(PSB_R1)) { //R1 Button Test
+        if (PS2.ButtonPressed(PSB_R1) && !TravelRequest) { //R1 Button Test
 #ifdef SOUND_MODE
           MSound(1, 40, 2217);
 #endif
@@ -298,7 +298,7 @@ void ControlInput() {
         }
 
         //Double Travel Length
-        if (PS2.ButtonPressed(PSB_R2)) { //R2 Button Test
+        if (PS2.ButtonPressed(PSB_R2) && !TravelRequest) { //R2 Button Test
 #ifdef SOUND_MODE
           MSound(1, 40, 2217);
 #endif
@@ -314,7 +314,7 @@ void ControlInput() {
         }
 
         //Switch between Walk method 1 and Walk method 2
-        if (PS2.ButtonPressed(PSB_R3)) { //R3 Button Test
+        if (PS2.ButtonPressed(PSB_R3) && !TravelRequest) { //R3 Button Test
 #ifdef SOUND_MODE
           MSound(1, 40, 2217);
 #endif

@@ -13,17 +13,17 @@
 #include "phoenix_cfg.h"
 
 //[CONSTANTS]
-#define c1DEC              10
-#define c2DEC              100
-#define c4DEC              10000
-#define c6DEC              1000000
-
 #define cRR                0
 #define cRM                1
 #define cRF                2
 #define cLR                3
 #define cLM                4
 #define cLF                5
+
+#define c1DEC              10
+#define c2DEC              100
+#define c4DEC              10000
+#define c6DEC              1000000
 
 #define cPWMDiv            991
 #define cPFCons            592
@@ -844,7 +844,7 @@ void ServoDriverUpdate() {
       if (LegIndex != 5) {
         DBGSerial.print(" | ");
       }
-      if (LegIndex == 5) {
+      else {
         DBGSerial.println();
       }
     }
@@ -876,4 +876,3 @@ void SSCWrite(byte a, byte b, byte c) {
   Array[2] = c;
   SSCSerial.write(Array, 3);
 }
-
