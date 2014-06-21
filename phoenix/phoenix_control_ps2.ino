@@ -1,7 +1,7 @@
 /**
  * Project Lynxmotion Phoenix
  * Description: Phoenix control file
- * Version: v1.0
+ * Version: v2.0
  * Programmer: Jeroen Janssen (aka Xan)
  * Porting: Kompanets Konstantin (aka I2M)
  *
@@ -19,7 +19,7 @@
 
 #define cGaitsNumber     6
 #define cMaxPS2Error     5 //How many times through the loop will we go before shutting off robot?
-#define cMaxBodyY        100
+#define cMaxBodyPosY     100
 
 //[VARIABLES]
 PS2X    PS2;
@@ -61,7 +61,7 @@ void ControlInput() {
     PS2ErrorCount = 0; //Clear out error count...
 
     //Switch bot on/off
-    if (PS2.ButtonPressed(PSB_START)) { //Start Button Test
+    if (PS2.ButtonPressed(PSB_START) && !TravelRequest) { //Start Button Test
       if (HexOn) {
         PS2TurnRobotOff(); //Turn off
       }
@@ -189,7 +189,7 @@ void ControlInput() {
       }
 
       if (PS2.ButtonPressed(PSB_PAD_UP)) { //D-Up Button Test
-        if (BodyYOffset < cMaxBodyY) {
+        if (BodyYOffset < cMaxBodyPosY) {
           BodyYOffset += 10;
 #ifdef DEBUG_MODE
           DBGSerial.print("BodyYOffset: ");
@@ -206,6 +206,20 @@ void ControlInput() {
           DBGSerial.println(BodyYOffset, DEC);
 #endif
         }
+      }
+
+      if (PS2.ButtonPressed(PSB_CROSS)) { //Cross Button Test
+        if (SpeedControl > 0) {
+          Prev_SpeedControl = SpeedControl;
+          SpeedControl = 0;
+        }
+        else {
+          SpeedControl = Prev_SpeedControl;
+        }
+#ifdef DEBUG_MODE
+        DBGSerial.print("SpeedControl: ");
+        DBGSerial.println(SpeedControl, DEC);
+#endif
       }
 
       if (PS2.ButtonPressed(PSB_PAD_RIGHT)) { //D-Right Button Test
@@ -428,7 +442,7 @@ void ControlInput() {
     }
 
     //Calculate BodyPosY
-    BodyPosY = max(BodyYOffset + BodyYShift, 0);
+    BodyPosY = min(max(BodyYOffset + BodyYShift, 0), cMaxBodyPosY);
   }
   else if (PS2ErrorCount < cMaxPS2Error) {
     PS2ErrorCount++;

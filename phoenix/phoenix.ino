@@ -135,6 +135,7 @@ byte     InputTimeDelay;     //Delay that depends on the input to get the "sneak
 long     lTimerEnd;          //End time of the calculation cycles
 long     lTimerStart;        //Start time of the calculation cycles
 word     Prev_SSCTime;       //Previous time for the servo updates
+word     Prev_SpeedControl;
 word     SpeedControl;       //Adjustable Delay
 word     SSCTime;            //Time for servo updates
 
@@ -425,7 +426,6 @@ void SingleLegControl() {
       }
     }
     else if (!SLHold) {
-      //TODO: LegPosY[SelectedLeg] = LegPosY[SelectedLeg] + SLLegY;
       LegPosY[SelectedLeg] = (short)pgm_read_word(&cInitPosY[SelectedLeg]) + SLLegY; //Using DIY remote Zenta prefer it this way
       LegPosX[SelectedLeg] = (short)pgm_read_word(&cInitPosX[SelectedLeg]) + SLLegX;
       LegPosZ[SelectedLeg] = (short)pgm_read_word(&cInitPosZ[SelectedLeg]) + SLLegZ;
