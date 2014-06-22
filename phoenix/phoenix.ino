@@ -234,7 +234,7 @@ void setup() {
 
   //Gait
   GaitType = 0;
-  BalanceMode = 0;
+  BalanceMode = false;
   LegLiftHeight = 50;
   GaitStep = 1;
   GaitSelect();
@@ -244,7 +244,7 @@ void setup() {
 
   //SSC
   SSCTime = 150;
-  HexOn = 0;
+  HexOn = false;
 }
 
 //Main
@@ -394,10 +394,10 @@ void loop() {
 
   //Store previous HexOn State
   if (HexOn) {
-    Prev_HexOn = 1;
+    Prev_HexOn = true;
   }
   else {
-    Prev_HexOn = 0;
+    Prev_HexOn = false;
   }
 }
 
@@ -549,10 +549,10 @@ void GaitSeq() {
   }
 
   //Calculate Gait sequence
-  LastLeg = 0;
+  LastLeg = false;
   for (LegIndex = 0; LegIndex <= 5; LegIndex++) {
     if (LegIndex == 5) {
-      LastLeg = 1;
+      LastLeg = true;
     }
     Gait(LegIndex);
   }
@@ -717,10 +717,10 @@ long GetACos(short Cos) {
   //Check for negative value
   if (Cos < 0) {
     Cos = -Cos;
-    NegativeValue = 1;
+    NegativeValue = true;
   }
   else {
-    NegativeValue = 0;
+    NegativeValue = false;
   }
 
   //Limit Cos to his maximal value

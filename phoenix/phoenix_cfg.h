@@ -108,8 +108,8 @@ SoftwareSerial SSCSerial(cSSC_TX, cSSC_RX);
 
 //[BODY DIMENSIONS]
 #define cCoxaLength        29  //Length of the Coxa [mm]
-#define cFemurLength       85  //Length of the Femur [mm]
-#define cTibiaLength       125 //Length of the Tibia [mm]
+#define cFemurLength       83  //Length of the Femur [mm]
+#define cTibiaLength       106 //Length of the Tibia [mm]
 
 #define cRRCoxaAngle      -600 //Default Coxa setup angle, decimals = 1
 #define cRMCoxaAngle       0   //Default Coxa setup angle, decimals = 1

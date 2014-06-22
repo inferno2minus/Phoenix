@@ -66,7 +66,7 @@ void ControlInput() {
         PS2TurnRobotOff(); //Turn off
       }
       else {
-        HexOn = 1; //Turn on
+        HexOn = true; //Turn on
 #ifdef DEBUG_MODE
         DBGSerial.println("Power: Turn on");
 #endif
@@ -472,5 +472,5 @@ void PS2TurnRobotOff() {
   BodyYOffset = 0;
   BodyYShift = 0;
   SelectedLeg = 255;
-  HexOn = 0;
+  HexOn = false;
 }
