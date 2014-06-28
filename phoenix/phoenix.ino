@@ -132,7 +132,6 @@ word     ABSAngleDeg;        //Absolute value of the Angle in Degrees, decimals 
 //[TIMING]
 byte     CycleTime;          //Total Cycle time
 byte     InputTimeDelay;     //Delay that depends on the input to get the "sneaking" effect
-long     lTimerEnd;          //End time of the calculation cycles
 long     lTimerStart;        //Start time of the calculation cycles
 word     Prev_SSCTime;       //Previous time for the servo updates
 word     Prev_SpeedControl;
@@ -355,8 +354,7 @@ void loop() {
       Walking = !(ExtraCycle == 0);
 
       //Get endtime and calculate wait time
-      lTimerEnd = millis();
-      CycleTime = (lTimerEnd - lTimerStart);
+      CycleTime = (millis() - lTimerStart);
 
 #ifdef DEBUG_MODE
       if (Walking && !Prev_Walking) {
@@ -458,6 +456,7 @@ void GaitSelect() {
     GaitLegNr[cRM] = 11;
 
     NrLiftedPos = 3;
+    LiftDivFactor = 2;
     HalfLiftHeight = 3;
     TLDivFactor = 8;
     StepsInGait = 12;
@@ -472,6 +471,7 @@ void GaitSelect() {
     GaitLegNr[cRM] = 4;
 
     NrLiftedPos = 2;
+    LiftDivFactor = 2;
     HalfLiftHeight = 1;
     TLDivFactor = 4;
     StepsInGait = 6;
@@ -486,6 +486,7 @@ void GaitSelect() {
     GaitLegNr[cRM] = 5;
 
     NrLiftedPos = 3;
+    LiftDivFactor = 2;
     HalfLiftHeight = 3;
     TLDivFactor = 4;
     StepsInGait = 8;
@@ -500,6 +501,7 @@ void GaitSelect() {
     GaitLegNr[cRM] = 10;
 
     NrLiftedPos = 3;
+    LiftDivFactor = 2;
     HalfLiftHeight = 3;
     TLDivFactor = 8;
     StepsInGait = 12;
@@ -514,6 +516,7 @@ void GaitSelect() {
     GaitLegNr[cRM] = 13;
 
     NrLiftedPos = 5;
+    LiftDivFactor = 4;
     HalfLiftHeight = 1;
     TLDivFactor = 10;
     StepsInGait = 16;
@@ -528,6 +531,7 @@ void GaitSelect() {
     GaitLegNr[cRM] = 17;
 
     NrLiftedPos = 3;
+    LiftDivFactor = 2;
     HalfLiftHeight = 3;
     TLDivFactor = 20;
     StepsInGait = 24;
@@ -540,13 +544,6 @@ void GaitSelect() {
 void GaitSeq() {
   //Check IF the Gait is in motion
   TravelRequest = (abs(TravelLengthX) > cTravelDeadZone) || (abs(TravelLengthZ) > cTravelDeadZone) || (abs(TravelLengthY) > cTravelDeadZone) || Walking;
-
-  if (NrLiftedPos == 5) {
-    LiftDivFactor = 4;
-  }
-  else {
-    LiftDivFactor = 2;
-  }
 
   //Calculate Gait sequence
   LastLeg = false;
@@ -578,7 +575,7 @@ void Gait(byte LegIndex) {
   }
 
   //Optional Half height Rear (2, 3, 5 lifted positions)
-  else if (((NrLiftedPos == 2 && GaitStep==GaitLegNr[LegIndex]) || (NrLiftedPos >= 3 &&
+  else if (((NrLiftedPos == 2 && GaitStep == GaitLegNr[LegIndex]) || (NrLiftedPos >= 3 &&
     (GaitStep == GaitLegNr[LegIndex] - 1 || GaitStep == GaitLegNr[LegIndex] + (StepsInGait - 1)))) && TravelRequest) {
     GaitPosX[LegIndex] = -TravelLengthX / LiftDivFactor;
     GaitPosY[LegIndex] = -3 * LegLiftHeight / (3 + HalfLiftHeight); //Easier to shift between div factor: /1 (3/3), /2 (3/6) and 3/4
