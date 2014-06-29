@@ -170,7 +170,6 @@ short    SLLegY;
 short    SLLegZ;
 
 //[GAIT]
-bool     LastLeg;            //TRUE when the current leg is the last leg of the sequence
 bool     TravelRequest;      //Temp to check if the gait is in motion
 bool     Walking;            //True if the robot are walking
 byte     ExtraCycle;         //Forcing some extra timed cycles for avoiding "end of gait bug"
@@ -546,12 +545,14 @@ void GaitSeq() {
   TravelRequest = (abs(TravelLengthX) > cTravelDeadZone) || (abs(TravelLengthZ) > cTravelDeadZone) || (abs(TravelLengthY) > cTravelDeadZone) || Walking;
 
   //Calculate Gait sequence
-  LastLeg = false;
   for (LegIndex = 0; LegIndex <= 5; LegIndex++) {
-    if (LegIndex == 5) {
-      LastLeg = true;
-    }
     Gait(LegIndex);
+  }
+
+  //Advance to the next step
+  GaitStep++;
+  if (GaitStep > StepsInGait) {
+    GaitStep = 1;
   }
 }
 
@@ -624,14 +625,6 @@ void Gait(byte LegIndex) {
     GaitPosY[LegIndex] = 0;
     GaitPosZ[LegIndex] = GaitPosZ[LegIndex] - (TravelLengthZ / TLDivFactor);
     GaitRotY[LegIndex] = GaitRotY[LegIndex] - (TravelLengthY / TLDivFactor);
-  }
-
-  //Advance to the next step
-  if (LastLeg) { //The last leg in this step
-    GaitStep++;
-    if (GaitStep > StepsInGait) {
-      GaitStep = 1;
-    }
   }
 }
 
