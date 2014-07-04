@@ -220,16 +220,6 @@ void setup() {
   SelectedLeg = 255; //No Leg selected
   Prev_SelectedLeg = 255;
 
-  //Body Positions
-  BodyPosX = 0;
-  BodyPosY = 0;
-  BodyPosZ = 0;
-
-  //Body Rotations
-  BodyRotX = 0;
-  BodyRotY = 0;
-  BodyRotZ = 0;
-
   //Gait
   GaitType = 0;
   BalanceMode = false;
@@ -239,10 +229,6 @@ void setup() {
 
   //Initialize Controller
   InitController();
-
-  //SSC
-  SSCTime = 150;
-  HexOn = false;
 }
 
 //Main
@@ -341,8 +327,8 @@ void loop() {
     //Finding any the biggest value for GaitPos/Rot
     for (LegIndex = 0; LegIndex <= 5; LegIndex++) {
       if ((GaitPosX[LegIndex] > 2) || (GaitPosX[LegIndex] < -2) ||
-        (GaitPosZ[LegIndex] > 2) || (GaitPosZ[LegIndex] < -2) ||
-        (GaitRotY[LegIndex] > 2) || (GaitRotY[LegIndex] < -2)) {
+        (GaitRotY[LegIndex] > 2) || (GaitRotY[LegIndex] < -2) ||
+        (GaitPosZ[LegIndex] > 2) || (GaitPosZ[LegIndex] < -2)) {
         ExtraCycle = NrLiftedPos + 1; //For making sure that we are using timed move until all legs are down
         break;
       }
@@ -423,8 +409,8 @@ void SingleLegControl() {
       }
     }
     else if (!SLHold) {
-      LegPosY[SelectedLeg] = (short)pgm_read_word(&cInitPosY[SelectedLeg]) + SLLegY; //Using DIY remote Zenta prefer it this way
       LegPosX[SelectedLeg] = (short)pgm_read_word(&cInitPosX[SelectedLeg]) + SLLegX;
+      LegPosY[SelectedLeg] = (short)pgm_read_word(&cInitPosY[SelectedLeg]) + SLLegY;
       LegPosZ[SelectedLeg] = (short)pgm_read_word(&cInitPosZ[SelectedLeg]) + SLLegZ;
     }
   }

@@ -39,10 +39,6 @@ extern void MSound(byte cNotes, ...);
 void InitController() {
   PS2.config_gamepad(cPS2_CLK, cPS2_CMD, cPS2_SEL, cPS2_DAT);
 
-  PS2ErrorCount = 0;
-  BodyYOffset = 0;
-  BodyYShift = 0;
-
   ControlMode = WALKMODE;
   DoubleHeightOn = false;
   DoubleTravelOn = false;
