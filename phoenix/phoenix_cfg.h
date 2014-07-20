@@ -75,55 +75,55 @@ SoftwareSerial SSCSerial(SSC_TX, SSC_RX);
 #define LFTibiaPin         26 //Front Left leg knee
 
 //[MIN/MAX ANGLES]
-#define RRCoxaMin         -260 //Mechanical limits of the Right Rear leg, decimals = 1
-#define RRCoxaMax          740
-#define RRFemurMin        -1010
-#define RRFemurMax         950
-#define RRTibiaMin        -1060
-#define RRTibiaMax         770
+#define RRCoxaMin         -26 //Mechanical limits of the Right Rear leg
+#define RRCoxaMax          74
+#define RRFemurMin        -101
+#define RRFemurMax         95
+#define RRTibiaMin        -106
+#define RRTibiaMax         77
 
-#define RMCoxaMin         -530 //Mechanical limits of the Right Middle leg, decimals = 1
-#define RMCoxaMax          530
-#define RMFemurMin        -1010
-#define RMFemurMax         950
-#define RMTibiaMin        -1060
-#define RMTibiaMax         770
+#define RMCoxaMin         -53 //Mechanical limits of the Right Middle leg
+#define RMCoxaMax          53
+#define RMFemurMin        -101
+#define RMFemurMax         95
+#define RMTibiaMin        -106
+#define RMTibiaMax         77
 
-#define RFCoxaMin         -580 //Mechanical limits of the Right Front leg, decimals = 1
-#define RFCoxaMax          740
-#define RFFemurMin        -1010
-#define RFFemurMax         950
-#define RFTibiaMin        -1060
-#define RFTibiaMax         770
+#define RFCoxaMin         -58 //Mechanical limits of the Right Front leg
+#define RFCoxaMax          74
+#define RFFemurMin        -101
+#define RFFemurMax         95
+#define RFTibiaMin        -106
+#define RFTibiaMax         77
 
-#define LRCoxaMin         -740 //Mechanical limits of the Left Rear leg, decimals = 1
-#define LRCoxaMax          260
-#define LRFemurMin        -950
-#define LRFemurMax         1010
-#define LRTibiaMin        -770
-#define LRTibiaMax         1060
+#define LRCoxaMin         -74 //Mechanical limits of the Left Rear leg
+#define LRCoxaMax          26
+#define LRFemurMin        -95
+#define LRFemurMax         101
+#define LRTibiaMin        -77
+#define LRTibiaMax         106
 
-#define LMCoxaMin         -530 //Mechanical limits of the Left Middle leg, decimals = 1
-#define LMCoxaMax          530
-#define LMFemurMin        -950
-#define LMFemurMax         1010
-#define LMTibiaMin        -770
-#define LMTibiaMax         1060
+#define LMCoxaMin         -53 //Mechanical limits of the Left Middle leg
+#define LMCoxaMax          53
+#define LMFemurMin        -95
+#define LMFemurMax         101
+#define LMTibiaMin        -77
+#define LMTibiaMax         106
 
-#define LFCoxaMin         -740 //Mechanical limits of the Left Front leg, decimals = 1
-#define LFCoxaMax          580
-#define LFFemurMin        -950
-#define LFFemurMax         1010
-#define LFTibiaMin        -770
-#define LFTibiaMax         1060
+#define LFCoxaMin         -74 //Mechanical limits of the Left Front leg
+#define LFCoxaMax          58
+#define LFFemurMin        -95
+#define LFFemurMax         101
+#define LFTibiaMin        -77
+#define LFTibiaMax         106
 
 //[COXA ANGLES]
-#define RRLegAngle        -600 //Default Coxa setup angle, decimals = 1
+#define RRLegAngle        -60 //Default Coxa setup angle
 #define RMLegAngle         0
-#define RFLegAngle         600
-#define LRLegAngle        -600
+#define RFLegAngle         60
+#define LRLegAngle        -60
 #define LMLegAngle         0
-#define LFLegAngle         600
+#define LFLegAngle         60
 
 //[BODY DIMENSIONS]
 #define CoxaLength         29  //Length of the coxa

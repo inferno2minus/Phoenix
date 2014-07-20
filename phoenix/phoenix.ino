@@ -12,40 +12,6 @@
 #include <SoftwareSerial.h>
 #include "phoenix_cfg.h"
 
-//[CONSTANTS]
-#define DEC1               10
-#define DEC2               100
-#define DEC4               10000
-#define DEC6               1000000
-
-//[TABLES]
-static const byte ACosTable[] PROGMEM = {
-  255,254,252,251,250,249,247,246,245,243,242,241,240,238,237,236,234,233,232,231,229,
-  228,227,225,224,223,221,220,219,217,216,215,214,212,211,210,208,207,206,204,203,201,
-  200,199,197,196,195,193,192,190,189,188,186,185,183,182,181,179,178,176,175,173,172,
-  170,169,167,166,164,163,161,160,158,157,155,154,152,150,149,147,146,144,142,141,139,
-  137,135,134,132,130,128,127,125,123,121,119,117,115,113,111,109,107,105,103,101,98,
-  96,94,92,89,87,84,81,79,76,73,73,73,72,72,72,71,71,71,70,70,70,70,69,69,69,68,68,68,
-  67,67,67,66,66,66,65,65,65,64,64,64,63,63,63,62,62,62,61,61,61,60,60,59,59,59,58,58,
-  58,57,57,57,56,56,55,55,55,54,54,53,53,53,52,52,51,51,51,50,50,49,49,48,48,47,47,47,
-  46,46,45,45,44,44,43,43,42,42,41,41,40,40,39,39,38,37,37,36,36,35,34,34,33,33,32,31,
-  31,30,29,28,28,27,26,25,24,23,23,23,23,22,22,22,22,21,21,21,21,20,20,20,19,19,19,19,
-  18,18,18,17,17,17,17,16,16,16,15,15,15,14,14,13,13,13,12,12,11,11,10,10,9,9,8,7,6,6,
-  5,3,0 };
-
-static const word SinTable[] PROGMEM = {
-  0,87,174,261,348,436,523,610,697,784,871,958,1045,1132,1218,1305,1391,1478,1564,1650,
-  1736,1822,1908,1993,2079,2164,2249,2334,2419,2503,2588,2672,2756,2840,2923,3007,3090,
-  3173,3255,3338,3420,3502,3583,3665,3746,3826,3907,3987,4067,4146,4226,4305,4383,4461,
-  4539,4617,4694,4771,4848,4924,4999,5075,5150,5224,5299,5372,5446,5519,5591,5664,5735,
-  5807,5877,5948,6018,6087,6156,6225,6293,6360,6427,6494,6560,6626,6691,6755,6819,6883,
-  6946,7009,7071,7132,7193,7253,7313,7372,7431,7489,7547,7604,7660,7716,7771,7826,7880,
-  7933,7986,8038,8090,8141,8191,8241,8290,8338,8386,8433,8480,8526,8571,8616,8660,8703,
-  8746,8788,8829,8870,8910,8949,8987,9025,9063,9099,9135,9170,9205,9238,9271,9304,9335,
-  9366,9396,9426,9455,9483,9510,9537,9563,9588,9612,9636,9659,9681,9702,9723,9743,9762,
-  9781,9799,9816,9832,9848,9862,9876,9890,9902,9914,9925,9935,9945,9953,9961,9969,9975,
-  9981,9986,9990,9993,9996,9998,9999,10000 };
-
 //Build tables for leg configuration like I/O and Min/Max values to easy access values using a for loop
 //Constants are still defined as single values in the cfg file to make it easy to read/configure
 
@@ -75,39 +41,38 @@ const short InitPosY[] PROGMEM = { RRInitPosY, RMInitPosY, RFInitPosY, LRInitPos
 const short InitPosZ[] PROGMEM = { RRInitPosZ, RMInitPosZ, RFInitPosZ, LRInitPosZ, LMInitPosZ, LFInitPosZ };
 
 //[ANGLES]
-short    CoxaAngle[6];       //Actual angle of the horizontal hip, decimals = 1
-short    FemurAngle[6];      //Actual angle of the vertical hip, decimals = 1
-short    TibiaAngle[6];      //Actual angle of the knee, decimals = 1
+float    CoxaAngle[6];       //Actual angle of the horizontal hip
+float    FemurAngle[6];      //Actual angle of the vertical hip
+float    TibiaAngle[6];      //Actual angle of the knee
 
 //[VARIABLES]
 bool     NegativeValue;      //If the value is negative
 byte     LegIndex;           //Index used for leg index number
-long     AngleRad;           //Output angle in radials, decimals = 4
-word     ABSAngleDeg;        //Absolute value of the angle in degrees, decimals = 1
-long     IKA1;               //Angle of the line S>W with respect to the ground in radians, decimals = 4
-long     IKA2;               //Angle of the line S>W with respect to the femur in radians, decimals = 4
-long     IKSW;               //Length between shoulder and wrist, decimals = 2
-short    BodyFKPosX;         //Output position X of feet with rotation
-short    BodyFKPosY;         //Output position Y of feet with rotation
-short    BodyFKPosZ;         //Output position Z of feet with rotation
-short    BodyPosX;           //Global input for the position of the body
-short    BodyPosY;
-short    BodyPosZ;
-short    BodyRotX;           //Global input pitch of the body
-short    BodyRotY;           //Global input rotation of the body
-short    BodyRotZ;           //Global input roll of the body
-short    Cos;                //Output cosinus of the given angle, decimals = 4
-short    CosA;               //Cos buffer for BodyRotX calculations
-short    CosB;               //Cos buffer for BodyRotX calculations
-short    CosG;               //Cos buffer for BodyRotZ calculations
-short    PosXZ;              //Diagonal direction from input X and Z
-short    Sin;                //Output sinus of the given angle, decimals = 4
-short    SinA;               //Sin buffer for BodyRotX calculations
-short    SinB;               //Sin buffer for BodyRotX calculations
-short    SinG;               //Sin buffer for BodyRotZ calculations
-short    TotalX;             //Total X distance between the center of the body and the feet
-short    TotalY;             //Total Y distance between the center of the body and the feet
-short    TotalZ;             //Total Z distance between the center of the body and the feet
+float    ABSAngleDeg;        //Absolute value of the angle in degrees
+float    IKA1;               //Angle of the line S>W with respect to the ground in radians
+float    IKA2;               //Angle of the line S>W with respect to the femur in radians
+float    IKSW;               //Length between shoulder and wrist
+float    BodyFKPosX;         //Output position X of feet with rotation
+float    BodyFKPosY;         //Output position Y of feet with rotation
+float    BodyFKPosZ;         //Output position Z of feet with rotation
+float    BodyPosX;           //Global input for the position of the body
+float    BodyPosY;
+float    BodyPosZ;
+float    BodyRotX;           //Global input pitch of the body
+float    BodyRotY;           //Global input rotation of the body
+float    BodyRotZ;           //Global input roll of the body
+float    Cos;                //Output cosinus of the given angle
+float    CosA;               //Cos buffer for BodyRotX calculations
+float    CosB;               //Cos buffer for BodyRotX calculations
+float    CosG;               //Cos buffer for BodyRotZ calculations
+float    PosXZ;              //Diagonal direction from input X and Z
+float    Sin;                //Output sinus of the given angle
+float    SinA;               //Sin buffer for BodyRotX calculations
+float    SinB;               //Sin buffer for BodyRotX calculations
+float    SinG;               //Sin buffer for BodyRotZ calculations
+float    TotalX;             //Total X distance between the center of the body and the feet
+float    TotalY;             //Total Y distance between the center of the body and the feet
+float    TotalZ;             //Total Z distance between the center of the body and the feet
 
 //[TIMING]
 byte     CycleTime;          //Total cycle time
@@ -130,24 +95,24 @@ word     TibiaPWM;
 
 //[BALANCE]
 bool     BalanceMode;
-short    TotalTransX;
-short    TotalTransZ;
-short    TotalTransY;
-short    TotalBalY;
-short    TotalBalX;
-short    TotalBalZ;
+float    TotalTransX;
+float    TotalTransZ;
+float    TotalTransY;
+float    TotalBalY;
+float    TotalBalX;
+float    TotalBalZ;
 
 //[SINGLE LEG CONTROL]
 bool     AllDown;
 bool     SLHold;             //Single leg control mode
 byte     Prev_SelectedLeg;
 byte     SelectedLeg;
-short    LegPosX[6];         //Actual X position of the leg
-short    LegPosY[6];         //Actual Y position of the leg
-short    LegPosZ[6];         //Actual Z position of the leg
-short    SLLegX;
-short    SLLegY;
-short    SLLegZ;
+float    LegPosX[6];         //Actual X position of the leg
+float    LegPosY[6];         //Actual Y position of the leg
+float    LegPosZ[6];         //Actual Z position of the leg
+float    SLLegX;
+float    SLLegY;
+float    SLLegZ;
 
 //[GAIT]
 bool     TravelRequest;      //Temp to check if the gait is in motion
@@ -163,13 +128,13 @@ byte     NomGaitSpeed;       //Nominal speed of the gait
 byte     NrLiftedPos;        //Number of positions that a single leg is lifted (1-3)
 byte     StepsInGait;        //Number of steps in gait
 byte     TLDivFactor;        //Number of steps that a leg is on the floor while walking
-short    GaitPosX[6];        //Array containing relative X position corresponding to the gait
-short    GaitPosY[6];        //Array containing relative Y position corresponding to the gait
-short    GaitPosZ[6];        //Array containing relative Z position corresponding to the gait
-short    GaitRotY[6];        //Array containing relative Y rotation corresponding to the gait  
-short    TravelLengthX;      //Current travel length X
-short    TravelLengthZ;      //Current travel length Z
-short    TravelLengthY;      //Current travel rotation Y
+float    GaitPosX[6];        //Array containing relative X position corresponding to the gait
+float    GaitPosY[6];        //Array containing relative Y position corresponding to the gait
+float    GaitPosZ[6];        //Array containing relative Z position corresponding to the gait
+float    GaitRotY[6];        //Array containing relative Y rotation corresponding to the gait  
+float    TravelLengthX;      //Current travel length X
+float    TravelLengthZ;      //Current travel length Z
+float    TravelLengthY;      //Current travel rotation Y
 
 #ifdef DEBUG_MODE
 bool     Prev_Walking;
@@ -595,7 +560,7 @@ void Gait(byte LegIndex) {
 }
 
 //Balance calculation one leg
-void BalCalcOneLeg (short PosX, short PosY, short PosZ, byte LegIndex) {
+void BalCalcOneLeg (float PosX, float PosY, float PosZ, byte LegIndex) {
   //Calculating totals from center of the body to the feet
   TotalX = (short)pgm_read_word(&OffsetX[LegIndex]) + PosX;
   TotalY = 150 + PosY; //Using the value 150 to lower the center point of rotation BodyPosY
@@ -605,9 +570,9 @@ void BalCalcOneLeg (short PosX, short PosY, short PosZ, byte LegIndex) {
   TotalTransY += PosY;
   TotalTransZ += TotalZ;
 
-  TotalBalX += GetATan2(TotalZ, TotalY) * 1800 / 31415 - 900; //Rotate balance circle 90 deg
-  TotalBalY += GetATan2(TotalX, TotalZ) * 1800 / 31415;
-  TotalBalZ += GetATan2(TotalX, TotalY) * 1800 / 31415 - 900; //Rotate balance circle 90 deg
+  TotalBalX += atan2(TotalY, TotalZ) * 180 / PI - 90; //Rotate balance circle 90 deg
+  TotalBalY += atan2(TotalZ, TotalX) * 180 / PI;
+  TotalBalZ += atan2(TotalY, TotalX) * 180 / PI - 90; //Rotate balance circle 90 deg
 }
 
 //Balance body
@@ -617,18 +582,18 @@ void BalanceBody() {
   TotalTransZ = TotalTransZ / 6;
 
   if (TotalBalY > 0) { //Rotate balance circle by +/- 180 deg
-    TotalBalY -= 1800;
+    TotalBalY -= 180;
   }
   else {
-    TotalBalY += 1800;
+    TotalBalY += 180;
   }
 
-  if (TotalBalZ < -1800) { //Compensate for extreme balance positions that causes overflow
-    TotalBalZ += 3600;
+  if (TotalBalZ < -180) { //Compensate for extreme balance positions that causes overflow
+    TotalBalZ += 360;
   }
 
-  if (TotalBalX < -1800) { //Compensate for extreme balance positions that causes overflow
-    TotalBalX += 3600;
+  if (TotalBalX < -180) { //Compensate for extreme balance positions that causes overflow
+    TotalBalX += 360;
   }
 
   //Balance rotation
@@ -638,77 +603,32 @@ void BalanceBody() {
 }
 
 //Get the sinus and cosinus from the angle +/- multiple circles
-void GetSinCos(short AngleDeg) {
+void GetSinCos(float AngleDeg) {
   //Get the absolute value of AngleDeg
   ABSAngleDeg = abs(AngleDeg);
 
   //Shift rotation to a full circle of 360 deg -> AngleDeg // 360
   if (AngleDeg < 0) { //Negative values
-    AngleDeg = 3600 - (ABSAngleDeg - (3600 * (ABSAngleDeg / 3600)));
+    AngleDeg = 360 - (ABSAngleDeg - (360 * ((int)ABSAngleDeg / 360)));
   }
   else { //Positive values
-    AngleDeg = ABSAngleDeg - (3600 * (ABSAngleDeg / 3600));
+    AngleDeg = ABSAngleDeg - (360 * ((int)ABSAngleDeg / 360));
   }
 
-  if (AngleDeg >= 0 && AngleDeg <= 900) { //0 to 90 deg
-    Sin = pgm_read_word(&SinTable[AngleDeg / 5]); //5 is the precision (0.5) of the table
-    Cos = pgm_read_word(&SinTable[(900 - AngleDeg) / 5]);
+  if (AngleDeg < 180) { //Angle between 0 and 180
+    AngleDeg = AngleDeg - 90; //Subtract 90 to shift range
+    Sin = cos(radians(AngleDeg));
+    Cos = -sin(radians(AngleDeg));
   }
-  else if (AngleDeg > 900 && AngleDeg <= 1800) { //90 to 180 deg
-    Sin = pgm_read_word(&SinTable[(900 - (AngleDeg - 900)) / 5]); //5 is the precision (0.5) of the table 
-    Cos = -pgm_read_word(&SinTable[(AngleDeg - 900) / 5]);
+  else { //Angle between 180 and 360
+    AngleDeg = AngleDeg - 270; // Subtract 270 to shift range
+    Sin = -cos(radians(AngleDeg));
+    Cos = sin(radians(AngleDeg));
   }
-  else if (AngleDeg > 1800 && AngleDeg <= 2700) { //180 to 270 deg
-    Sin = -pgm_read_word(&SinTable[(AngleDeg - 1800) / 5]); //5 is the precision (0.5) of the table
-    Cos = -pgm_read_word(&SinTable[(2700 - AngleDeg) / 5]);
-  }
-  else if(AngleDeg > 2700 && AngleDeg <= 3600) { //270 to 360 deg
-    Sin = -pgm_read_word(&SinTable[(3600 - AngleDeg) / 5]); //5 is the precision (0.5) of the table 
-    Cos = pgm_read_word(&SinTable[(AngleDeg - 2700) / 5]);
-  }
-}
-
-//Get the sinus and cosinus from the angle +/- multiple circles
-long GetACos(short Cos) {
-  //Check for negative value
-  if (Cos < 0) {
-    Cos = -Cos;
-    NegativeValue = true;
-  }
-  else {
-    NegativeValue = false;
-  }
-
-  //Limit Cos to his maximal value
-  Cos = min(Cos, DEC4);
-
-  if (Cos >= 0 && Cos < 9000) {
-    AngleRad = (byte)pgm_read_byte(&ACosTable[Cos / 79]); //79=table resolution (1/127)
-    AngleRad = (AngleRad * 616) / DEC1; //616=acos resolution (pi/2/255)
-  }
-  else if (Cos >= 9000 && Cos < 9900) {
-    AngleRad = (byte)pgm_read_byte(&ACosTable[(Cos - 9000) / 8 + 114]); //8=table resolution (0.1/127), 114 start address 2nd byte table range
-    AngleRad = (AngleRad * 616) / DEC1; //616=acos resolution (pi/2/255) 
-  }
-  else if (Cos >= 9900 && Cos <= 10000) {
-    AngleRad = (byte)pgm_read_byte(&ACosTable[(Cos - 9900) / 2 + 227]); //2=table resolution (0.01/64), 227 start address 3rd byte table range 
-    AngleRad = (AngleRad * 616) / DEC1; //616=acos resolution (pi/2/255) 
-  }
-
-  //Add negative sign
-  if (NegativeValue) {
-    AngleRad = 31416 - AngleRad;
-  }
-  return AngleRad;
-}
-
-//Simplified ArcTan2 function based on fixed point ArcCos
-long GetATan2 (long AtanX, long AtanY) {
-  return GetACos((AtanX * DEC6) / sqrt((pow(AtanX, 2) * DEC4) + (pow(AtanY, 2) * DEC4))) * (AtanY / abs(AtanY));
 }
 
 //Body forward kinematics
-void BodyFK (short PosX, short PosY, short PosZ, short RotY, byte LegIndex) {
+void BodyFK (float PosX, float PosY, float PosZ, float RotY, byte LegIndex) {
   //Calculating totals from center of the body to the feet 
   TotalX = (short)pgm_read_word(&OffsetX[LegIndex]) + PosX;
   TotalY = PosY;
@@ -719,48 +639,41 @@ void BodyFK (short PosX, short PosY, short PosZ, short RotY, byte LegIndex) {
   //Sinus Alfa = SinA, cosinus Alfa = cosA, and so on...
 
   //First calculate sinus and cosinus for each rotation
-  GetSinCos(BodyRotX + TotalBalX);
+  GetSinCos((BodyRotX + TotalBalX) / 10);
   SinG = Sin;
   CosG = Cos;
 
-  GetSinCos(BodyRotZ + TotalBalZ);
+  GetSinCos((BodyRotZ + TotalBalZ) / 10);
   SinB = Sin;
   CosB = Cos;
 
-  GetSinCos(BodyRotY + (RotY * DEC1) + TotalBalY);
+  GetSinCos((BodyRotY + (RotY * 10) + TotalBalY) / 10);
   SinA = Sin;
   CosA = Cos;
 
   //Calculation of rotation matrix
-  BodyFKPosX = ((long)TotalX * DEC2 - ((long)TotalX * DEC2 * CosA / DEC4 * CosB / DEC4 -
-    (long)TotalZ * DEC2 * CosB / DEC4 * SinA / DEC4 + (long)TotalY * DEC2 * SinB / DEC4)) / DEC2;
-
-  BodyFKPosY = ((long)TotalY * DEC2 - ((long)TotalX * DEC2 * SinA / DEC4 * SinG / DEC4 -
-    (long)TotalX * DEC2 * CosA / DEC4 * CosG / DEC4 * SinB / DEC4 + (long)TotalZ * DEC2 * CosA / DEC4 * SinG / DEC4 +
-    (long)TotalZ * DEC2 * CosG / DEC4 * SinA / DEC4 * SinB / DEC4 + (long)TotalY * DEC2 * CosB / DEC4 * CosG / DEC4)) / DEC2;
-
-  BodyFKPosZ = ((long)TotalZ * DEC2 - ((long)TotalX * DEC2 * CosG / DEC4 * SinA / DEC4 +
-    (long)TotalX * DEC2 * CosA / DEC4 * SinB / DEC4 * SinG / DEC4 + (long)TotalZ * DEC2 * CosA / DEC4 * CosG / DEC4 -
-    (long)TotalZ * DEC2 * SinA / DEC4 * SinB / DEC4 * SinG / DEC4 - (long)TotalY * DEC2 * CosB / DEC4 * SinG / DEC4)) / DEC2;
+  BodyFKPosX = TotalX - (TotalX * CosA * CosB - TotalZ * CosB * SinA + TotalY * SinB);
+  BodyFKPosY = TotalY - (TotalX * SinA * SinG - TotalX * CosA * CosG * SinB + TotalZ * CosA * SinG + TotalZ * CosG * SinA * SinB + TotalY * CosB * CosG);
+  BodyFKPosZ = TotalZ - (TotalX * CosG * SinA + TotalX * CosA * SinB * SinG + TotalZ * CosA * CosG - TotalZ * SinA * SinB * SinG - TotalY * CosB * SinG);
 }
 
 //Calculates the angles of the coxa, femur and tibia for the given position of the feet
-void LegIK (short PosX, short PosY, short PosZ, byte LegIndex) {
+void LegIK (float PosX, float PosY, float PosZ, byte LegIndex) {
   //Length between the Coxa and tars (foot)
-  PosXZ = sqrt((pow(PosX, 2) * DEC4) + (pow(PosZ, 2) * DEC4)) / DEC2;
+  PosXZ = sqrt(pow(PosX, 2) + pow(PosZ, 2));
 
   //Length between femur axis and tars
-  IKSW = sqrt((pow(PosY, 2) * DEC4) + (pow(PosXZ - CoxaLength, 2) * DEC4));
+  IKSW = sqrt(pow(PosXZ - CoxaLength, 2) + pow(PosY, 2));
 
   //Angle between SW line and the ground in radians
-  IKA1 = GetATan2(PosY, PosXZ - CoxaLength);
+  IKA1 = atan2(PosXZ - CoxaLength, PosY);
 
   //Angle of the line S>W with respect to the femur in radians
-  IKA2 = GetACos(((pow(FemurLength, 2) - pow(TibiaLength, 2)) * DEC4 + pow(IKSW, 2)) / (((2 * FemurLength) * DEC2 * IKSW) / DEC4));
+  IKA2 = acos((pow(FemurLength, 2) - pow(TibiaLength, 2) + pow(IKSW, 2)) / (2 * FemurLength * IKSW));
 
-  CoxaAngle[LegIndex] = ((GetATan2(PosX, PosZ) * 180) / 3141) + (short)pgm_read_word(&LegAngle[LegIndex]);
-  FemurAngle[LegIndex] = -(IKA1 + IKA2) * 180 / 3141 + 900;
-  TibiaAngle[LegIndex] = -(900 - GetACos(((pow(FemurLength, 2) + pow(TibiaLength, 2)) * DEC4 - pow(IKSW, 2)) / (2 * FemurLength * TibiaLength)) * 180 / 3141);
+  CoxaAngle[LegIndex] = atan2(PosZ, PosX) * 180 / PI + (short)pgm_read_word(&LegAngle[LegIndex]);
+  FemurAngle[LegIndex] = -(IKA1 + IKA2) * 180 / PI + 90;
+  TibiaAngle[LegIndex] = -(90 - acos((pow(FemurLength, 2) + pow(TibiaLength, 2) - pow(IKSW, 2)) / (2 * FemurLength * TibiaLength)) * 180 / PI);
 }
 
 //Checks the mechanical limits of the servos
@@ -777,15 +690,15 @@ void ServoDriverUpdate() {
   for (LegIndex = 0; LegIndex <= 5; LegIndex++) {
     //Update right legs
     if (LegIndex <= 2) {
-      CoxaPWM = ((long)(-CoxaAngle[LegIndex] + 900)) * 1000 / 991 + 592;
-      FemurPWM = ((long)(-FemurAngle[LegIndex] + 900)) * 1000 / 991 + 592;
-      TibiaPWM = ((long)(-TibiaAngle[LegIndex] + 900)) * 1000 / 991 + 592;
+      CoxaPWM = (-CoxaAngle[LegIndex] + 90) / 0.0991 + 592;
+      FemurPWM = (-FemurAngle[LegIndex] + 90) / 0.0991 + 592;
+      TibiaPWM = (-TibiaAngle[LegIndex] + 90) / 0.0991 + 592;
     }
     else {
       //Update left legs
-      CoxaPWM = ((long)(CoxaAngle[LegIndex] + 900)) * 1000 / 991 + 592;
-      FemurPWM = ((long)(FemurAngle[LegIndex] + 900)) * 1000 / 991 + 592;
-      TibiaPWM = ((long)(TibiaAngle[LegIndex] + 900)) * 1000 / 991 + 592;
+      CoxaPWM = (CoxaAngle[LegIndex] + 90) / 0.0991 + 592;
+      FemurPWM = (FemurAngle[LegIndex] + 90) / 0.0991 + 592;
+      TibiaPWM = (TibiaAngle[LegIndex] + 90) / 0.0991 + 592;
     }
 
 #ifdef DEBUG_MODE
