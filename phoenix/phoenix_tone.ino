@@ -11,21 +11,18 @@
 #ifdef SOUND_MODE
 
 //Quick and dirty tone function to try to output a frequency to a speaker for some simple sounds
-void SoundNoTimer(unsigned long duration, unsigned int frequency) {
+void SoundNoTimer(unsigned int frequency, unsigned long duration) {
   volatile uint8_t *pin_port;
   volatile uint8_t pin_mask;
 
-  long toggle_count = 0;
-  long lusDelayPerHalfCycle;
-
   //Set the pinMode as OUTPUT
-  pinMode(cBUZZER, OUTPUT);
+  pinMode(BUZZER, OUTPUT);
 
-  pin_port = portOutputRegister(digitalPinToPort(cBUZZER));
-  pin_mask = digitalPinToBitMask(cBUZZER);
+  pin_port = portOutputRegister(digitalPinToPort(BUZZER));
+  pin_mask = digitalPinToBitMask(BUZZER);
 
-  toggle_count = 2 * frequency * duration / 1000;
-  lusDelayPerHalfCycle = 1000000L / (frequency * 2);
+  long toggle_count = 2 * frequency * duration / 1000;
+  long lusDelayPerHalfCycle = 1000000L / (frequency * 2);
 
   //if we are using an 8 bit timer, scan through prescaler to find the best fit
   while (toggle_count--) {
@@ -37,17 +34,17 @@ void SoundNoTimer(unsigned long duration, unsigned int frequency) {
   *pin_port &= ~(pin_mask); //Keep pin low after stop
 }
 
-void MSound(byte cNotes, ...) {
+void Sound(byte Notes, ...) {
   va_list ap;
-  unsigned int uDur;
-  unsigned int uFreq;
-  va_start(ap, cNotes);
+  unsigned int duration;
+  unsigned int frequency;
+  va_start(ap, Notes);
 
-  while (cNotes > 0) {
-    uDur = va_arg(ap, unsigned int);
-    uFreq = va_arg(ap, unsigned int);
-    SoundNoTimer(uDur, uFreq);
-    cNotes--;
+  while (Notes > 0) {
+    duration = va_arg(ap, unsigned int);
+    frequency = va_arg(ap, unsigned int);
+    SoundNoTimer(frequency, duration);
+    Notes--;
   }
   va_end(ap);
 }

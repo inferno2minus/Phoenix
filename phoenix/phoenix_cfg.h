@@ -16,150 +16,162 @@
 #define SOUND_MODE
 
 //[ARDUINO PIN NUMBERS]
-#define cPS2_DAT           6  //PS2 Controller DAT
-#define cPS2_CMD           7  //PS2 Controller CMD
-#define cPS2_SEL           8  //PS2 Controller SEL
-#define cPS2_CLK           9  //PS2 Controller CLK
-#define cSSC_TX            10 //(SSC32 TX -> Arduino RX)
-#define cSSC_RX            11 //(SSC32 RX <- Arduino TX)
-#define cBUZZER            12 //Buzzer module
+#define PS2_DAT            6  //PS2 controller DAT
+#define PS2_CMD            7  //PS2 controller CMD
+#define PS2_SEL            8  //PS2 controller SEL
+#define PS2_CLK            9  //PS2 controller CLK
+#define SSC_TX             10 //(SSC32 TX -> Arduino RX)
+#define SSC_RX             11 //(SSC32 RX <- Arduino TX)
+#define BUZZER             12 //Buzzer module
 
 //[SERIAL BAUD RATES]
-#define cDBG_BAUD          115200 //DEBUG BAUD rate
-#define cSSC_BAUD          115200 //SSC32 BAUD rate
+#define DBG_BAUD           115200 //Debug baud rate
+#define SSC_BAUD           115200 //SSC32 baud rate
 
 //[SERIAL CONNECTIONS]
 #define DBGSerial          Serial
 
 //Add support for running on non-mega Arduino boards as well
 #ifndef UBRR1H
-SoftwareSerial SSCSerial(cSSC_TX, cSSC_RX);
+SoftwareSerial SSCSerial(SSC_TX, SSC_RX);
 #else
 #define SSCSerial          Serial1
 #endif
 
+//[ANALOG INPUT]
+#define TravelDeadZone     4 //The deadzone for the analog input from the remote
+
+//[CONSTANTS LEGS]
+#define RR                 0
+#define RM                 1
+#define RF                 2
+#define LR                 3
+#define LM                 4
+#define LF                 5
+
 //[SSC PIN NUMBERS]
-#define cRRCoxaPin         0  //Rear Right leg Hip Horizontal
-#define cRRFemurPin        1  //Rear Right leg Hip Vertical
-#define cRRTibiaPin        2  //Rear Right leg Knee
+#define RRCoxaPin          0  //Rear Right leg hip horizontal
+#define RRFemurPin         1  //Rear Right leg hip vertical
+#define RRTibiaPin         2  //Rear Right leg knee
 
-#define cRMCoxaPin         4  //Middle Right leg Hip Horizontal
-#define cRMFemurPin        5  //Middle Right leg Hip Vertical
-#define cRMTibiaPin        6  //Middle Right leg Knee
+#define RMCoxaPin          4  //Middle Right leg hip horizontal
+#define RMFemurPin         5  //Middle Right leg hip vertical
+#define RMTibiaPin         6  //Middle Right leg knee
 
-#define cRFCoxaPin         8  //Front Right leg Hip Horizontal
-#define cRFFemurPin        9  //Front Right leg Hip Vertical
-#define cRFTibiaPin        10 //Front Right leg Knee
+#define RFCoxaPin          8  //Front Right leg hip horizontal
+#define RFFemurPin         9  //Front Right leg hip vertical
+#define RFTibiaPin         10 //Front Right leg knee
 
-#define cLRCoxaPin         16 //Rear Left leg Hip Horizontal
-#define cLRFemurPin        17 //Rear Left leg Hip Vertical
-#define cLRTibiaPin        18 //Rear Left leg Knee
+#define LRCoxaPin          16 //Rear Left leg hip horizontal
+#define LRFemurPin         17 //Rear Left leg hip vertical
+#define LRTibiaPin         18 //Rear Left leg knee
 
-#define cLMCoxaPin         20 //Middle Left leg Hip Horizontal
-#define cLMFemurPin        21 //Middle Left leg Hip Vertical
-#define cLMTibiaPin        22 //Middle Left leg Knee
+#define LMCoxaPin          20 //Middle Left leg hip horizontal
+#define LMFemurPin         21 //Middle Left leg hip vertical
+#define LMTibiaPin         22 //Middle Left leg knee
 
-#define cLFCoxaPin         24 //Front Left leg Hip Horizontal
-#define cLFFemurPin        25 //Front Left leg Hip Vertical
-#define cLFTibiaPin        26 //Front Left leg Knee
+#define LFCoxaPin          24 //Front Left leg hip horizontal
+#define LFFemurPin         25 //Front Left leg hip vertical
+#define LFTibiaPin         26 //Front Left leg knee
 
 //[MIN/MAX ANGLES]
-#define cRRCoxaMin        -260 //Mechanical limits of the Right Rear Leg, decimals = 1
-#define cRRCoxaMax         740
-#define cRRFemurMin       -1010
-#define cRRFemurMax        950
-#define cRRTibiaMin       -1060
-#define cRRTibiaMax        770
+#define RRCoxaMin         -260 //Mechanical limits of the Right Rear leg, decimals = 1
+#define RRCoxaMax          740
+#define RRFemurMin        -1010
+#define RRFemurMax         950
+#define RRTibiaMin        -1060
+#define RRTibiaMax         770
 
-#define cRMCoxaMin        -530 //Mechanical limits of the Right Middle Leg, decimals = 1
-#define cRMCoxaMax         530
-#define cRMFemurMin       -1010
-#define cRMFemurMax        950
-#define cRMTibiaMin       -1060
-#define cRMTibiaMax        770
+#define RMCoxaMin         -530 //Mechanical limits of the Right Middle leg, decimals = 1
+#define RMCoxaMax          530
+#define RMFemurMin        -1010
+#define RMFemurMax         950
+#define RMTibiaMin        -1060
+#define RMTibiaMax         770
 
-#define cRFCoxaMin        -580 //Mechanical limits of the Right Front Leg, decimals = 1
-#define cRFCoxaMax         740
-#define cRFFemurMin       -1010
-#define cRFFemurMax        950
-#define cRFTibiaMin       -1060
-#define cRFTibiaMax        770
+#define RFCoxaMin         -580 //Mechanical limits of the Right Front leg, decimals = 1
+#define RFCoxaMax          740
+#define RFFemurMin        -1010
+#define RFFemurMax         950
+#define RFTibiaMin        -1060
+#define RFTibiaMax         770
 
-#define cLRCoxaMin        -740 //Mechanical limits of the Left Rear Leg, decimals = 1
-#define cLRCoxaMax         260
-#define cLRFemurMin       -950
-#define cLRFemurMax        1010
-#define cLRTibiaMin       -770
-#define cLRTibiaMax        1060
+#define LRCoxaMin         -740 //Mechanical limits of the Left Rear leg, decimals = 1
+#define LRCoxaMax          260
+#define LRFemurMin        -950
+#define LRFemurMax         1010
+#define LRTibiaMin        -770
+#define LRTibiaMax         1060
 
-#define cLMCoxaMin        -530 //Mechanical limits of the Left Middle Leg, decimals = 1
-#define cLMCoxaMax         530
-#define cLMFemurMin       -950
-#define cLMFemurMax        1010
-#define cLMTibiaMin       -770
-#define cLMTibiaMax        1060
+#define LMCoxaMin         -530 //Mechanical limits of the Left Middle leg, decimals = 1
+#define LMCoxaMax          530
+#define LMFemurMin        -950
+#define LMFemurMax         1010
+#define LMTibiaMin        -770
+#define LMTibiaMax         1060
 
-#define cLFCoxaMin        -740 //Mechanical limits of the Left Front Leg, decimals = 1
-#define cLFCoxaMax         580
-#define cLFFemurMin       -950
-#define cLFFemurMax        1010
-#define cLFTibiaMin       -770
-#define cLFTibiaMax        1060
+#define LFCoxaMin         -740 //Mechanical limits of the Left Front leg, decimals = 1
+#define LFCoxaMax          580
+#define LFFemurMin        -950
+#define LFFemurMax         1010
+#define LFTibiaMin        -770
+#define LFTibiaMax         1060
+
+//[COXA ANGLES]
+#define RRLegAngle        -600 //Default Coxa setup angle, decimals = 1
+#define RMLegAngle         0
+#define RFLegAngle         600
+#define LRLegAngle        -600
+#define LMLegAngle         0
+#define LFLegAngle         600
 
 //[BODY DIMENSIONS]
-#define cCoxaLength        29  //Length of the Coxa [mm]
-#define cFemurLength       83  //Length of the Femur [mm]
-#define cTibiaLength       106 //Length of the Tibia [mm]
+#define CoxaLength         29  //Length of the coxa
+#define FemurLength        83  //Length of the femur
+#define TibiaLength        106 //Length of the tibia
 
-#define cRRCoxaAngle      -600 //Default Coxa setup angle, decimals = 1
-#define cRMCoxaAngle       0   //Default Coxa setup angle, decimals = 1
-#define cRFCoxaAngle       600 //Default Coxa setup angle, decimals = 1
-#define cLRCoxaAngle      -600 //Default Coxa setup angle, decimals = 1
-#define cLMCoxaAngle       0   //Default Coxa setup angle, decimals = 1
-#define cLFCoxaAngle       600 //Default Coxa setup angle, decimals = 1
+#define RROffsetX         -40  //Distance X from center of the body to the Right Rear coxa
+#define RROffsetZ          75  //Distance Z from center of the body to the Right Rear coxa
+#define RMOffsetX         -65  //Distance X from center of the body to the Right Middle coxa
+#define RMOffsetZ          0   //Distance Z from center of the body to the Right Middle coxa
+#define RFOffsetX         -40  //Distance X from center of the body to the Right Front coxa
+#define RFOffsetZ         -75  //Distance Z from center of the body to the Right Front coxa
 
-#define cRROffsetX        -40  //Distance X from center of the body to the Right Rear coxa
-#define cRROffsetZ         75  //Distance Z from center of the body to the Right Rear coxa
-#define cRMOffsetX        -65  //Distance X from center of the body to the Right Middle coxa
-#define cRMOffsetZ         0   //Distance Z from center of the body to the Right Middle coxa
-#define cRFOffsetX        -40  //Distance X from center of the body to the Right Front coxa
-#define cRFOffsetZ        -75  //Distance Z from center of the body to the Right Front coxa
-
-#define cLROffsetX         40  //Distance X from center of the body to the Left Rear coxa
-#define cLROffsetZ         75  //Distance Z from center of the body to the Left Rear coxa
-#define cLMOffsetX         65  //Distance X from center of the body to the Left Middle coxa
-#define cLMOffsetZ         0   //Distance Z from center of the body to the Left Middle coxa
-#define cLFOffsetX         40  //Distance X from center of the body to the Left Front coxa
-#define cLFOffsetZ        -75  //Distance Z from center of the body to the Left Front coxa
+#define LROffsetX          40  //Distance X from center of the body to the Left Rear coxa
+#define LROffsetZ          75  //Distance Z from center of the body to the Left Rear coxa
+#define LMOffsetX          65  //Distance X from center of the body to the Left Middle coxa
+#define LMOffsetZ          0   //Distance Z from center of the body to the Left Middle coxa
+#define LFOffsetX          40  //Distance X from center of the body to the Left Front coxa
+#define LFOffsetZ         -75  //Distance Z from center of the body to the Left Front coxa
 
 //[START POSITIONS FEET]
-#define cHexInitXZ         105
-#define cHexInitXZCos60    53
-#define cHexInitXZSin60    91
-#define cHexInitY          25
+#define InitXZ             105
+#define InitXZCos60        53
+#define InitXZSin60        91
+#define InitY              25
 
-#define cRRInitPosX        cHexInitXZCos60 //Start positions of the Right Rear leg
-#define cRRInitPosY        cHexInitY
-#define cRRInitPosZ        cHexInitXZSin60
+#define RRInitPosX         InitXZCos60 //Start positions of the Right Rear leg
+#define RRInitPosY         InitY
+#define RRInitPosZ         InitXZSin60
 
-#define cRMInitPosX        cHexInitXZ      //Start positions of the Right Middle leg
-#define cRMInitPosY        cHexInitY
-#define cRMInitPosZ        0
+#define RMInitPosX         InitXZ      //Start positions of the Right Middle leg
+#define RMInitPosY         InitY
+#define RMInitPosZ         0
 
-#define cRFInitPosX        cHexInitXZCos60 //Start positions of the Right Front leg
-#define cRFInitPosY        cHexInitY
-#define cRFInitPosZ       -cHexInitXZSin60
+#define RFInitPosX         InitXZCos60 //Start positions of the Right Front leg
+#define RFInitPosY         InitY
+#define RFInitPosZ        -InitXZSin60
 
-#define cLRInitPosX        cHexInitXZCos60 //Start positions of the Left Rear leg
-#define cLRInitPosY        cHexInitY
-#define cLRInitPosZ        cHexInitXZSin60
+#define LRInitPosX         InitXZCos60 //Start positions of the Left Rear leg
+#define LRInitPosY         InitY
+#define LRInitPosZ         InitXZSin60
 
-#define cLMInitPosX        cHexInitXZ      //Start positions of the Left Middle leg
-#define cLMInitPosY        cHexInitY
-#define cLMInitPosZ        0
+#define LMInitPosX         InitXZ      //Start positions of the Left Middle leg
+#define LMInitPosY         InitY
+#define LMInitPosZ         0
 
-#define cLFInitPosX        cHexInitXZCos60 //Start positions of the Left Front leg
-#define cLFInitPosY        cHexInitY
-#define cLFInitPosZ       -cHexInitXZSin60
+#define LFInitPosX         InitXZCos60 //Start positions of the Left Front leg
+#define LFInitPosY         InitY
+#define LFInitPosZ        -InitXZSin60
 
 #endif

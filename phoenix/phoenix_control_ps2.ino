@@ -11,15 +11,14 @@
 #include <PS2X_lib.h>
 
 //[CONSTANTS]
-#define WALKMODE         0
-#define TRANSLATEMODE    1
-#define ROTATEMODE       2
-#define SINGLELEGMODE    3
-//#define GPPLAYERMODE   4
+#define WALKMODE           0
+#define TRANSLATEMODE      1
+#define ROTATEMODE         2
+#define SINGLELEGMODE      3
 
-#define cGaitsNumber     6
-#define cMaxPS2Error     5 //How many times through the loop will we go before shutting off robot?
-#define cMaxBodyPosY     100
+#define GaitsNumber        6
+#define MaxPS2Error        5
+#define MaxBodyPosY        100
 
 //[VARIABLES]
 PS2X    PS2;
@@ -32,12 +31,12 @@ bool    DoubleTravelOn;
 bool    WalkMethod;
 
 #ifdef SOUND_MODE
-extern void MSound(byte cNotes, ...);
+extern void Sound(byte Notes, ...);
 #endif
 
 //Initialize the PS2 controller
 void InitController() {
-  PS2.config_gamepad(cPS2_CLK, cPS2_CMD, cPS2_SEL, cPS2_DAT);
+  PS2.config_gamepad(PS2_CLK, PS2_CMD, PS2_SEL, PS2_DAT);
 
   ControlMode = WALKMODE;
   DoubleHeightOn = false;
@@ -51,13 +50,13 @@ void InitController() {
 void ControlInput() {
   PS2.read_gamepad();
 
-  //Wish the library had a valid way to verify that the read_gamepad succeeded... Will hack for now
+  //Wish the library had a valid way to verify that the read_gamepad succeeded
   if ((PS2.Analog(1) & 0xf0) == 0x70) {
 
-    PS2ErrorCount = 0; //Clear out error count...
+    PS2ErrorCount = 0; //Clear out error count
 
     //Switch bot on/off
-    if (PS2.ButtonPressed(PSB_START) && !TravelRequest) { //Start Button Test
+    if (PS2.ButtonPressed(PSB_START) && !TravelRequest) { //Start button
       if (HexOn) {
         PS2TurnRobotOff(); //Turn off
       }
@@ -72,9 +71,9 @@ void ControlInput() {
     if (HexOn) {
 
       //Translate mode
-      if (PS2.ButtonPressed(PSB_L1) && !TravelRequest) { //L1 Button Test
+      if (PS2.ButtonPressed(PSB_L1) && !TravelRequest) { //L1 button
 #ifdef SOUND_MODE
-        MSound(1, 40, 2217);
+        Sound(1, 40, 2217);
 #endif
         if (ControlMode != TRANSLATEMODE) {
           ControlMode = TRANSLATEMODE;
@@ -97,9 +96,9 @@ void ControlInput() {
       }
 
       //Rotate mode
-      if (PS2.ButtonPressed(PSB_L2) && !TravelRequest) { //L2 Button Test
+      if (PS2.ButtonPressed(PSB_L2) && !TravelRequest) { //L2 button
 #ifdef SOUND_MODE
-        MSound(1, 40, 2217);
+        Sound(1, 40, 2217);
 #endif
         if (ControlMode != ROTATEMODE) {
           ControlMode = ROTATEMODE;
@@ -122,9 +121,9 @@ void ControlInput() {
       }
 
       //Single leg mode
-      if (PS2.ButtonPressed(PSB_CIRCLE) && !TravelRequest) { //Circle Button Test
+      if (PS2.ButtonPressed(PSB_CIRCLE) && !TravelRequest) { //Circle button
 #ifdef SOUND_MODE
-        MSound(1, 40, 2217);
+        Sound(1, 40, 2217);
 #endif
         if (ControlMode != SINGLELEGMODE) {
           ControlMode = SINGLELEGMODE;
@@ -132,7 +131,7 @@ void ControlInput() {
           DBGSerial.println("ControlMode: SINGLELEGMODE");
 #endif
           if (SelectedLeg == 255) { //Select leg if none is selected
-            SelectedLeg = cRF; //Start leg
+            SelectedLeg = RF; //Start leg
           }
         }
         else {
@@ -145,19 +144,19 @@ void ControlInput() {
       }
 
 #ifdef DEBUG_MODE
-      if (PS2.ButtonPressed(PSB_L3) && !TravelRequest) { //R3 Button Test
+      if (PS2.ButtonPressed(PSB_L3) && !TravelRequest) { //R3 button
 #ifdef SOUND_MODE
-        MSound(1, 40, 2217);
+        Sound(1, 40, 2217);
 #endif
         DebugOutputOn = !DebugOutputOn;
       }
 #endif
 
       //[Common functions]
-      //Switch Balance mode on/off 
-      if (PS2.ButtonPressed(PSB_SQUARE) && !TravelRequest) { //Square Button Test
+      //Switch balance mode on/off 
+      if (PS2.ButtonPressed(PSB_SQUARE) && !TravelRequest) { //Square button
 #ifdef SOUND_MODE
-        MSound(1, 40, 2217);
+        Sound(1, 40, 2217);
 #endif
         BalanceMode = !BalanceMode;
 #ifdef DEBUG_MODE
@@ -171,7 +170,7 @@ void ControlInput() {
       }
 
       //Stand up, sit down 
-      if (PS2.ButtonPressed(PSB_TRIANGLE)) { //Triangle Button Test
+      if (PS2.ButtonPressed(PSB_TRIANGLE)) { //Triangle button
         if (BodyYOffset > 0) {
           BodyYOffset = 0;
         }
@@ -184,8 +183,8 @@ void ControlInput() {
 #endif
       }
 
-      if (PS2.ButtonPressed(PSB_PAD_UP)) { //D-Up Button Test
-        if (BodyYOffset < cMaxBodyPosY) {
+      if (PS2.ButtonPressed(PSB_PAD_UP)) { //D-Up button
+        if (BodyYOffset < MaxBodyPosY) {
           BodyYOffset += 10;
 #ifdef DEBUG_MODE
           DBGSerial.print("BodyYOffset: ");
@@ -194,7 +193,7 @@ void ControlInput() {
         }
       }
 
-      if (PS2.ButtonPressed(PSB_PAD_DOWN)) { //D-Down Button Test
+      if (PS2.ButtonPressed(PSB_PAD_DOWN)) { //D-Down button
         if (BodyYOffset > 0) {
           BodyYOffset -= 10;
 #ifdef DEBUG_MODE
@@ -204,7 +203,7 @@ void ControlInput() {
         }
       }
 
-      if (PS2.ButtonPressed(PSB_CROSS)) { //Cross Button Test
+      if (PS2.ButtonPressed(PSB_CROSS)) { //Cross button
         if (SpeedControl > 0) {
           Prev_SpeedControl = SpeedControl;
           SpeedControl = 0;
@@ -218,10 +217,10 @@ void ControlInput() {
 #endif
       }
 
-      if (PS2.ButtonPressed(PSB_PAD_RIGHT)) { //D-Right Button Test
+      if (PS2.ButtonPressed(PSB_PAD_RIGHT)) { //D-Right button
         if (SpeedControl < 1000) {
 #ifdef SOUND_MODE
-          MSound(1, 40, 2217);
+          Sound(1, 40, 2217);
 #endif
           SpeedControl += 50;
 #ifdef DEBUG_MODE
@@ -231,10 +230,10 @@ void ControlInput() {
         }
       }
 
-      if (PS2.ButtonPressed(PSB_PAD_LEFT)) { //D-Left Button Test
+      if (PS2.ButtonPressed(PSB_PAD_LEFT)) { //D-Left button
         if (SpeedControl > 0) {
 #ifdef SOUND_MODE
-          MSound(1, 40, 2217);
+          Sound(1, 40, 2217);
 #endif
           SpeedControl -= 50;
 #ifdef DEBUG_MODE
@@ -248,16 +247,16 @@ void ControlInput() {
       if (ControlMode == WALKMODE) {
 
         //Switch gates
-        if (PS2.ButtonPressed(PSB_SELECT) && !TravelRequest) { //Select Button Test
-          if (GaitType < cGaitsNumber - 1) {
+        if (PS2.ButtonPressed(PSB_SELECT) && !TravelRequest) { //Select button
+          if (GaitType < GaitsNumber - 1) {
 #ifdef SOUND_MODE
-            MSound(1, 40, 2217);
+            Sound(1, 40, 2217);
 #endif
             GaitType++;
           }
           else {
 #ifdef SOUND_MODE
-            MSound(1, 80, 2794);
+            Sound(1, 80, 2794);
 #endif
             GaitType = 0;
           }
@@ -288,9 +287,9 @@ void ControlInput() {
         }
 
         //Double leg lift height
-        if (PS2.ButtonPressed(PSB_R1) && !TravelRequest) { //R1 Button Test
+        if (PS2.ButtonPressed(PSB_R1) && !TravelRequest) { //R1 button
 #ifdef SOUND_MODE
-          MSound(1, 40, 2217);
+          Sound(1, 40, 2217);
 #endif
           DoubleHeightOn = !DoubleHeightOn;
           if (DoubleHeightOn) {
@@ -307,10 +306,10 @@ void ControlInput() {
           }
         }
 
-        //Double Travel Length
-        if (PS2.ButtonPressed(PSB_R2) && !TravelRequest) { //R2 Button Test
+        //Double travel length
+        if (PS2.ButtonPressed(PSB_R2) && !TravelRequest) { //R2 button
 #ifdef SOUND_MODE
-          MSound(1, 40, 2217);
+          Sound(1, 40, 2217);
 #endif
           DoubleTravelOn = !DoubleTravelOn;
 #ifdef DEBUG_MODE
@@ -324,9 +323,9 @@ void ControlInput() {
         }
 
         //Switch between Walk method 1 and Walk method 2
-        if (PS2.ButtonPressed(PSB_R3) && !TravelRequest) { //R3 Button Test
+        if (PS2.ButtonPressed(PSB_R3) && !TravelRequest) { //R3 button
 #ifdef SOUND_MODE
-          MSound(1, 40, 2217);
+          Sound(1, 40, 2217);
 #endif
           WalkMethod = !WalkMethod;
 #ifdef DEBUG_MODE
@@ -340,8 +339,8 @@ void ControlInput() {
         }
 
         //Walking
-        if (WalkMethod) { //Walk Method
-          TravelLengthZ = (PS2.Analog(PSS_RY) - 128); //Right Stick Up/Down
+        if (WalkMethod) { //Walk method
+          TravelLengthZ = (PS2.Analog(PSS_RY) - 128); //Right stick Up/Down
         }
         else {
           TravelLengthX = -(PS2.Analog(PSS_LX) - 128);
@@ -353,7 +352,7 @@ void ControlInput() {
           TravelLengthZ /= 2;
         }
 
-        TravelLengthY = -(PS2.Analog(PSS_RX) - 128) / 4; //Right Stick Left/Right
+        TravelLengthY = -(PS2.Analog(PSS_RX) - 128) / 4; //Right stick Left/Right
       }
 
       //[Translate functions]
@@ -377,9 +376,9 @@ void ControlInput() {
       if (ControlMode == SINGLELEGMODE) {
 
         //Switch leg for single leg control
-        if (PS2.ButtonPressed(PSB_SELECT)) { //Select Button Test
+        if (PS2.ButtonPressed(PSB_SELECT)) { //Select button
 #ifdef SOUND_MODE
-          MSound(1, 40, 2217);
+          Sound(1, 40, 2217);
 #endif
           if (SelectedLeg < 5) {
             SelectedLeg++;
@@ -412,14 +411,14 @@ void ControlInput() {
 #endif
         }
 
-        SLLegX = (PS2.Analog(PSS_LX) - 128) / 2; //Left Stick Right/Left
-        SLLegY = (PS2.Analog(PSS_RY) - 128) / 10; //Right Stick Up/Down
-        SLLegZ = (PS2.Analog(PSS_LY) - 128) / 2; //Left Stick Up/Down
+        SLLegX = (PS2.Analog(PSS_LX) - 128) / 2; //Left stick Right/Left
+        SLLegY = (PS2.Analog(PSS_RY) - 128) / 10; //Right stick Up/Down
+        SLLegZ = (PS2.Analog(PSS_LY) - 128) / 2; //Left stick Up/Down
 
         //Hold single leg in place
-        if (PS2.ButtonPressed(PSB_R2)) { //R2 Button Test
+        if (PS2.ButtonPressed(PSB_R2)) { //R2 button
 #ifdef SOUND_MODE
-          MSound(1, 40, 2217);
+          Sound(1, 40, 2217);
 #endif
           SLHold = !SLHold;
 #ifdef DEBUG_MODE
@@ -438,9 +437,9 @@ void ControlInput() {
     }
 
     //Calculate BodyPosY
-    BodyPosY = min(max(BodyYOffset + BodyYShift, 0), cMaxBodyPosY);
+    BodyPosY = min(max(BodyYOffset + BodyYShift, 0), MaxBodyPosY);
   }
-  else if (PS2ErrorCount < cMaxPS2Error) {
+  else if (PS2ErrorCount < MaxPS2Error) {
     PS2ErrorCount++;
 #ifdef DEBUG_MODE
     DBGSerial.print("PS2ErrorCount: ");
