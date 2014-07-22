@@ -41,38 +41,38 @@ const short InitPosY[] PROGMEM = { RRInitPosY, RMInitPosY, RFInitPosY, LRInitPos
 const short InitPosZ[] PROGMEM = { RRInitPosZ, RMInitPosZ, RFInitPosZ, LRInitPosZ, LMInitPosZ, LFInitPosZ };
 
 //[ANGLES]
-float    CoxaAngle[6];       //Actual angle of the horizontal hip
-float    FemurAngle[6];      //Actual angle of the vertical hip
-float    TibiaAngle[6];      //Actual angle of the knee
+short    CoxaAngle[6];       //Actual angle of the horizontal hip
+short    FemurAngle[6];      //Actual angle of the vertical hip
+short    TibiaAngle[6];      //Actual angle of the knee
 
 //[VARIABLES]
 bool     NegativeValue;      //If the value is negative
 byte     LegIndex;           //Index used for leg index number
-float    ABSAngleDeg;        //Absolute value of the angle in degrees
+short    ABSAngleDeg;        //Absolute value of the angle in degrees
 float    IKA1;               //Angle of the line S>W with respect to the ground in radians
 float    IKA2;               //Angle of the line S>W with respect to the femur in radians
 float    IKSW;               //Length between shoulder and wrist
-float    BodyFKPosX;         //Output position X of feet with rotation
-float    BodyFKPosY;         //Output position Y of feet with rotation
-float    BodyFKPosZ;         //Output position Z of feet with rotation
-float    BodyPosX;           //Global input for the position of the body
-float    BodyPosY;
-float    BodyPosZ;
-float    BodyRotX;           //Global input pitch of the body
-float    BodyRotY;           //Global input rotation of the body
-float    BodyRotZ;           //Global input roll of the body
+short    BodyFKPosX;         //Output position X of feet with rotation
+short    BodyFKPosY;         //Output position Y of feet with rotation
+short    BodyFKPosZ;         //Output position Z of feet with rotation
+short    BodyPosX;           //Global input for the position of the body
+short    BodyPosY;
+short    BodyPosZ;
+short    BodyRotX;           //Global input pitch of the body
+short    BodyRotY;           //Global input rotation of the body
+short    BodyRotZ;           //Global input roll of the body
 float    Cos;                //Output cosinus of the given angle
 float    CosA;               //Cos buffer for BodyRotX calculations
 float    CosB;               //Cos buffer for BodyRotX calculations
 float    CosG;               //Cos buffer for BodyRotZ calculations
-float    PosXZ;              //Diagonal direction from input X and Z
+short    PosXZ;              //Diagonal direction from input X and Z
 float    Sin;                //Output sinus of the given angle
 float    SinA;               //Sin buffer for BodyRotX calculations
 float    SinB;               //Sin buffer for BodyRotX calculations
 float    SinG;               //Sin buffer for BodyRotZ calculations
-float    TotalX;             //Total X distance between the center of the body and the feet
-float    TotalY;             //Total Y distance between the center of the body and the feet
-float    TotalZ;             //Total Z distance between the center of the body and the feet
+short    TotalX;             //Total X distance between the center of the body and the feet
+short    TotalY;             //Total Y distance between the center of the body and the feet
+short    TotalZ;             //Total Z distance between the center of the body and the feet
 
 //[TIMING]
 byte     CycleTime;          //Total cycle time
@@ -95,24 +95,24 @@ word     TibiaPWM;
 
 //[BALANCE]
 bool     BalanceMode;
-float    TotalTransX;
-float    TotalTransZ;
-float    TotalTransY;
-float    TotalBalY;
-float    TotalBalX;
-float    TotalBalZ;
+short    TotalTransX;
+short    TotalTransZ;
+short    TotalTransY;
+short    TotalBalY;
+short    TotalBalX;
+short    TotalBalZ;
 
 //[SINGLE LEG CONTROL]
 bool     AllDown;
 bool     SLHold;             //Single leg control mode
 byte     Prev_SelectedLeg;
 byte     SelectedLeg;
-float    LegPosX[6];         //Actual X position of the leg
-float    LegPosY[6];         //Actual Y position of the leg
-float    LegPosZ[6];         //Actual Z position of the leg
-float    SLLegX;
-float    SLLegY;
-float    SLLegZ;
+short    LegPosX[6];         //Actual X position of the leg
+short    LegPosY[6];         //Actual Y position of the leg
+short    LegPosZ[6];         //Actual Z position of the leg
+short    SLLegX;
+short    SLLegY;
+short    SLLegZ;
 
 //[GAIT]
 bool     TravelRequest;      //Temp to check if the gait is in motion
@@ -128,13 +128,13 @@ byte     NomGaitSpeed;       //Nominal speed of the gait
 byte     NrLiftedPos;        //Number of positions that a single leg is lifted (1-3)
 byte     StepsInGait;        //Number of steps in gait
 byte     TLDivFactor;        //Number of steps that a leg is on the floor while walking
-float    GaitPosX[6];        //Array containing relative X position corresponding to the gait
-float    GaitPosY[6];        //Array containing relative Y position corresponding to the gait
-float    GaitPosZ[6];        //Array containing relative Z position corresponding to the gait
-float    GaitRotY[6];        //Array containing relative Y rotation corresponding to the gait  
-float    TravelLengthX;      //Current travel length X
-float    TravelLengthZ;      //Current travel length Z
-float    TravelLengthY;      //Current travel rotation Y
+short    GaitPosX[6];        //Array containing relative X position corresponding to the gait
+short    GaitPosY[6];        //Array containing relative Y position corresponding to the gait
+short    GaitPosZ[6];        //Array containing relative Z position corresponding to the gait
+short    GaitRotY[6];        //Array containing relative Y rotation corresponding to the gait  
+short    TravelLengthX;      //Current travel length X
+short    TravelLengthZ;      //Current travel length Z
+short    TravelLengthY;      //Current travel rotation Y
 
 #ifdef DEBUG_MODE
 bool     Prev_Walking;
@@ -560,7 +560,7 @@ void Gait(byte LegIndex) {
 }
 
 //Balance calculation one leg
-void BalCalcOneLeg (float PosX, float PosY, float PosZ, byte LegIndex) {
+void BalCalcOneLeg (short PosX, short PosY, short PosZ, byte LegIndex) {
   //Calculating totals from center of the body to the feet
   TotalX = (short)pgm_read_word(&OffsetX[LegIndex]) + PosX;
   TotalY = 150 + PosY; //Using the value 150 to lower the center point of rotation BodyPosY
@@ -603,16 +603,16 @@ void BalanceBody() {
 }
 
 //Get the sinus and cosinus from the angle +/- multiple circles
-void GetSinCos(float AngleDeg) {
+void GetSinCos(short AngleDeg) {
   //Get the absolute value of AngleDeg
   ABSAngleDeg = abs(AngleDeg);
 
   //Shift rotation to a full circle of 360 deg -> AngleDeg // 360
   if (AngleDeg < 0) { //Negative values
-    AngleDeg = 360 - (ABSAngleDeg - (360 * ((int)ABSAngleDeg / 360)));
+    AngleDeg = 360 - (ABSAngleDeg - (360 * (ABSAngleDeg / 360)));
   }
   else { //Positive values
-    AngleDeg = ABSAngleDeg - (360 * ((int)ABSAngleDeg / 360));
+    AngleDeg = ABSAngleDeg - (360 * (ABSAngleDeg / 360));
   }
 
   if (AngleDeg < 180) { //Angle between 0 and 180
@@ -628,7 +628,7 @@ void GetSinCos(float AngleDeg) {
 }
 
 //Body forward kinematics
-void BodyFK (float PosX, float PosY, float PosZ, float RotY, byte LegIndex) {
+void BodyFK (short PosX, short PosY, short PosZ, short RotY, byte LegIndex) {
   //Calculating totals from center of the body to the feet 
   TotalX = (short)pgm_read_word(&OffsetX[LegIndex]) + PosX;
   TotalY = PosY;
@@ -658,7 +658,7 @@ void BodyFK (float PosX, float PosY, float PosZ, float RotY, byte LegIndex) {
 }
 
 //Calculates the angles of the coxa, femur and tibia for the given position of the feet
-void LegIK (float PosX, float PosY, float PosZ, byte LegIndex) {
+void LegIK (short PosX, short PosY, short PosZ, byte LegIndex) {
   //Length between the Coxa and tars (foot)
   PosXZ = sqrt(pow(PosX, 2) + pow(PosZ, 2));
 
