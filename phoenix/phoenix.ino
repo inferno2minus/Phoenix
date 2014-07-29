@@ -46,12 +46,6 @@ short    FemurAngle[6];      //Actual angle of the vertical hip
 short    TibiaAngle[6];      //Actual angle of the knee
 
 //[VARIABLES]
-bool     NegativeValue;      //If the value is negative
-byte     LegIndex;           //Index used for leg index number
-short    ABSAngleDeg;        //Absolute value of the angle in degrees
-float    IKA1;               //Angle of the line S>W with respect to the ground in radians
-float    IKA2;               //Angle of the line S>W with respect to the femur in radians
-float    IKSW;               //Length between shoulder and wrist
 short    BodyFKPosX;         //Output position X of feet with rotation
 short    BodyFKPosY;         //Output position Y of feet with rotation
 short    BodyFKPosZ;         //Output position Z of feet with rotation
@@ -62,20 +56,9 @@ short    BodyRotX;           //Global input pitch of the body
 short    BodyRotY;           //Global input rotation of the body
 short    BodyRotZ;           //Global input roll of the body
 float    Cos;                //Output cosinus of the given angle
-float    CosA;               //Cos buffer for BodyRotX calculations
-float    CosB;               //Cos buffer for BodyRotX calculations
-float    CosG;               //Cos buffer for BodyRotZ calculations
-short    PosXZ;              //Diagonal direction from input X and Z
 float    Sin;                //Output sinus of the given angle
-float    SinA;               //Sin buffer for BodyRotX calculations
-float    SinB;               //Sin buffer for BodyRotX calculations
-float    SinG;               //Sin buffer for BodyRotZ calculations
-short    TotalX;             //Total X distance between the center of the body and the feet
-short    TotalY;             //Total Y distance between the center of the body and the feet
-short    TotalZ;             //Total Z distance between the center of the body and the feet
 
 //[TIMING]
-byte     CycleTime;          //Total cycle time
 byte     InputTimeDelay;     //Delay that depends on the input to get the "sneaking" effect
 long     TimerStart;         //Start time of the calculation cycles
 word     Prev_SSCTime;       //Previous time for the servo updates
@@ -86,12 +69,6 @@ word     SSCTime;            //Time for servo updates
 //[POWER]
 bool     HexOn;              //Switch to turn on Phoenix
 bool     Prev_HexOn;         //Previous loop state 
-
-//[SERVO DRIVER]
-byte     Array[3];
-word     CoxaPWM;
-word     FemurPWM;
-word     TibiaPWM;
 
 //[BALANCE]
 bool     BalanceMode;
@@ -155,7 +132,7 @@ void setup() {
 #endif
 
   //Setup Init Positions
-  for (LegIndex = 0; LegIndex <= 5; LegIndex++) {
+  for (byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
     LegPosX[LegIndex] = (short)pgm_read_word(&InitPosX[LegIndex]); //Set start positions for each leg
     LegPosY[LegIndex] = (short)pgm_read_word(&InitPosY[LegIndex]);
     LegPosZ[LegIndex] = (short)pgm_read_word(&InitPosZ[LegIndex]);
@@ -173,7 +150,7 @@ void setup() {
   GaitSelect();
 
   //Initialize controller
-  InitController();
+  InitControl();
 }
 
 //Main
@@ -182,7 +159,7 @@ void loop() {
   TimerStart = millis();
 
   //Read input
-  ControlInput();
+  InputControl();
 
   //Single leg control
   SingleLegControl();
@@ -199,16 +176,16 @@ void loop() {
   TotalBalZ = 0;
 
   if (BalanceMode) {
-    for (LegIndex = 0; LegIndex <= 5; LegIndex++) {
+    for (byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
       if (LegIndex <= 2) {
         //Balance calculations for all right legs
-        BalCalcOneLeg(-LegPosX[LegIndex] + GaitPosX[LegIndex],
+        BalanceLeg(-LegPosX[LegIndex] + GaitPosX[LegIndex],
         (LegPosY[LegIndex] - (short)pgm_read_word(&InitPosY[LegIndex])) + GaitPosY[LegIndex],
         LegPosZ[LegIndex] + GaitPosZ[LegIndex], LegIndex);
       }
       else {
         //Balance calculations for all left legs
-        BalCalcOneLeg(LegPosX[LegIndex] + GaitPosX[LegIndex],
+        BalanceLeg(LegPosX[LegIndex] + GaitPosX[LegIndex],
         (LegPosY[LegIndex] - (short)pgm_read_word(&InitPosY[LegIndex])) + GaitPosY[LegIndex],
         LegPosZ[LegIndex] + GaitPosZ[LegIndex], LegIndex);
       }
@@ -216,7 +193,7 @@ void loop() {
     BalanceBody();
   }
 
-  for (LegIndex = 0; LegIndex <= 5; LegIndex++) {
+  for (byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
     if (LegIndex <= 2) {
       //Do IK for all right legs
       BodyFK(-LegPosX[LegIndex] + BodyPosX + GaitPosX[LegIndex] - TotalTransX,
@@ -270,7 +247,7 @@ void loop() {
     ServoDriverUpdate();
 
     //Finding any the biggest value for GaitPos/Rot
-    for (LegIndex = 0; LegIndex <= 5; LegIndex++) {
+    for (byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
       if ((GaitPosX[LegIndex] > 2) || (GaitPosX[LegIndex] < -2) ||
         (GaitRotY[LegIndex] > 2) || (GaitRotY[LegIndex] < -2) ||
         (GaitPosZ[LegIndex] > 2) || (GaitPosZ[LegIndex] < -2)) {
@@ -284,7 +261,7 @@ void loop() {
       Walking = !(ExtraCycle == 0);
 
       //Get endtime and calculate wait time
-      CycleTime = (millis() - TimerStart);
+      byte CycleTime = (millis() - TimerStart);
 
 #ifdef DEBUG_MODE
       if (Walking && !Prev_Walking) {
@@ -361,7 +338,7 @@ void SingleLegControl() {
   }
   else { //All legs to init position
     if (!AllDown) {
-      for(LegIndex = 0; LegIndex <= 5; LegIndex++) {
+      for(byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
         LegPosX[LegIndex] = (short)pgm_read_word(&InitPosX[LegIndex]);
         LegPosY[LegIndex] = (short)pgm_read_word(&InitPosY[LegIndex]);
         LegPosZ[LegIndex] = (short)pgm_read_word(&InitPosZ[LegIndex]);
@@ -476,7 +453,7 @@ void GaitSeq() {
   TravelRequest = (abs(TravelLengthX) > TravelDeadZone) || (abs(TravelLengthZ) > TravelDeadZone) || (abs(TravelLengthY) > TravelDeadZone) || Walking;
 
   //Calculate gait sequence
-  for (LegIndex = 0; LegIndex <= 5; LegIndex++) {
+  for (byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
     Gait(LegIndex);
   }
 
@@ -560,11 +537,11 @@ void Gait(byte LegIndex) {
 }
 
 //Balance calculation one leg
-void BalCalcOneLeg (short PosX, short PosY, short PosZ, byte LegIndex) {
+void BalanceLeg(short PosX, short PosY, short PosZ, byte LegIndex) {
   //Calculating totals from center of the body to the feet
-  TotalX = (short)pgm_read_word(&OffsetX[LegIndex]) + PosX;
-  TotalY = 150 + PosY; //Using the value 150 to lower the center point of rotation BodyPosY
-  TotalZ = (short)pgm_read_word(&OffsetZ[LegIndex]) + PosZ;
+  short TotalX = (short)pgm_read_word(&OffsetX[LegIndex]) + PosX;
+  short TotalY = 150 + PosY; //Using the value 150 to lower the center point of rotation BodyPosY
+  short TotalZ = (short)pgm_read_word(&OffsetZ[LegIndex]) + PosZ;
 
   TotalTransX += TotalX;
   TotalTransY += PosY;
@@ -605,7 +582,7 @@ void BalanceBody() {
 //Get the sinus and cosinus from the angle +/- multiple circles
 void GetSinCos(short AngleDeg) {
   //Get the absolute value of AngleDeg
-  ABSAngleDeg = abs(AngleDeg);
+  short ABSAngleDeg = abs(AngleDeg);
 
   //Shift rotation to a full circle of 360 deg -> AngleDeg // 360
   if (AngleDeg < 0) { //Negative values
@@ -628,11 +605,11 @@ void GetSinCos(short AngleDeg) {
 }
 
 //Body forward kinematics
-void BodyFK (short PosX, short PosY, short PosZ, short RotY, byte LegIndex) {
+void BodyFK(short PosX, short PosY, short PosZ, short RotY, byte LegIndex) {
   //Calculating totals from center of the body to the feet 
-  TotalX = (short)pgm_read_word(&OffsetX[LegIndex]) + PosX;
-  TotalY = PosY;
-  TotalZ = (short)pgm_read_word(&OffsetZ[LegIndex]) + PosZ;
+  short TotalX = (short)pgm_read_word(&OffsetX[LegIndex]) + PosX;
+  short TotalY = PosY;
+  short TotalZ = (short)pgm_read_word(&OffsetZ[LegIndex]) + PosZ;
 
   //Successive global rotation matrix:
   //Math shorts for rotation: Alfa [A] = X rotate, Beta [B] = Z rotate, Gamma [G] = Y rotate
@@ -640,16 +617,16 @@ void BodyFK (short PosX, short PosY, short PosZ, short RotY, byte LegIndex) {
 
   //First calculate sinus and cosinus for each rotation
   GetSinCos((BodyRotX + TotalBalX) / 10);
-  SinG = Sin;
-  CosG = Cos;
+  float SinG = Sin;
+  float CosG = Cos;
 
   GetSinCos((BodyRotZ + TotalBalZ) / 10);
-  SinB = Sin;
-  CosB = Cos;
+  float SinB = Sin;
+  float CosB = Cos;
 
   GetSinCos((BodyRotY + (RotY * 10) + TotalBalY) / 10);
-  SinA = Sin;
-  CosA = Cos;
+  float SinA = Sin;
+  float CosA = Cos;
 
   //Calculation of rotation matrix
   BodyFKPosX = TotalX - (TotalX * CosA * CosB - TotalZ * CosB * SinA + TotalY * SinB);
@@ -658,18 +635,18 @@ void BodyFK (short PosX, short PosY, short PosZ, short RotY, byte LegIndex) {
 }
 
 //Calculates the angles of the coxa, femur and tibia for the given position of the feet
-void LegIK (short PosX, short PosY, short PosZ, byte LegIndex) {
-  //Length between the Coxa and tars (foot)
-  PosXZ = sqrt(pow(PosX, 2) + pow(PosZ, 2));
+void LegIK(short PosX, short PosY, short PosZ, byte LegIndex) {
+  //Length between the coxa and feet
+  short PosXZ = sqrt(pow(PosX, 2) + pow(PosZ, 2));
 
-  //Length between femur axis and tars
-  IKSW = sqrt(pow(PosXZ - CoxaLength, 2) + pow(PosY, 2));
+  //Length between shoulder and wrist
+  float IKSW = sqrt(pow(PosXZ - CoxaLength, 2) + pow(PosY, 2));
 
-  //Angle between SW line and the ground in radians
-  IKA1 = atan2(PosXZ - CoxaLength, PosY);
+  //Angle of the line S>W with respect to the ground in radians
+  float IKA1 = atan2(PosXZ - CoxaLength, PosY);
 
   //Angle of the line S>W with respect to the femur in radians
-  IKA2 = acos((pow(FemurLength, 2) - pow(TibiaLength, 2) + pow(IKSW, 2)) / (2 * FemurLength * IKSW));
+  float IKA2 = acos((pow(FemurLength, 2) - pow(TibiaLength, 2) + pow(IKSW, 2)) / (2 * FemurLength * IKSW));
 
   CoxaAngle[LegIndex] = atan2(PosZ, PosX) * 180 / PI + (short)pgm_read_word(&LegAngle[LegIndex]);
   FemurAngle[LegIndex] = -(IKA1 + IKA2) * 180 / PI + 90;
@@ -678,7 +655,7 @@ void LegIK (short PosX, short PosY, short PosZ, byte LegIndex) {
 
 //Checks the mechanical limits of the servos
 void CheckAngles() {
-  for (LegIndex = 0; LegIndex <= 5; LegIndex++) {
+  for (byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
     CoxaAngle[LegIndex] = min(max(CoxaAngle[LegIndex], (short)pgm_read_word(&CoxaMin[LegIndex])), (short)pgm_read_word(&CoxaMax[LegIndex]));
     FemurAngle[LegIndex] = min(max(FemurAngle[LegIndex], (short)pgm_read_word(&FemurMin[LegIndex])), (short)pgm_read_word(&FemurMax[LegIndex]));
     TibiaAngle[LegIndex] = min(max(TibiaAngle[LegIndex], (short)pgm_read_word(&TibiaMin[LegIndex])), (short)pgm_read_word(&TibiaMax[LegIndex]));
@@ -687,7 +664,8 @@ void CheckAngles() {
 
 //Update the positions of the servos
 void ServoDriverUpdate() {
-  for (LegIndex = 0; LegIndex <= 5; LegIndex++) {
+  for (byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
+    word CoxaPWM, FemurPWM, TibiaPWM;
     //Update right legs
     if (LegIndex <= 2) {
       CoxaPWM = (-CoxaAngle[LegIndex] + 90) / 0.0991 + 592;
@@ -732,7 +710,7 @@ void ServoDriverCommit() {
 
 //Frees all the servos
 void FreeServos() {
-  for (LegIndex = 0; LegIndex <= 31; LegIndex++) {
+  for (byte LegIndex = 0; LegIndex <= 31; LegIndex++) {
     SSCWrite(LegIndex + 0x80, 0x00, 0x00);
   }
   SSCWrite(0xA1, 0x00, 0xC8);
@@ -740,6 +718,7 @@ void FreeServos() {
 
 //Write bytes to SSC
 void SSCWrite(byte a, byte b, byte c) {
+  byte Array[3];
   Array[0] = a;
   Array[1] = b;
   Array[2] = c;

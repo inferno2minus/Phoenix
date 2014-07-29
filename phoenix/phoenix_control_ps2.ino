@@ -35,7 +35,7 @@ extern void Sound(byte Notes, ...);
 #endif
 
 //Initialize the PS2 controller
-void InitController() {
+void InitControl() {
   PS2.config_gamepad(PS2_CLK, PS2_CMD, PS2_SEL, PS2_DAT);
 
   ControlMode = WALKMODE;
@@ -47,7 +47,7 @@ void InitController() {
 }
 
 //Reads the input data from the PS2 controller and processes the data to the parameters
-void ControlInput() {
+void InputControl() {
   PS2.read_gamepad();
 
   //Wish the library had a valid way to verify that the read_gamepad succeeded
