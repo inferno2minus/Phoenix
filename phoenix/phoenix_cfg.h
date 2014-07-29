@@ -39,7 +39,7 @@ SoftwareSerial SSCSerial(SSC_TX, SSC_RX);
 #endif
 
 //[ANALOG INPUT]
-#define TravelDeadZone     4 //The deadzone for the analog input from the remote
+#define TRAVEL_DEADZONE    4 //The deadzone for the analog input from the remote
 
 //[CONSTANTS LEGS]
 #define RR                 0

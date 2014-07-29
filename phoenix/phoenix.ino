@@ -40,12 +40,12 @@ const short InitPosX[] PROGMEM = { RRInitPosX, RMInitPosX, RFInitPosX, LRInitPos
 const short InitPosY[] PROGMEM = { RRInitPosY, RMInitPosY, RFInitPosY, LRInitPosY, LMInitPosY, LFInitPosY };
 const short InitPosZ[] PROGMEM = { RRInitPosZ, RMInitPosZ, RFInitPosZ, LRInitPosZ, LMInitPosZ, LFInitPosZ };
 
-//[ANGLES]
+//Angles
 short    CoxaAngle[6];       //Actual angle of the horizontal hip
 short    FemurAngle[6];      //Actual angle of the vertical hip
 short    TibiaAngle[6];      //Actual angle of the knee
 
-//[VARIABLES]
+//Body position
 short    BodyFKPosX;         //Output position X of feet with rotation
 short    BodyFKPosY;         //Output position Y of feet with rotation
 short    BodyFKPosZ;         //Output position Z of feet with rotation
@@ -55,10 +55,12 @@ short    BodyPosZ;
 short    BodyRotX;           //Global input pitch of the body
 short    BodyRotY;           //Global input rotation of the body
 short    BodyRotZ;           //Global input roll of the body
+
+//Cos/Sin
 float    Cos;                //Output cosinus of the given angle
 float    Sin;                //Output sinus of the given angle
 
-//[TIMING]
+//Timing
 byte     InputTimeDelay;     //Delay that depends on the input to get the "sneaking" effect
 long     TimerStart;         //Start time of the calculation cycles
 word     Prev_SSCTime;       //Previous time for the servo updates
@@ -66,11 +68,11 @@ word     Prev_SpeedControl;
 word     SpeedControl;       //Adjustable delay
 word     SSCTime;            //Time for servo updates
 
-//[POWER]
+//Power
 bool     HexOn;              //Switch to turn on Phoenix
 bool     Prev_HexOn;         //Previous loop state 
 
-//[BALANCE]
+//Balance
 bool     BalanceMode;
 short    TotalTransX;
 short    TotalTransZ;
@@ -79,7 +81,7 @@ short    TotalBalY;
 short    TotalBalX;
 short    TotalBalZ;
 
-//[SINGLE LEG CONTROL]
+//Single leg
 bool     AllDown;
 bool     SLHold;             //Single leg control mode
 byte     Prev_SelectedLeg;
@@ -91,7 +93,7 @@ short    SLLegX;
 short    SLLegY;
 short    SLLegZ;
 
-//[GAIT]
+//Gait
 bool     TravelRequest;      //Temp to check if the gait is in motion
 bool     Walking;            //True if the robot are walking
 byte     ExtraCycle;         //Forcing some extra timed cycles for avoiding "end of gait bug"
@@ -122,7 +124,6 @@ bool     DebugOutputOn;
 extern void Sound(byte Notes, ...);
 #endif
 
-//Init
 void setup() {
   SSCSerial.begin(SSC_BAUD);
 
@@ -153,7 +154,6 @@ void setup() {
   InitControl();
 }
 
-//Main
 void loop() {
   //Start time
   TimerStart = millis();
@@ -230,7 +230,7 @@ void loop() {
     }
 
     //Set SSC time
-    if ((abs(TravelLengthX) > TravelDeadZone) || (abs(TravelLengthZ) > TravelDeadZone) || (abs(TravelLengthY * 2) > TravelDeadZone)) {
+    if ((abs(TravelLengthX) > TRAVEL_DEADZONE) || (abs(TravelLengthZ) > TRAVEL_DEADZONE) || (abs(TravelLengthY * 2) > TRAVEL_DEADZONE)) {
 
       SSCTime = NomGaitSpeed + (InputTimeDelay * 2) + SpeedControl;
 
@@ -249,8 +249,8 @@ void loop() {
     //Finding any the biggest value for GaitPos/Rot
     for (byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
       if ((GaitPosX[LegIndex] > 2) || (GaitPosX[LegIndex] < -2) ||
-        (GaitRotY[LegIndex] > 2) || (GaitRotY[LegIndex] < -2) ||
-        (GaitPosZ[LegIndex] > 2) || (GaitPosZ[LegIndex] < -2)) {
+          (GaitRotY[LegIndex] > 2) || (GaitRotY[LegIndex] < -2) ||
+          (GaitPosZ[LegIndex] > 2) || (GaitPosZ[LegIndex] < -2)) {
         ExtraCycle = NrLiftedPos + 1; //For making sure that we are using timed move until all legs are down
         break;
       }
@@ -306,7 +306,6 @@ void loop() {
   }
 }
 
-//Single leg control
 void SingleLegControl() {
   //Check if all legs are down
   AllDown = (LegPosY[RF] == (short)pgm_read_word(&InitPosY[RF])) &&
@@ -350,9 +349,7 @@ void SingleLegControl() {
   }
 }
 
-//Gait select
 void GaitSelect() {
-  //Gait selector
   switch (GaitType) {
   case 0: //Ripple 12 steps
     GaitLegNr[LR] = 1;
@@ -447,7 +444,6 @@ void GaitSelect() {
   }
 }
 
-//Gait sequence
 void GaitSeq() {
   //Check if the gait is in motion
   TravelRequest = (abs(TravelLengthX) > TravelDeadZone) || (abs(TravelLengthZ) > TravelDeadZone) || (abs(TravelLengthY) > TravelDeadZone) || Walking;
@@ -464,7 +460,6 @@ void GaitSeq() {
   }
 }
 
-//Gait
 void Gait(byte LegIndex) {
   //Clear values under the TravelDeadZone
   if (!TravelRequest) {
@@ -536,7 +531,6 @@ void Gait(byte LegIndex) {
   }
 }
 
-//Balance calculation one leg
 void BalanceLeg(short PosX, short PosY, short PosZ, byte LegIndex) {
   //Calculating totals from center of the body to the feet
   short TotalX = (short)pgm_read_word(&OffsetX[LegIndex]) + PosX;
@@ -552,7 +546,6 @@ void BalanceLeg(short PosX, short PosY, short PosZ, byte LegIndex) {
   TotalBalZ += atan2(TotalY, TotalX) * 180 / PI - 90; //Rotate balance circle 90 deg
 }
 
-//Balance body
 void BalanceBody() {
   TotalTransX = TotalTransX / 6;
   TotalTransY = TotalTransY / 6;
@@ -579,7 +572,6 @@ void BalanceBody() {
   TotalBalZ = TotalBalZ / 6;
 }
 
-//Get the sinus and cosinus from the angle +/- multiple circles
 void GetSinCos(short AngleDeg) {
   //Get the absolute value of AngleDeg
   short ABSAngleDeg = abs(AngleDeg);
@@ -604,7 +596,6 @@ void GetSinCos(short AngleDeg) {
   }
 }
 
-//Body forward kinematics
 void BodyFK(short PosX, short PosY, short PosZ, short RotY, byte LegIndex) {
   //Calculating totals from center of the body to the feet 
   short TotalX = (short)pgm_read_word(&OffsetX[LegIndex]) + PosX;
@@ -634,7 +625,6 @@ void BodyFK(short PosX, short PosY, short PosZ, short RotY, byte LegIndex) {
   BodyFKPosZ = TotalZ - (TotalX * CosG * SinA + TotalX * CosA * SinB * SinG + TotalZ * CosA * CosG - TotalZ * SinA * SinB * SinG - TotalY * CosB * SinG);
 }
 
-//Calculates the angles of the coxa, femur and tibia for the given position of the feet
 void LegIK(short PosX, short PosY, short PosZ, byte LegIndex) {
   //Length between the coxa and feet
   short PosXZ = sqrt(pow(PosX, 2) + pow(PosZ, 2));
@@ -653,7 +643,6 @@ void LegIK(short PosX, short PosY, short PosZ, byte LegIndex) {
   TibiaAngle[LegIndex] = -(90 - acos((pow(FemurLength, 2) + pow(TibiaLength, 2) - pow(IKSW, 2)) / (2 * FemurLength * TibiaLength)) * 180 / PI);
 }
 
-//Checks the mechanical limits of the servos
 void CheckAngles() {
   for (byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
     CoxaAngle[LegIndex] = min(max(CoxaAngle[LegIndex], (short)pgm_read_word(&CoxaMin[LegIndex])), (short)pgm_read_word(&CoxaMax[LegIndex]));
@@ -662,7 +651,6 @@ void CheckAngles() {
   }
 }
 
-//Update the positions of the servos
 void ServoDriverUpdate() {
   for (byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
     word CoxaPWM, FemurPWM, TibiaPWM;
@@ -703,12 +691,10 @@ void ServoDriverUpdate() {
   }
 }
 
-//Commit the positions of the servos
 void ServoDriverCommit() {
   SSCWrite(0xA1, highByte(SSCTime), lowByte(SSCTime));
 }
 
-//Frees all the servos
 void FreeServos() {
   for (byte LegIndex = 0; LegIndex <= 31; LegIndex++) {
     SSCWrite(LegIndex + 0x80, 0x00, 0x00);
@@ -716,7 +702,6 @@ void FreeServos() {
   SSCWrite(0xA1, 0x00, 0xC8);
 }
 
-//Write bytes to SSC
 void SSCWrite(byte a, byte b, byte c) {
   byte Array[3];
   Array[0] = a;

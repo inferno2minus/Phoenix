@@ -10,7 +10,6 @@
 
 #ifdef SOUND_MODE
 
-//Quick and dirty tone function to try to output a frequency to a speaker for some simple sounds
 void SoundNoTimer(unsigned int frequency, unsigned long duration) {
   volatile uint8_t *pin_port;
   volatile uint8_t pin_mask;

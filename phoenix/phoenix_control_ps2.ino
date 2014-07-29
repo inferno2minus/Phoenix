@@ -10,7 +10,6 @@
 
 #include <PS2X_lib.h>
 
-//[CONSTANTS]
 #define WALKMODE           0
 #define TRANSLATEMODE      1
 #define ROTATEMODE         2
@@ -20,7 +19,6 @@
 #define MaxPS2Error        5
 #define MaxBodyPosY        100
 
-//[VARIABLES]
 PS2X    PS2;
 short   PS2ErrorCount;
 short   BodyYOffset;
@@ -34,7 +32,6 @@ bool    WalkMethod;
 extern void Sound(byte Notes, ...);
 #endif
 
-//Initialize the PS2 controller
 void InitControl() {
   PS2.config_gamepad(PS2_CLK, PS2_CMD, PS2_SEL, PS2_DAT);
 
@@ -46,7 +43,6 @@ void InitControl() {
   SpeedControl = 100;
 }
 
-//Reads the input data from the PS2 controller and processes the data to the parameters
 void InputControl() {
   PS2.read_gamepad();
 
@@ -361,7 +357,7 @@ void InputControl() {
         BodyPosX = (PS2.Analog(PSS_LX) - 128) / 2;
         BodyPosZ = -(PS2.Analog(PSS_LY) - 128) / 3;
         BodyRotY = (PS2.Analog(PSS_RX) - 128) * 2;
-        BodyYShift = (-(PS2.Analog(PSS_RY) - 128) / 2);
+        BodyYShift = -(PS2.Analog(PSS_RY) - 128) / 2;
       }
 
       //[Rotate functions]
@@ -369,7 +365,7 @@ void InputControl() {
         BodyRotX = (PS2.Analog(PSS_LY) - 128);
         BodyRotY = (PS2.Analog(PSS_RX) - 128) * 2;
         BodyRotZ = (PS2.Analog(PSS_LX) - 128);
-        BodyYShift = (-(PS2.Analog(PSS_RY) - 128) / 2);
+        BodyYShift = -(PS2.Analog(PSS_RY) - 128) / 2;
       }
 
       //[Single leg functions]
