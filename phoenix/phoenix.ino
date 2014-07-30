@@ -165,7 +165,7 @@ void loop() {
   SingleLegControl();
 
   //Gait
-  GaitSeq();
+  GaitSequence();
 
   //Balance calculations
   TotalTransX = 0; //Reset values used for calculation of balance
@@ -444,9 +444,9 @@ void GaitSelect() {
   }
 }
 
-void GaitSeq() {
+void GaitSequence() {
   //Check if the gait is in motion
-  TravelRequest = (abs(TravelLengthX) > TravelDeadZone) || (abs(TravelLengthZ) > TravelDeadZone) || (abs(TravelLengthY) > TravelDeadZone) || Walking;
+  TravelRequest = (abs(TravelLengthX) > TRAVEL_DEADZONE) || (abs(TravelLengthZ) > TRAVEL_DEADZONE) || (abs(TravelLengthY) > TRAVEL_DEADZONE) || Walking;
 
   //Calculate gait sequence
   for (byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
@@ -461,7 +461,7 @@ void GaitSeq() {
 }
 
 void Gait(byte LegIndex) {
-  //Clear values under the TravelDeadZone
+  //Clear values under the TRAVEL_DEADZONE
   if (!TravelRequest) {
     TravelLengthX = 0;
     TravelLengthZ = 0;
