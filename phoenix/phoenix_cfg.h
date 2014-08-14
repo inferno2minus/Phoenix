@@ -3,7 +3,7 @@
  * Description: Phoenix configuration file
  * Version: v1.0
  * Programmer: Jeroen Janssen (aka Xan)
- * Porting: Kompanets Konstantin (aka I2M)
+ *             Kompanets Konstantin (aka I2M)
  *
  * Hardware setup: Arduino, SSC32 V2, (See further for connections)
  */
@@ -18,7 +18,7 @@
 //[ARDUINO PIN NUMBERS]
 #define PS2_DAT            6  //PS2 controller DAT
 #define PS2_CMD            7  //PS2 controller CMD
-#define PS2_SEL            8  //PS2 controller SEL
+#define PS2_ATT            8  //PS2 controller ATT
 #define PS2_CLK            9  //PS2 controller CLK
 #define SSC_TX             10 //(SSC32 TX -> Arduino RX)
 #define SSC_RX             11 //(SSC32 RX <- Arduino TX)

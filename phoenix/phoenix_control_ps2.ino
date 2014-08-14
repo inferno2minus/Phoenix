@@ -3,12 +3,12 @@
  * Description: Phoenix control file
  * Version: v2.0
  * Programmer: Jeroen Janssen (aka Xan)
- * Porting: Kompanets Konstantin (aka I2M)
+ *             Kompanets Konstantin (aka I2M)
  *
  * Hardware setup: Playstation 2 gamepad
  */
 
-#include <PS2X_lib.h>
+#include <PS2X.h>
 
 #define WALKMODE           0
 #define TRANSLATEMODE      1
@@ -33,7 +33,7 @@ extern void Sound(byte Notes, ...);
 #endif
 
 void InitControl() {
-  PS2.config_gamepad(PS2_CLK, PS2_CMD, PS2_SEL, PS2_DAT);
+  PS2.config_gamepad(PS2_CLK, PS2_CMD, PS2_ATT, PS2_DAT);
 
   ControlMode = WALKMODE;
   DoubleHeightOn = false;
@@ -44,10 +44,7 @@ void InitControl() {
 }
 
 void InputControl() {
-  PS2.read_gamepad();
-
-  //Wish the library had a valid way to verify that the read_gamepad succeeded
-  if ((PS2.Analog(1) & 0xf0) == 0x70) {
+  if (PS2.read_gamepad()) {
 
     PS2ErrorCount = 0; //Clear out error count
 

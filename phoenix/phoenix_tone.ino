@@ -3,7 +3,7 @@
  * Description: Phoenix tone file
  * Version: v1.0
  * Programmer: Jeroen Janssen (aka Xan)
- * Porting: Kompanets Konstantin (aka I2M)
+ *             Kompanets Konstantin (aka I2M)
  *
  * Hardware setup: Buzzer module
  */
