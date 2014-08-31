@@ -132,7 +132,7 @@ void setup() {
   DBGSerial.println("Start Debugging");
 #endif
 
-  //Setup Init Positions
+  //Setup init positions
   for (byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
     LegPosX[LegIndex] = (short)pgm_read_word(&InitPosX[LegIndex]); //Set start positions for each leg
     LegPosY[LegIndex] = (short)pgm_read_word(&InitPosY[LegIndex]);
@@ -158,7 +158,7 @@ void loop() {
   //Start time
   TimerStart = millis();
 
-  //Read input
+  //Read controller
   InputControl();
 
   //Single leg control

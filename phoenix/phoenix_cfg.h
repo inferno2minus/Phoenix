@@ -118,7 +118,7 @@ SoftwareSerial SSCSerial(SSC_TX, SSC_RX);
 #define LFTibiaMax         106
 
 //[COXA ANGLES]
-#define RRLegAngle        -60 //Default Coxa setup angle
+#define RRLegAngle        -60 //Default coxa setup angle
 #define RMLegAngle         0
 #define RFLegAngle         60
 #define LRLegAngle        -60

@@ -8,8 +8,6 @@
  * Hardware setup: Buzzer module
  */
 
-#ifdef SOUND_MODE
-
 void SoundNoTimer(unsigned int frequency, unsigned long duration) {
   volatile uint8_t *pin_port;
   volatile uint8_t pin_mask;
@@ -47,5 +45,3 @@ void Sound(byte Notes, ...) {
   }
   va_end(ap);
 }
-
-#endif
