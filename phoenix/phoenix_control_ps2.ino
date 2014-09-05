@@ -29,7 +29,7 @@ bool    DoubleTravelOn;
 bool    WalkMethod;
 
 #ifdef SOUND_MODE
-extern void Sound(byte Notes, ...);
+extern void Sound(byte notes, ...);
 #endif
 
 void InitControl() {
