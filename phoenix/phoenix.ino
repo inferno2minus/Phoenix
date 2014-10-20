@@ -9,6 +9,7 @@
  */
 
 #include <Arduino.h>
+#include <MiniTone.h>
 #include <SoftwareSerial.h>
 #include "phoenix_cfg.h"
 
@@ -121,7 +122,7 @@ bool     DebugOutputOn;
 #endif
 
 #ifdef SOUND_MODE
-extern void Sound(byte notes, ...);
+MiniTone Sound;
 #endif
 
 void setup() {
@@ -130,6 +131,10 @@ void setup() {
 #ifdef DEBUG_MODE
   DBGSerial.begin(DBG_BAUD);
   DBGSerial.println("Start Debugging");
+#endif
+
+#ifdef SOUND_MODE
+  Sound.begin(BUZZER);
 #endif
 
   //Setup init positions
@@ -225,7 +230,7 @@ void loop() {
   if (HexOn) {
     if (HexOn && !Prev_HexOn) {
 #ifdef SOUND_MODE
-      Sound(3, 60, 1661, 80, 2217, 100, 2794);
+      Sound.play(3, 1661, 60, 2217, 80, 2794, 100);
 #endif
     }
 
@@ -286,7 +291,7 @@ void loop() {
     ServoDriverUpdate();
     ServoDriverCommit();
 #ifdef SOUND_MODE
-    Sound(3, 100, 2794, 80, 2217, 60, 1661);
+    Sound.play(3, 2794, 100, 2217, 80, 1661, 60);
 #endif
     delay(600);
   }

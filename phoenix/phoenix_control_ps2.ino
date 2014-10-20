@@ -28,10 +28,6 @@ bool    DoubleHeightOn;
 bool    DoubleTravelOn;
 bool    WalkMethod;
 
-#ifdef SOUND_MODE
-extern void Sound(byte notes, ...);
-#endif
-
 void InitControl() {
   PS2.config_gamepad(PS2_CLK, PS2_CMD, PS2_ATT, PS2_DAT);
 
@@ -66,7 +62,7 @@ void InputControl() {
       //Translate mode
       if (PS2.ButtonPressed(PSB_L1) && !TravelRequest) { //L1 button
 #ifdef SOUND_MODE
-        Sound(1, 40, 2217);
+        Sound.play(2217, 40);
 #endif
         if (ControlMode != TRANSLATEMODE) {
           ControlMode = TRANSLATEMODE;
@@ -91,7 +87,7 @@ void InputControl() {
       //Rotate mode
       if (PS2.ButtonPressed(PSB_L2) && !TravelRequest) { //L2 button
 #ifdef SOUND_MODE
-        Sound(1, 40, 2217);
+        Sound.play(2217, 40);
 #endif
         if (ControlMode != ROTATEMODE) {
           ControlMode = ROTATEMODE;
@@ -116,7 +112,7 @@ void InputControl() {
       //Single leg mode
       if (PS2.ButtonPressed(PSB_CIRCLE) && !TravelRequest) { //Circle button
 #ifdef SOUND_MODE
-        Sound(1, 40, 2217);
+        Sound.play(2217, 40);
 #endif
         if (ControlMode != SINGLELEGMODE) {
           ControlMode = SINGLELEGMODE;
@@ -139,7 +135,7 @@ void InputControl() {
 #ifdef DEBUG_MODE
       if (PS2.ButtonPressed(PSB_L3) && !TravelRequest) { //R3 button
 #ifdef SOUND_MODE
-        Sound(1, 40, 2217);
+        Sound.play(2217, 40);
 #endif
         DebugOutputOn = !DebugOutputOn;
       }
@@ -149,7 +145,7 @@ void InputControl() {
       //Switch balance mode on/off 
       if (PS2.ButtonPressed(PSB_SQUARE) && !TravelRequest) { //Square button
 #ifdef SOUND_MODE
-        Sound(1, 40, 2217);
+        Sound.play(2217, 40);
 #endif
         BalanceMode = !BalanceMode;
 #ifdef DEBUG_MODE
@@ -213,7 +209,7 @@ void InputControl() {
       if (PS2.ButtonPressed(PSB_PAD_RIGHT)) { //D-Right button
         if (SpeedControl < 1000) {
 #ifdef SOUND_MODE
-          Sound(1, 40, 2217);
+          Sound.play(2217, 40);
 #endif
           SpeedControl += 50;
 #ifdef DEBUG_MODE
@@ -226,7 +222,7 @@ void InputControl() {
       if (PS2.ButtonPressed(PSB_PAD_LEFT)) { //D-Left button
         if (SpeedControl > 0) {
 #ifdef SOUND_MODE
-          Sound(1, 40, 2217);
+          Sound.play(2217, 40);
 #endif
           SpeedControl -= 50;
 #ifdef DEBUG_MODE
@@ -243,13 +239,13 @@ void InputControl() {
         if (PS2.ButtonPressed(PSB_SELECT) && !TravelRequest) { //Select button
           if (GaitType < GaitsNumber - 1) {
 #ifdef SOUND_MODE
-            Sound(1, 40, 2217);
+            Sound.play(2217, 40);
 #endif
             GaitType++;
           }
           else {
 #ifdef SOUND_MODE
-            Sound(1, 80, 2794);
+            Sound.play(2794, 80);
 #endif
             GaitType = 0;
           }
@@ -282,7 +278,7 @@ void InputControl() {
         //Double leg lift height
         if (PS2.ButtonPressed(PSB_R1) && !TravelRequest) { //R1 button
 #ifdef SOUND_MODE
-          Sound(1, 40, 2217);
+          Sound.play(2217, 40);
 #endif
           DoubleHeightOn = !DoubleHeightOn;
           if (DoubleHeightOn) {
@@ -302,7 +298,7 @@ void InputControl() {
         //Double travel length
         if (PS2.ButtonPressed(PSB_R2) && !TravelRequest) { //R2 button
 #ifdef SOUND_MODE
-          Sound(1, 40, 2217);
+          Sound.play(2217, 40);
 #endif
           DoubleTravelOn = !DoubleTravelOn;
 #ifdef DEBUG_MODE
@@ -318,7 +314,7 @@ void InputControl() {
         //Switch between Walk method 1 and Walk method 2
         if (PS2.ButtonPressed(PSB_R3) && !TravelRequest) { //R3 button
 #ifdef SOUND_MODE
-          Sound(1, 40, 2217);
+          Sound.play(2217, 40);
 #endif
           WalkMethod = !WalkMethod;
 #ifdef DEBUG_MODE
@@ -371,7 +367,7 @@ void InputControl() {
         //Switch leg for single leg control
         if (PS2.ButtonPressed(PSB_SELECT)) { //Select button
 #ifdef SOUND_MODE
-          Sound(1, 40, 2217);
+          Sound.play(2217, 40);
 #endif
           if (SelectedLeg < 5) {
             SelectedLeg++;
@@ -411,7 +407,7 @@ void InputControl() {
         //Hold single leg in place
         if (PS2.ButtonPressed(PSB_R2)) { //R2 button
 #ifdef SOUND_MODE
-          Sound(1, 40, 2217);
+          Sound.play(2217, 40);
 #endif
           SLHold = !SLHold;
 #ifdef DEBUG_MODE
