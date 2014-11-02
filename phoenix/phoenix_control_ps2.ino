@@ -19,8 +19,8 @@
 #define MaxBodyPosY        100
 
 PS2X    PS2;
-short   BodyYOffset;
 short   BodyYShift;
+short   BodyYOffset;
 byte    ControlMode;
 bool    DoubleHeightOn;
 bool    DoubleTravelOn;
@@ -53,7 +53,6 @@ void InputControl() {
     }
 
     if (HexOn) {
-
       //Translate mode
       if (PS2.ButtonPressed(PSB_L1) && !TravelRequest) { //L1 button
 #ifdef SOUND_MODE
@@ -229,7 +228,6 @@ void InputControl() {
 
       //[Walk functions]
       if (ControlMode == WALKMODE) {
-
         //Switch gates
         if (PS2.ButtonPressed(PSB_SELECT) && !TravelRequest) { //Select button
           if (GaitType < GaitsNumber - 1) {
@@ -358,7 +356,6 @@ void InputControl() {
 
       //[Single leg functions]
       if (ControlMode == SINGLELEGMODE) {
-
         //Switch leg for single leg control
         if (PS2.ButtonPressed(PSB_SELECT)) { //Select button
 #ifdef SOUND_MODE
