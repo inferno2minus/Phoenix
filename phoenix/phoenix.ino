@@ -130,7 +130,14 @@ void setup() {
 
 #ifdef DEBUG_MODE
   DBGSerial.begin(DBG_BAUD);
-  DBGSerial.println("Start Debugging");
+  DBGSerial.println(" _____                       _ ");
+  DBGSerial.println("|  |  |___ _ _ ___ ___ ___ _| |");
+  DBGSerial.println("|     | -_|_'_| .'| . | . | . |");
+  DBGSerial.println("|__|__|___|_,_|__,|  _|___|___|");
+  DBGSerial.println("       Lynxmotion |_| Phoenix  ");
+  DBGSerial.println();
+  DBGSerial.println("Press 'Start' to initialize...");
+  DBGSerial.println();
 #endif
 
 #ifdef SOUND_MODE

@@ -16,11 +16,9 @@
 #define SINGLELEGMODE      3
 
 #define GaitsNumber        6
-#define MaxPS2Error        5
 #define MaxBodyPosY        100
 
 PS2X    PS2;
-short   PS2ErrorCount;
 short   BodyYOffset;
 short   BodyYShift;
 byte    ControlMode;
@@ -41,13 +39,10 @@ void InitControl() {
 
 void InputControl() {
   if (PS2.read_gamepad()) {
-
-    PS2ErrorCount = 0; //Clear out error count
-
     //Switch bot on/off
     if (PS2.ButtonPressed(PSB_START) && !TravelRequest) { //Start button
       if (HexOn) {
-        PS2TurnRobotOff(); //Turn off
+        TurnRobotOff(); //Turn off
       }
       else {
         HexOn = true; //Turn on
@@ -428,19 +423,12 @@ void InputControl() {
     //Calculate BodyPosY
     BodyPosY = min(max(BodyYOffset + BodyYShift, 0), MaxBodyPosY);
   }
-  else if (PS2ErrorCount < MaxPS2Error) {
-    PS2ErrorCount++;
-#ifdef DEBUG_MODE
-    DBGSerial.print("PS2ErrorCount: ");
-    DBGSerial.println(PS2ErrorCount, DEC);
-#endif
-  }
   else if (HexOn) {
-    PS2TurnRobotOff();
+    TurnRobotOff();
   }
 }
 
-void PS2TurnRobotOff() {
+void TurnRobotOff() {
 #ifdef DEBUG_MODE
   DBGSerial.println("Power: Turn off");
 #endif
