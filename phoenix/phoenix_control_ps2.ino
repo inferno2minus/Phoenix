@@ -136,7 +136,7 @@ void InputControl() {
 #endif
 
       //[Common functions]
-      //Switch balance mode on/off 
+      //Switch balance mode on/off
       if (PS2.ButtonPressed(PSB_SQUARE) && !TravelRequest) { //Square button
 #ifdef SOUND_MODE
         Sound.play(2217, 40);

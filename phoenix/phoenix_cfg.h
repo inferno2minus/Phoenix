@@ -5,7 +5,7 @@
  * Programmer: Jeroen Janssen (aka Xan)
  *             Kompanets Konstantin (aka I2M)
  *
- * Hardware setup: Arduino, SSC32 V2, (See further for connections)
+ * Hardware setup: Arduino, SSC32 V2
  */
 
 #ifndef PHOENIX_CFG_H

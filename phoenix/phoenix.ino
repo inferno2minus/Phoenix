@@ -12,6 +12,7 @@
 #include <MiniTone.h>
 #include <SoftwareSerial.h>
 #include "phoenix_cfg.h"
+#include "phoenix.h"
 
 //Build tables for leg configuration like I/O and Min/Max values to easy access values using a for loop
 //Constants are still defined as single values in the cfg file to make it easy to read/configure
@@ -56,10 +57,6 @@ short    BodyPosZ;
 short    BodyRotX;           //Global input pitch of the body
 short    BodyRotY;           //Global input rotation of the body
 short    BodyRotZ;           //Global input roll of the body
-
-//Cos/Sin
-float    Cos;                //Output cosinus of the given angle
-float    Sin;                //Output sinus of the given angle
 
 //Timing
 byte     InputTimeDelay;     //Delay that depends on the input to get the "sneaking" effect
@@ -111,7 +108,7 @@ byte     TLDivFactor;        //Number of steps that a leg is on the floor while 
 short    GaitPosX[6];        //Array containing relative X position corresponding to the gait
 short    GaitPosY[6];        //Array containing relative Y position corresponding to the gait
 short    GaitPosZ[6];        //Array containing relative Z position corresponding to the gait
-short    GaitRotY[6];        //Array containing relative Y rotation corresponding to the gait  
+short    GaitRotY[6];        //Array containing relative Y rotation corresponding to the gait
 short    TravelLengthX;      //Current travel length X
 short    TravelLengthZ;      //Current travel length Z
 short    TravelLengthY;      //Current travel rotation Y
@@ -213,12 +210,12 @@ void loop() {
       LegPosZ[LegIndex] + BodyPosZ + GaitPosZ[LegIndex] - TotalTransZ,
       GaitRotY[LegIndex], LegIndex);
 
-      LegIK(LegPosX[LegIndex] - BodyPosX + BodyFKPosX - (GaitPosX[LegIndex] - TotalTransX), 
+      LegIK(LegPosX[LegIndex] - BodyPosX + BodyFKPosX - GaitPosX[LegIndex] - TotalTransX,
       LegPosY[LegIndex] + BodyPosY - BodyFKPosY + GaitPosY[LegIndex] - TotalTransY,
       LegPosZ[LegIndex] + BodyPosZ - BodyFKPosZ + GaitPosZ[LegIndex] - TotalTransZ, LegIndex);
     }
     else {
-      //Do IK for all left legs 
+      //Do IK for all left legs
       BodyFK(LegPosX[LegIndex] - BodyPosX + GaitPosX[LegIndex] - TotalTransX,
       LegPosY[LegIndex] + BodyPosY + GaitPosY[LegIndex] - TotalTransY,
       LegPosZ[LegIndex] + BodyPosZ + GaitPosZ[LegIndex] - TotalTransZ,
@@ -321,10 +318,10 @@ void loop() {
 void SingleLegControl() {
   //Check if all legs are down
   AllDown = (LegPosY[RF] == (short)pgm_read_word(&InitPosY[RF])) &&
-    (LegPosY[RM] == (short)pgm_read_word(&InitPosY[RM])) && 
-    (LegPosY[RR] == (short)pgm_read_word(&InitPosY[RR])) && 
-    (LegPosY[LR] == (short)pgm_read_word(&InitPosY[LR])) && 
-    (LegPosY[LM] == (short)pgm_read_word(&InitPosY[LM])) && 
+    (LegPosY[RM] == (short)pgm_read_word(&InitPosY[RM])) &&
+    (LegPosY[RR] == (short)pgm_read_word(&InitPosY[RR])) &&
+    (LegPosY[LR] == (short)pgm_read_word(&InitPosY[LR])) &&
+    (LegPosY[LM] == (short)pgm_read_word(&InitPosY[LM])) &&
     (LegPosY[LF] == (short)pgm_read_word(&InitPosY[LF]));
 
   if (SelectedLeg <= 5) {
@@ -460,6 +457,13 @@ void GaitSequence() {
   //Check if the gait is in motion
   TravelRequest = (abs(TravelLengthX) > TRAVEL_DEADZONE) || (abs(TravelLengthZ) > TRAVEL_DEADZONE) || (abs(TravelLengthY) > TRAVEL_DEADZONE) || Walking;
 
+  //Clear values under the TRAVEL_DEADZONE
+  if (!TravelRequest) {
+    TravelLengthX = 0;
+    TravelLengthZ = 0;
+    TravelLengthY = 0;
+  }
+
   //Calculate gait sequence
   for (byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
     Gait(LegIndex);
@@ -473,16 +477,11 @@ void GaitSequence() {
 }
 
 void Gait(byte LegIndex) {
-  //Clear values under the TRAVEL_DEADZONE
-  if (!TravelRequest) {
-    TravelLengthX = 0;
-    TravelLengthZ = 0;
-    TravelLengthY = 0;
-  }
+  //Try to reduce the number of time we look at GaitLegNr and GaitStep
+  short LegStep = GaitStep - GaitLegNr[LegIndex];
 
   //Leg middle up position
-  if ((TravelRequest && (NrLiftedPos == 1 || NrLiftedPos == 3 || NrLiftedPos == 5) &&
-    GaitStep == GaitLegNr[LegIndex]) || (!TravelRequest && GaitStep == GaitLegNr[LegIndex] &&
+  if ((TravelRequest && (NrLiftedPos & 1) && (LegStep == 0)) || (!TravelRequest && (LegStep == 0) &&
     ((abs(GaitPosX[LegIndex]) > 2) || (abs(GaitPosZ[LegIndex]) > 2) || (abs(GaitRotY[LegIndex]) > 2)))) {
     GaitPosX[LegIndex] = 0;
     GaitPosY[LegIndex] = -LegLiftHeight;
@@ -491,8 +490,7 @@ void Gait(byte LegIndex) {
   }
 
   //Optional half height Rear (2, 3, 5 lifted positions)
-  else if (((NrLiftedPos == 2 && GaitStep == GaitLegNr[LegIndex]) || (NrLiftedPos >= 3 &&
-    (GaitStep == GaitLegNr[LegIndex] - 1 || GaitStep == GaitLegNr[LegIndex] + (StepsInGait - 1)))) && TravelRequest) {
+  else if ((((NrLiftedPos == 2) && (LegStep == 0)) || ((NrLiftedPos >= 3) && ((LegStep == -1) || (LegStep == (StepsInGait - 1))))) && TravelRequest) {
     GaitPosX[LegIndex] = -TravelLengthX / LiftDivFactor;
     GaitPosY[LegIndex] = -3 * LegLiftHeight / (3 + HalfLiftHeight); //Easier to shift between div factor: /1 (3/3), /2 (3/6) and 3/4
     GaitPosZ[LegIndex] = -TravelLengthZ / LiftDivFactor;
@@ -500,8 +498,7 @@ void Gait(byte LegIndex) {
   }
 
   //Optional half height Front (2, 3, 5 lifted positions)
-  else if ((NrLiftedPos >= 2) && (GaitStep == GaitLegNr[LegIndex] + 1 ||
-    GaitStep == GaitLegNr[LegIndex] - (StepsInGait - 1)) && TravelRequest) {
+  else if ((NrLiftedPos >= 2) && ((LegStep == 1) || (LegStep == -(StepsInGait - 1))) && TravelRequest) {
     GaitPosX[LegIndex] = TravelLengthX / LiftDivFactor;
     GaitPosY[LegIndex] = -3 * LegLiftHeight / (3 + HalfLiftHeight); //Easier to shift between div factor: /1 (3/3), /2 (3/6) and 3/4
     GaitPosZ[LegIndex] = TravelLengthZ / LiftDivFactor;
@@ -509,7 +506,7 @@ void Gait(byte LegIndex) {
   }
 
   //Optional half height Rear (5 lifted positions)
-  else if (((NrLiftedPos == 5 && (GaitStep == GaitLegNr[LegIndex] - 2))) && TravelRequest) {
+  else if ((NrLiftedPos == 5) && (LegStep == -2) && TravelRequest) {
     GaitPosX[LegIndex] = -TravelLengthX / 2;
     GaitPosY[LegIndex] = -LegLiftHeight / 2;
     GaitPosZ[LegIndex] = -TravelLengthZ / 2;
@@ -517,8 +514,7 @@ void Gait(byte LegIndex) {
   }
 
   //Optional half height Front (5 lifted positions)
-  else if ((NrLiftedPos == 5) && (GaitStep == GaitLegNr[LegIndex] + 2 ||
-    GaitStep == GaitLegNr[LegIndex] - (StepsInGait - 2)) && TravelRequest) {
+  else if ((NrLiftedPos == 5) && ((LegStep == 2) || (LegStep == -(StepsInGait - 2))) && TravelRequest) {
     GaitPosX[LegIndex] = TravelLengthX / 2;
     GaitPosY[LegIndex] = -LegLiftHeight / 2;
     GaitPosZ[LegIndex] = TravelLengthZ / 2;
@@ -526,8 +522,7 @@ void Gait(byte LegIndex) {
   }
 
   //Leg front down position
-  else if ((GaitStep == GaitLegNr[LegIndex] + NrLiftedPos ||
-    GaitStep == GaitLegNr[LegIndex] - (StepsInGait - NrLiftedPos)) && GaitPosY[LegIndex] < 0) {
+  else if (((LegStep == NrLiftedPos) || (LegStep == -(StepsInGait - NrLiftedPos))) && (GaitPosY[LegIndex] < 0)) {
     GaitPosX[LegIndex] = TravelLengthX / 2;
     GaitPosY[LegIndex] = 0;
     GaitPosZ[LegIndex] = TravelLengthZ / 2;
@@ -584,8 +579,9 @@ void BalanceBody() {
   TotalBalZ = TotalBalZ / 6;
 }
 
-void GetSinCos(short AngleDeg) {
+angle GetSinCos(short AngleDeg) {
   //Get the absolute value of AngleDeg
+  angle Angle;
   short ABSAngleDeg = abs(AngleDeg);
 
   //Shift rotation to a full circle of 360 deg -> AngleDeg // 360
@@ -598,43 +594,32 @@ void GetSinCos(short AngleDeg) {
 
   if (AngleDeg < 180) { //Angle between 0 and 180
     AngleDeg = AngleDeg - 90; //Subtract 90 to shift range
-    Sin = cos(radians(AngleDeg));
-    Cos = -sin(radians(AngleDeg));
+    Angle.Sin = cos(radians(AngleDeg));
+    Angle.Cos = -sin(radians(AngleDeg));
   }
   else { //Angle between 180 and 360
     AngleDeg = AngleDeg - 270; // Subtract 270 to shift range
-    Sin = -cos(radians(AngleDeg));
-    Cos = sin(radians(AngleDeg));
+    Angle.Sin = -cos(radians(AngleDeg));
+    Angle.Cos = sin(radians(AngleDeg));
   }
+  return Angle;
 }
 
 void BodyFK(short PosX, short PosY, short PosZ, short RotY, byte LegIndex) {
-  //Calculating totals from center of the body to the feet 
+  //Calculating totals from center of the body to the feet
   short TotalX = (short)pgm_read_word(&OffsetX[LegIndex]) + PosX;
   short TotalY = PosY;
   short TotalZ = (short)pgm_read_word(&OffsetZ[LegIndex]) + PosZ;
 
-  //Successive global rotation matrix:
-  //Math shorts for rotation: Alfa [A] = X rotate, Beta [B] = Z rotate, Gamma [G] = Y rotate
-  //Sinus Alfa = SinA, cosinus Alfa = cosA, and so on...
-
   //First calculate sinus and cosinus for each rotation
-  GetSinCos((BodyRotX + TotalBalX) / 10);
-  float SinG = Sin;
-  float CosG = Cos;
-
-  GetSinCos((BodyRotZ + TotalBalZ) / 10);
-  float SinB = Sin;
-  float CosB = Cos;
-
-  GetSinCos((BodyRotY + (RotY * 10) + TotalBalY) / 10);
-  float SinA = Sin;
-  float CosA = Cos;
+  angle G = GetSinCos((BodyRotX + TotalBalX) / 10);
+  angle B = GetSinCos((BodyRotZ + TotalBalZ) / 10);
+  angle A = GetSinCos((BodyRotY + (RotY * 10) + TotalBalY) / 10);
 
   //Calculation of rotation matrix
-  BodyFKPosX = TotalX - (TotalX * CosA * CosB - TotalZ * CosB * SinA + TotalY * SinB);
-  BodyFKPosY = TotalY - (TotalX * SinA * SinG - TotalX * CosA * CosG * SinB + TotalZ * CosA * SinG + TotalZ * CosG * SinA * SinB + TotalY * CosB * CosG);
-  BodyFKPosZ = TotalZ - (TotalX * CosG * SinA + TotalX * CosA * SinB * SinG + TotalZ * CosA * CosG - TotalZ * SinA * SinB * SinG - TotalY * CosB * SinG);
+  BodyFKPosX = TotalX - (TotalX * A.Cos * B.Cos - TotalZ * B.Cos * A.Sin + TotalY * B.Sin);
+  BodyFKPosY = TotalY - (TotalX * A.Sin * G.Sin - TotalX * A.Cos * G.Cos * B.Sin + TotalZ * A.Cos * G.Sin + TotalZ * G.Cos * A.Sin * B.Sin + TotalY * B.Cos * G.Cos);
+  BodyFKPosZ = TotalZ - (TotalX * G.Cos * A.Sin + TotalX * A.Cos * B.Sin * G.Sin + TotalZ * A.Cos * G.Cos - TotalZ * A.Sin * B.Sin * G.Sin - TotalY * B.Cos * G.Sin);
 }
 
 void LegIK(short PosX, short PosY, short PosZ, byte LegIndex) {
