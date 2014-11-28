@@ -189,13 +189,13 @@ void loop() {
       if (LegIndex <= 2) {
         //Balance calculations for all right legs
         BalanceLeg(-LegPosX[LegIndex] + GaitPosX[LegIndex],
-        (LegPosY[LegIndex] - (short)pgm_read_word(&InitPosY[LegIndex])) + GaitPosY[LegIndex],
+        LegPosY[LegIndex] - (short)pgm_read_word(&InitPosY[LegIndex]) + GaitPosY[LegIndex],
         LegPosZ[LegIndex] + GaitPosZ[LegIndex], LegIndex);
       }
       else {
         //Balance calculations for all left legs
         BalanceLeg(LegPosX[LegIndex] + GaitPosX[LegIndex],
-        (LegPosY[LegIndex] - (short)pgm_read_word(&InitPosY[LegIndex])) + GaitPosY[LegIndex],
+        LegPosY[LegIndex] - (short)pgm_read_word(&InitPosY[LegIndex]) + GaitPosY[LegIndex],
         LegPosZ[LegIndex] + GaitPosZ[LegIndex], LegIndex);
       }
     }
@@ -300,7 +300,7 @@ void loop() {
     delay(600);
   }
   else {
-    FreeServos();
+    ServoDriverFree();
     delay(20);
   }
 
@@ -692,7 +692,7 @@ void ServoDriverCommit() {
   SSCWrite(0xA1, highByte(SSCTime), lowByte(SSCTime));
 }
 
-void FreeServos() {
+void ServoDriverFree() {
   for (byte LegIndex = 0; LegIndex <= 31; LegIndex++) {
     SSCWrite(LegIndex + 0x80, 0x00, 0x00);
   }
