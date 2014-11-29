@@ -240,7 +240,6 @@ void loop() {
 
     //Set SSC time
     if ((abs(TravelLengthX) > TRAVEL_DEADZONE) || (abs(TravelLengthZ) > TRAVEL_DEADZONE) || (abs(TravelLengthY * 2) > TRAVEL_DEADZONE)) {
-
       SSCTime = NomGaitSpeed + (InputTimeDelay * 2) + SpeedControl;
 
       //Add additional delay when balance mode is on
@@ -328,7 +327,6 @@ void SingleLegControl() {
     if (SelectedLeg != Prev_SelectedLeg) {
       if (AllDown) { //Lift leg a bit when it got selected
         LegPosY[SelectedLeg] = (short)pgm_read_word(&InitPosY[SelectedLeg]) - 20;
-
         //Store current status
         Prev_SelectedLeg = SelectedLeg;
       }
@@ -344,17 +342,15 @@ void SingleLegControl() {
       LegPosZ[SelectedLeg] = (short)pgm_read_word(&InitPosZ[SelectedLeg]) + SLLegZ;
     }
   }
-  else { //All legs to init position
-    if (!AllDown) {
-      for(byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
-        LegPosX[LegIndex] = (short)pgm_read_word(&InitPosX[LegIndex]);
-        LegPosY[LegIndex] = (short)pgm_read_word(&InitPosY[LegIndex]);
-        LegPosZ[LegIndex] = (short)pgm_read_word(&InitPosZ[LegIndex]);
-      }
+  else if (!AllDown) { //All legs to init position
+    for(byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
+      LegPosX[LegIndex] = (short)pgm_read_word(&InitPosX[LegIndex]);
+      LegPosY[LegIndex] = (short)pgm_read_word(&InitPosY[LegIndex]);
+      LegPosZ[LegIndex] = (short)pgm_read_word(&InitPosZ[LegIndex]);
     }
-    if (Prev_SelectedLeg != 255) {
-      Prev_SelectedLeg = 255;
-    }
+  }
+  if (Prev_SelectedLeg != 255) {
+    Prev_SelectedLeg = 255;
   }
 }
 
