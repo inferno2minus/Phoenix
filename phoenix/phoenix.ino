@@ -43,9 +43,9 @@ const short InitPosY[] PROGMEM = { RRInitPosY, RMInitPosY, RFInitPosY, LRInitPos
 const short InitPosZ[] PROGMEM = { RRInitPosZ, RMInitPosZ, RFInitPosZ, LRInitPosZ, LMInitPosZ, LFInitPosZ };
 
 //Angles
-short    CoxaAngle[6];       //Actual angle of the horizontal hip
-short    FemurAngle[6];      //Actual angle of the vertical hip
-short    TibiaAngle[6];      //Actual angle of the knee
+float    CoxaAngle[6];       //Actual angle of the horizontal hip
+float    FemurAngle[6];      //Actual angle of the vertical hip
+float    TibiaAngle[6];      //Actual angle of the knee
 
 //Body position
 short    BodyFKPosX;         //Output position X of feet with rotation
@@ -629,7 +629,7 @@ void BodyFK(short PosX, short PosY, short PosZ, short RotY, byte LegIndex) {
 
 void LegIK(short PosX, short PosY, short PosZ, byte LegIndex) {
   //Length between the coxa and feet
-  short PosXZ = sqrt(pow(PosX, 2) + pow(PosZ, 2));
+  float PosXZ = sqrt(pow(PosX, 2) + pow(PosZ, 2));
 
   //Length between shoulder and wrist
   float IKSW = sqrt(pow(PosXZ - CoxaLength, 2) + pow(PosY, 2));
