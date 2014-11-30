@@ -95,6 +95,7 @@ short    SLLegZ;
 bool     TravelRequest;      //Temp to check if the gait is in motion
 bool     Walking;            //True if the robot are walking
 byte     ExtraCycle;         //Forcing some extra timed cycles for avoiding "end of gait bug"
+byte     FrontDownPos;       //Where the leg should be put down to ground
 byte     GaitLegNr[6];       //Init position of the leg
 byte     GaitStep;           //Actual gait step
 byte     GaitType;           //Gait type
@@ -240,7 +241,6 @@ void loop() {
 
     //Set SSC time
     if ((abs(TravelLengthX) > TRAVEL_DEADZONE) || (abs(TravelLengthZ) > TRAVEL_DEADZONE) || (abs(TravelLengthY * 2) > TRAVEL_DEADZONE)) {
-
       SSCTime = NomGaitSpeed + (InputTimeDelay * 2) + SpeedControl;
 
       //Add additional delay when balance mode is on
@@ -328,7 +328,6 @@ void SingleLegControl() {
     if (SelectedLeg != Prev_SelectedLeg) {
       if (AllDown) { //Lift leg a bit when it got selected
         LegPosY[SelectedLeg] = (short)pgm_read_word(&InitPosY[SelectedLeg]) - 20;
-
         //Store current status
         Prev_SelectedLeg = SelectedLeg;
       }
@@ -369,6 +368,7 @@ void GaitSelect() {
     GaitLegNr[RM] = 11;
 
     NrLiftedPos = 3;
+    FrontDownPos = 2;
     LiftDivFactor = 2;
     HalfLiftHeight = 3;
     TLDivFactor = 8;
@@ -384,6 +384,7 @@ void GaitSelect() {
     GaitLegNr[RM] = 4;
 
     NrLiftedPos = 2;
+    FrontDownPos = 1;
     LiftDivFactor = 2;
     HalfLiftHeight = 1;
     TLDivFactor = 4;
@@ -399,6 +400,7 @@ void GaitSelect() {
     GaitLegNr[RM] = 5;
 
     NrLiftedPos = 3;
+    FrontDownPos = 2;
     LiftDivFactor = 2;
     HalfLiftHeight = 3;
     TLDivFactor = 4;
@@ -414,6 +416,7 @@ void GaitSelect() {
     GaitLegNr[RM] = 10;
 
     NrLiftedPos = 3;
+    FrontDownPos = 2;
     LiftDivFactor = 2;
     HalfLiftHeight = 3;
     TLDivFactor = 8;
@@ -429,6 +432,7 @@ void GaitSelect() {
     GaitLegNr[RM] = 13;
 
     NrLiftedPos = 5;
+    FrontDownPos = 3;	
     LiftDivFactor = 4;
     HalfLiftHeight = 1;
     TLDivFactor = 10;
@@ -444,6 +448,7 @@ void GaitSelect() {
     GaitLegNr[RM] = 17;
 
     NrLiftedPos = 3;
+    FrontDownPos = 2;
     LiftDivFactor = 2;
     HalfLiftHeight = 3;
     TLDivFactor = 20;
@@ -522,7 +527,7 @@ void Gait(byte LegIndex) {
   }
 
   //Leg front down position
-  else if (((LegStep == NrLiftedPos) || (LegStep == -(StepsInGait - NrLiftedPos))) && (GaitPosY[LegIndex] < 0)) {
+  else if (((LegStep == FrontDownPos) || (LegStep == -(StepsInGait - FrontDownPos))) && (GaitPosY[LegIndex] < 0)) {
     GaitPosX[LegIndex] = TravelLengthX / 2;
     GaitPosY[LegIndex] = 0;
     GaitPosZ[LegIndex] = TravelLengthZ / 2;
