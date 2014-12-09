@@ -589,7 +589,7 @@ angle GetSinCos(short AngleDeg) {
   angle Angle;
   short ABSAngleDeg = abs(AngleDeg);
 
-  //Shift rotation to a full circle of 360 deg -> AngleDeg // 360
+  //Shift rotation to a full circle of 360 deg
   if (AngleDeg < 0) { //Negative values
     AngleDeg = 360 - (ABSAngleDeg - (360 * (ABSAngleDeg / 360)));
   }
@@ -598,12 +598,14 @@ angle GetSinCos(short AngleDeg) {
   }
 
   if (AngleDeg < 180) { //Angle between 0 and 180
-    AngleDeg = AngleDeg - 90; //Subtract 90 to shift range
+    //Subtract 90 to shift range
+    AngleDeg = AngleDeg - 90;
     Angle.Sin = cos(radians(AngleDeg));
     Angle.Cos = -sin(radians(AngleDeg));
   }
   else { //Angle between 180 and 360
-    AngleDeg = AngleDeg - 270; // Subtract 270 to shift range
+    //Subtract 270 to shift range
+    AngleDeg = AngleDeg - 270;
     Angle.Sin = -cos(radians(AngleDeg));
     Angle.Cos = sin(radians(AngleDeg));
   }
@@ -617,9 +619,9 @@ void BodyFK(short PosX, short PosY, short PosZ, short RotY, byte LegIndex) {
   short TotalZ = (short)pgm_read_word(&OffsetZ[LegIndex]) + PosZ;
 
   //First calculate sinus and cosinus for each rotation
-  angle G = GetSinCos((BodyRotX + TotalBalX) / 10);
-  angle B = GetSinCos((BodyRotZ + TotalBalZ) / 10);
-  angle A = GetSinCos((BodyRotY + (RotY * 10) + TotalBalY) / 10);
+  angle G = GetSinCos(BodyRotX + TotalBalX);
+  angle B = GetSinCos(BodyRotZ + TotalBalZ);
+  angle A = GetSinCos(BodyRotY + TotalBalY + RotY);
 
   //Calculation of rotation matrix
   BodyFKPosX = TotalX - (TotalX * A.Cos * B.Cos - TotalZ * B.Cos * A.Sin + TotalY * B.Sin);
@@ -634,10 +636,10 @@ void LegIK(short PosX, short PosY, short PosZ, byte LegIndex) {
   //Length between shoulder and wrist
   float IKSW = sqrt(pow(PosXZ - CoxaLength, 2) + pow(PosY, 2));
 
-  //Angle of the line S>W with respect to the ground in radians
+  //Angle of the line SW with respect to the ground in radians
   float IKA1 = atan2(PosXZ - CoxaLength, PosY);
 
-  //Angle of the line S>W with respect to the femur in radians
+  //Angle of the line SW with respect to the femur in radians
   float IKA2 = acos((pow(FemurLength, 2) - pow(TibiaLength, 2) + pow(IKSW, 2)) / (2 * FemurLength * IKSW));
 
   CoxaAngle[LegIndex] = atan2(PosZ, PosX) * 180 / PI + (short)pgm_read_word(&LegAngle[LegIndex]);

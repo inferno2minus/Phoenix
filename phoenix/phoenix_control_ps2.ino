@@ -342,15 +342,15 @@ void InputControl() {
       if (ControlMode == TRANSLATEMODE) {
         BodyPosX = (PS2.Analog(PSS_LX) - 128) / 2;
         BodyPosZ = -(PS2.Analog(PSS_LY) - 128) / 3;
-        BodyRotY = (PS2.Analog(PSS_RX) - 128) * 2;
+        BodyRotY = (PS2.Analog(PSS_RX) - 128) / 6;
         BodyYShift = -(PS2.Analog(PSS_RY) - 128) / 2;
       }
 
       //[Rotate functions]
       if (ControlMode == ROTATEMODE) {
-        BodyRotX = (PS2.Analog(PSS_LY) - 128);
-        BodyRotY = (PS2.Analog(PSS_RX) - 128) * 2;
-        BodyRotZ = (PS2.Analog(PSS_LX) - 128);
+        BodyRotX = (PS2.Analog(PSS_LY) - 128) / 8;
+        BodyRotY = (PS2.Analog(PSS_RX) - 128) / 6;
+        BodyRotZ = (PS2.Analog(PSS_LX) - 128) / 8;
         BodyYShift = -(PS2.Analog(PSS_RY) - 128) / 2;
       }
 
