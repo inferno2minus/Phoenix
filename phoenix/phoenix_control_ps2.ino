@@ -103,6 +103,15 @@ void InputControl() {
         }
       }
 
+#ifdef DEBUG_MODE
+      if (PS2.ButtonPressed(PSB_L3) && !TravelRequest) { //L3 button
+#ifdef SOUND_MODE
+        Sound.play(2217, 40);
+#endif
+        DebugOutputOn = !DebugOutputOn;
+      }
+#endif      
+
       //Single leg mode
       if (PS2.ButtonPressed(PSB_CIRCLE) && !TravelRequest) { //Circle button
 #ifdef SOUND_MODE
@@ -125,15 +134,6 @@ void InputControl() {
           SelectedLeg = 255;
         }
       }
-
-#ifdef DEBUG_MODE
-      if (PS2.ButtonPressed(PSB_L3) && !TravelRequest) { //R3 button
-#ifdef SOUND_MODE
-        Sound.play(2217, 40);
-#endif
-        DebugOutputOn = !DebugOutputOn;
-      }
-#endif
 
       //[Common functions]
       //Switch balance mode on/off
@@ -436,8 +436,8 @@ void TurnRobotOff() {
   BodyRotY = 0;
   BodyRotZ = 0;
   TravelLengthX = 0;
-  TravelLengthZ = 0;
   TravelLengthY = 0;
+  TravelLengthZ = 0;
   BodyYOffset = 0;
   BodyYShift = 0;
   SelectedLeg = 255;

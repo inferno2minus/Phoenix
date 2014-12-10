@@ -73,10 +73,10 @@ bool     Prev_HexOn;         //Previous loop state
 //Balance
 bool     BalanceMode;
 short    TotalTransX;
-short    TotalTransZ;
 short    TotalTransY;
-short    TotalBalY;
+short    TotalTransZ;
 short    TotalBalX;
+short    TotalBalY;
 short    TotalBalZ;
 
 //Single leg
@@ -111,8 +111,8 @@ short    GaitPosY[6];        //Array containing relative Y position correspondin
 short    GaitPosZ[6];        //Array containing relative Z position corresponding to the gait
 short    GaitRotY[6];        //Array containing relative Y rotation corresponding to the gait
 short    TravelLengthX;      //Current travel length X
-short    TravelLengthZ;      //Current travel length Z
 short    TravelLengthY;      //Current travel rotation Y
+short    TravelLengthZ;      //Current travel length Z
 
 #ifdef DEBUG_MODE
 bool     Prev_Walking;
