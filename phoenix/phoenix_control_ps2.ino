@@ -15,9 +15,6 @@
 #define ROTATEMODE         2
 #define SINGLELEGMODE      3
 
-#define GaitsNumber        6
-#define MaxBodyPosY        100
-
 PS2X    PS2;
 short   BodyYShift;
 short   BodyYOffset;
@@ -167,7 +164,7 @@ void InputControl() {
       }
 
       if (PS2.ButtonPressed(PSB_PAD_UP)) { //D-Up button
-        if (BodyYOffset < MaxBodyPosY) {
+        if (BodyYOffset < 100) {
           BodyYOffset += 10;
 #ifdef DEBUG_MODE
           DBGSerial.print("BodyYOffset: ");
@@ -230,7 +227,7 @@ void InputControl() {
       if (ControlMode == WALKMODE) {
         //Switch gates
         if (PS2.ButtonPressed(PSB_SELECT) && !TravelRequest) { //Select button
-          if (GaitType < GaitsNumber - 1) {
+          if (GaitType < 5) {
 #ifdef SOUND_MODE
             Sound.play(2217, 40);
 #endif
@@ -418,7 +415,7 @@ void InputControl() {
     }
 
     //Calculate BodyPosY
-    BodyPosY = min(max(BodyYOffset + BodyYShift, 0), MaxBodyPosY);
+    BodyPosY = min(max(BodyYOffset + BodyYShift, 0), 100);
   }
   else if (HexOn) {
     TurnRobotOff();
