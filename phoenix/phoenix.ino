@@ -32,7 +32,7 @@ gait Gaits[] = {
   { 3, 2, 2, 3, 20, 24, 70, { 1, 21, 5, 13, 9, 17 } }  //Wave 24 steps
 };
 
-byte GaitsNumber = sizeof(Gaits)/sizeof(Gaits[0]);
+byte GaitsNumber = sizeof(Gaits)/sizeof(Gaits[0]) - 1;
 
 void setup() {
   SSCSerial.begin(SSC_BAUD);
