@@ -14,6 +14,26 @@
 #include "phoenix_cfg.h"
 #include "phoenix.h"
 
+//NrLiftedPos    — Number of positions that a single leg is lifted (1-3)
+//FrontDownPos   — Where the leg should be put down to ground
+//LiftDivFactor  — Default: 2, when NrLiftedPos = 5: 4
+//HalfLiftHeight — How high to lift at halfway up
+//TLDivFactor    — Number of steps that a leg is on the floor while walking
+//StepsInGait    — Number of steps in gait
+//NomGaitSpeed   — Nominal speed of the gait
+//GaitLegNr[6]   — Init position of the leg
+
+gait Gaits[] = { 
+  { 3, 2, 2, 3,  8, 12, 70, { 1,  3, 5, 7, 9,  11 } }, //Ripple 12 steps
+  { 2, 1, 2, 1,  4,  6, 60, { 4,  1, 1, 1, 4,  4  } }, //Tripod 6 steps
+  { 3, 2, 2, 3,  4,  8, 70, { 5,  1, 1, 1, 5,  5  } }, //Tripod 8 steps
+  { 3, 2, 2, 3,  8, 12, 60, { 11, 3, 4, 5, 9,  10 } }, //Tripod 12 steps
+  { 5, 3, 4, 1, 10, 16, 60, { 14, 4, 5, 6, 12, 13 } }, //Tripod 16 steps, use 5 lifted positions!
+  { 3, 2, 2, 3, 20, 24, 70, { 1, 21, 5, 13, 9, 17 } }  //Wave 24 steps
+};
+
+byte GaitsNumber = sizeof(Gaits)/sizeof(Gaits[0]);
+
 void setup() {
   SSCSerial.begin(SSC_BAUD);
 
@@ -132,7 +152,7 @@ void loop() {
 
     //Set SSC time
     if ((abs(TravelLengthX) > TRAVEL_DEADZONE) || (abs(TravelLengthZ) > TRAVEL_DEADZONE) || (abs(TravelLengthY * 2) > TRAVEL_DEADZONE)) {
-      SSCTime = NomGaitSpeed + (InputTimeDelay * 2) + SpeedControl;
+      SSCTime = GaitCurrent.NomGaitSpeed + (InputTimeDelay * 2) + SpeedControl;
 
       //Add additional delay when balance mode is on
       if (BalanceMode) {
@@ -151,7 +171,7 @@ void loop() {
       if ((GaitPosX[LegIndex] > 2) || (GaitPosX[LegIndex] < -2) ||
           (GaitRotY[LegIndex] > 2) || (GaitRotY[LegIndex] < -2) ||
           (GaitPosZ[LegIndex] > 2) || (GaitPosZ[LegIndex] < -2)) {
-        ExtraCycle = NrLiftedPos + 1; //For making sure that we are using timed move until all legs are down
+        ExtraCycle = GaitCurrent.NrLiftedPos + 1; //For making sure that we are using timed move until all legs are down
         break;
       }
     }
@@ -249,103 +269,8 @@ void SingleLegControl() {
 }
 
 void GaitSelect() {
-  switch (GaitType) {
-  case 0: //Ripple 12 steps
-    GaitLegNr[LR] = 1;
-    GaitLegNr[RF] = 3;
-    GaitLegNr[LM] = 5;
-    GaitLegNr[RR] = 7;
-    GaitLegNr[LF] = 9;
-    GaitLegNr[RM] = 11;
-
-    NrLiftedPos = 3;
-    FrontDownPos = 2;
-    LiftDivFactor = 2;
-    HalfLiftHeight = 3;
-    TLDivFactor = 8;
-    StepsInGait = 12;
-    NomGaitSpeed = 70;
-    break;
-  case 1: //Tripod 6 steps
-    GaitLegNr[LR] = 4;
-    GaitLegNr[RF] = 1;
-    GaitLegNr[LM] = 1;
-    GaitLegNr[RR] = 1;
-    GaitLegNr[LF] = 4;
-    GaitLegNr[RM] = 4;
-
-    NrLiftedPos = 2;
-    FrontDownPos = 1;
-    LiftDivFactor = 2;
-    HalfLiftHeight = 1;
-    TLDivFactor = 4;
-    StepsInGait = 6;
-    NomGaitSpeed = 60;
-    break;
-  case 2: //Tripod 8 steps
-    GaitLegNr[LR] = 5;
-    GaitLegNr[RF] = 1;
-    GaitLegNr[LM] = 1;
-    GaitLegNr[RR] = 1;
-    GaitLegNr[LF] = 5;
-    GaitLegNr[RM] = 5;
-
-    NrLiftedPos = 3;
-    FrontDownPos = 2;
-    LiftDivFactor = 2;
-    HalfLiftHeight = 3;
-    TLDivFactor = 4;
-    StepsInGait = 8;
-    NomGaitSpeed = 70;
-    break;
-  case 3: //Tripod 12 steps
-    GaitLegNr[LR] = 11;
-    GaitLegNr[RF] = 3;
-    GaitLegNr[LM] = 4;
-    GaitLegNr[RR] = 5;
-    GaitLegNr[LF] = 9;
-    GaitLegNr[RM] = 10;
-
-    NrLiftedPos = 3;
-    FrontDownPos = 2;
-    LiftDivFactor = 2;
-    HalfLiftHeight = 3;
-    TLDivFactor = 8;
-    StepsInGait = 12;
-    NomGaitSpeed = 60;
-    break;
-  case 4: //Tripod 16 steps, use 5 lifted positions!
-    GaitLegNr[LR] = 14;
-    GaitLegNr[RF] = 4;
-    GaitLegNr[LM] = 5;
-    GaitLegNr[RR] = 6;
-    GaitLegNr[LF] = 12;
-    GaitLegNr[RM] = 13;
-
-    NrLiftedPos = 5;
-    FrontDownPos = 3;	
-    LiftDivFactor = 4;
-    HalfLiftHeight = 1;
-    TLDivFactor = 10;
-    StepsInGait = 16;
-    NomGaitSpeed = 60;
-    break;
-  case 5: //Wave 24 steps
-    GaitLegNr[LR] = 1;
-    GaitLegNr[RF] = 21;
-    GaitLegNr[LM] = 5;
-    GaitLegNr[RR] = 13;
-    GaitLegNr[LF] = 9;
-    GaitLegNr[RM] = 17;
-
-    NrLiftedPos = 3;
-    FrontDownPos = 2;
-    LiftDivFactor = 2;
-    HalfLiftHeight = 3;
-    TLDivFactor = 20;
-    StepsInGait = 24;
-    NomGaitSpeed = 70;
-    break;
+  if (GaitType < GaitsNumber) { 
+    GaitCurrent = Gaits[GaitType];
   }
 }
 
@@ -367,17 +292,17 @@ void GaitSequence() {
 
   //Advance to the next step
   GaitStep++;
-  if (GaitStep > StepsInGait) {
+  if (GaitStep > GaitCurrent.StepsInGait) {
     GaitStep = 1;
   }
 }
 
 void Gait(byte LegIndex) {
   //Try to reduce the number of time we look at GaitLegNr and GaitStep
-  short LegStep = GaitStep - GaitLegNr[LegIndex];
+  short LegStep = GaitStep - GaitCurrent.GaitLegNr[LegIndex];
 
   //Leg middle up position
-  if ((TravelRequest && (NrLiftedPos & 1) && (LegStep == 0)) || (!TravelRequest && (LegStep == 0) &&
+  if ((TravelRequest && (GaitCurrent.NrLiftedPos & 1) && (LegStep == 0)) || (!TravelRequest && (LegStep == 0) &&
     ((abs(GaitPosX[LegIndex]) > 2) || (abs(GaitPosZ[LegIndex]) > 2) || (abs(GaitRotY[LegIndex]) > 2)))) {
     GaitPosX[LegIndex] = 0;
     GaitPosY[LegIndex] = -LegLiftHeight;
@@ -386,23 +311,23 @@ void Gait(byte LegIndex) {
   }
 
   //Optional half height Rear (2, 3, 5 lifted positions)
-  else if ((((NrLiftedPos == 2) && (LegStep == 0)) || ((NrLiftedPos >= 3) && ((LegStep == -1) || (LegStep == (StepsInGait - 1))))) && TravelRequest) {
-    GaitPosX[LegIndex] = -TravelLengthX / LiftDivFactor;
-    GaitPosY[LegIndex] = -3 * LegLiftHeight / (3 + HalfLiftHeight); //Easier to shift between div factor: /1 (3/3), /2 (3/6) and 3/4
-    GaitPosZ[LegIndex] = -TravelLengthZ / LiftDivFactor;
-    GaitRotY[LegIndex] = -TravelLengthY / LiftDivFactor;
+  else if ((((GaitCurrent.NrLiftedPos == 2) && (LegStep == 0)) || ((GaitCurrent.NrLiftedPos >= 3) && ((LegStep == -1) || (LegStep == (GaitCurrent.StepsInGait - 1))))) && TravelRequest) {
+    GaitPosX[LegIndex] = -TravelLengthX / GaitCurrent.LiftDivFactor;
+    GaitPosY[LegIndex] = -3 * LegLiftHeight / (3 + GaitCurrent.HalfLiftHeight); //Easier to shift between div factor: /1 (3/3), /2 (3/6) and 3/4
+    GaitPosZ[LegIndex] = -TravelLengthZ / GaitCurrent.LiftDivFactor;
+    GaitRotY[LegIndex] = -TravelLengthY / GaitCurrent.LiftDivFactor;
   }
 
   //Optional half height Front (2, 3, 5 lifted positions)
-  else if ((NrLiftedPos >= 2) && ((LegStep == 1) || (LegStep == -(StepsInGait - 1))) && TravelRequest) {
-    GaitPosX[LegIndex] = TravelLengthX / LiftDivFactor;
-    GaitPosY[LegIndex] = -3 * LegLiftHeight / (3 + HalfLiftHeight); //Easier to shift between div factor: /1 (3/3), /2 (3/6) and 3/4
-    GaitPosZ[LegIndex] = TravelLengthZ / LiftDivFactor;
-    GaitRotY[LegIndex] = TravelLengthY / LiftDivFactor;
+  else if ((GaitCurrent.NrLiftedPos >= 2) && ((LegStep == 1) || (LegStep == -(GaitCurrent.StepsInGait - 1))) && TravelRequest) {
+    GaitPosX[LegIndex] = TravelLengthX / GaitCurrent.LiftDivFactor;
+    GaitPosY[LegIndex] = -3 * LegLiftHeight / (3 + GaitCurrent.HalfLiftHeight); //Easier to shift between div factor: /1 (3/3), /2 (3/6) and 3/4
+    GaitPosZ[LegIndex] = TravelLengthZ / GaitCurrent.LiftDivFactor;
+    GaitRotY[LegIndex] = TravelLengthY / GaitCurrent.LiftDivFactor;
   }
 
   //Optional half height Rear (5 lifted positions)
-  else if ((NrLiftedPos == 5) && (LegStep == -2) && TravelRequest) {
+  else if ((GaitCurrent.NrLiftedPos == 5) && (LegStep == -2) && TravelRequest) {
     GaitPosX[LegIndex] = -TravelLengthX / 2;
     GaitPosY[LegIndex] = -LegLiftHeight / 2;
     GaitPosZ[LegIndex] = -TravelLengthZ / 2;
@@ -410,7 +335,7 @@ void Gait(byte LegIndex) {
   }
 
   //Optional half height Front (5 lifted positions)
-  else if ((NrLiftedPos == 5) && ((LegStep == 2) || (LegStep == -(StepsInGait - 2))) && TravelRequest) {
+  else if ((GaitCurrent.NrLiftedPos == 5) && ((LegStep == 2) || (LegStep == -(GaitCurrent.StepsInGait - 2))) && TravelRequest) {
     GaitPosX[LegIndex] = TravelLengthX / 2;
     GaitPosY[LegIndex] = -LegLiftHeight / 2;
     GaitPosZ[LegIndex] = TravelLengthZ / 2;
@@ -418,7 +343,7 @@ void Gait(byte LegIndex) {
   }
 
   //Leg front down position
-  else if (((LegStep == FrontDownPos) || (LegStep == -(StepsInGait - FrontDownPos))) && (GaitPosY[LegIndex] < 0)) {
+  else if (((LegStep == GaitCurrent.FrontDownPos) || (LegStep == -(GaitCurrent.StepsInGait - GaitCurrent.FrontDownPos))) && (GaitPosY[LegIndex] < 0)) {
     GaitPosX[LegIndex] = TravelLengthX / 2;
     GaitPosY[LegIndex] = 0;
     GaitPosZ[LegIndex] = TravelLengthZ / 2;
@@ -427,10 +352,10 @@ void Gait(byte LegIndex) {
 
   //Move body forward
   else {
-    GaitPosX[LegIndex] = GaitPosX[LegIndex] - (TravelLengthX / TLDivFactor);
+    GaitPosX[LegIndex] = GaitPosX[LegIndex] - (TravelLengthX / GaitCurrent.TLDivFactor);
     GaitPosY[LegIndex] = 0;
-    GaitPosZ[LegIndex] = GaitPosZ[LegIndex] - (TravelLengthZ / TLDivFactor);
-    GaitRotY[LegIndex] = GaitRotY[LegIndex] - (TravelLengthY / TLDivFactor);
+    GaitPosZ[LegIndex] = GaitPosZ[LegIndex] - (TravelLengthZ / GaitCurrent.TLDivFactor);
+    GaitRotY[LegIndex] = GaitRotY[LegIndex] - (TravelLengthY / GaitCurrent.TLDivFactor);
   }
 }
 

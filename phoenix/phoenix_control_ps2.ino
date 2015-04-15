@@ -227,7 +227,7 @@ void InputControl() {
       if (ControlMode == WALKMODE) {
         //Switch gates
         if (PS2.ButtonPressed(PSB_SELECT) && !TravelRequest) { //Select button
-          if (GaitType < 5) {
+          if (GaitType < GaitsNumber) {
 #ifdef SOUND_MODE
             Sound.play(2217, 40);
 #endif

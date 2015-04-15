@@ -39,6 +39,23 @@ const short InitPosX[] PROGMEM = { RRInitPosX, RMInitPosX, RFInitPosX, LRInitPos
 const short InitPosY[] PROGMEM = { RRInitPosY, RMInitPosY, RFInitPosY, LRInitPosY, LMInitPosY, LFInitPosY };
 const short InitPosZ[] PROGMEM = { RRInitPosZ, RMInitPosZ, RFInitPosZ, LRInitPosZ, LMInitPosZ, LFInitPosZ };
 
+//Structs
+typedef struct {
+  float  Cos;
+  float  Sin;
+} angle;
+
+typedef struct {
+  byte   NrLiftedPos;        //Number of positions that a single leg is lifted (1-3)
+  byte   FrontDownPos;       //Where the leg should be put down to ground
+  byte   LiftDivFactor;      //Default: 2, when NrLiftedPos = 5: 4
+  byte   HalfLiftHeight;     //How high to lift at halfway up
+  byte   TLDivFactor;        //Number of steps that a leg is on the floor while walking
+  byte   StepsInGait;        //Number of steps in gait
+  byte   NomGaitSpeed;       //Nominal speed of the gait
+  byte   GaitLegNr[6];       //Init position of the leg
+} gait;
+
 //Angles
 float    CoxaAngle[6];       //Actual angle of the horizontal hip
 float    FemurAngle[6];      //Actual angle of the vertical hip
@@ -92,17 +109,10 @@ short    SLLegZ;
 bool     TravelRequest;      //Temp to check if the gait is in motion
 bool     Walking;            //True if the robot are walking
 byte     ExtraCycle;         //Forcing some extra timed cycles for avoiding "end of gait bug"
-byte     FrontDownPos;       //Where the leg should be put down to ground
-byte     GaitLegNr[6];       //Init position of the leg
 byte     GaitStep;           //Actual gait step
 byte     GaitType;           //Gait type
-byte     HalfLiftHeight;     //How high to lift at halfway up
 byte     LegLiftHeight;      //Current travel height
-byte     LiftDivFactor;
-byte     NomGaitSpeed;       //Nominal speed of the gait
-byte     NrLiftedPos;        //Number of positions that a single leg is lifted (1-3)
-byte     StepsInGait;        //Number of steps in gait
-byte     TLDivFactor;        //Number of steps that a leg is on the floor while walking
+gait     GaitCurrent;
 short    GaitPosX[6];        //Array containing relative X position corresponding to the gait
 short    GaitPosY[6];        //Array containing relative Y position corresponding to the gait
 short    GaitPosZ[6];        //Array containing relative Z position corresponding to the gait
@@ -119,10 +129,5 @@ bool     DebugOutputOn;
 #ifdef SOUND_MODE
 MiniTone Sound;
 #endif
-
-typedef struct {
-  float Cos;
-  float Sin;
-} angle;
 
 #endif
