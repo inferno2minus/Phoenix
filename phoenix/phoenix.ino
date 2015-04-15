@@ -23,7 +23,7 @@
 //NomGaitSpeed   — Nominal speed of the gait
 //GaitLegNr[6]   — Init position of the leg
 
-gait Gaits[] = { 
+const gait Gaits[] = { 
   { 3, 2, 2, 3,  8, 12, 70, { 1,  3, 5, 7, 9,  11 } }, //Ripple 12 steps
   { 2, 1, 2, 1,  4,  6, 60, { 4,  1, 1, 1, 4,  4  } }, //Tripod 6 steps
   { 3, 2, 2, 3,  4,  8, 70, { 5,  1, 1, 1, 5,  5  } }, //Tripod 8 steps
@@ -32,7 +32,7 @@ gait Gaits[] = {
   { 3, 2, 2, 3, 20, 24, 70, { 1, 21, 5, 13, 9, 17 } }  //Wave 24 steps
 };
 
-byte GaitsNumber = sizeof(Gaits)/sizeof(Gaits[0]) - 1;
+const byte GaitsNumber = sizeof(Gaits)/sizeof(Gaits[0]) - 1;
 
 void setup() {
   SSCSerial.begin(SSC_BAUD);
