@@ -46,14 +46,14 @@ typedef struct {
 } angle;
 
 typedef struct {
-  byte   NrLiftedPos;        //Number of positions that a single leg is lifted (1-3)
+  byte   NrLiftedPos;        //Number of positions that a single leg is lifted (1-5)
   byte   FrontDownPos;       //Where the leg should be put down to ground
   byte   LiftDivFactor;      //Default: 2, when NrLiftedPos = 5: 4
   byte   HalfLiftHeight;     //How high to lift at halfway up
   byte   TLDivFactor;        //Number of steps that a leg is on the floor while walking
   byte   StepsInGait;        //Number of steps in gait
   byte   NomGaitSpeed;       //Nominal speed of the gait
-  byte   GaitLegNr[6];       //Init position of the leg
+  byte   GaitLegNr[6];       //Init position of the leg (LR, RF, LM, RR, LF, RM)
 } gait;
 
 //Angles

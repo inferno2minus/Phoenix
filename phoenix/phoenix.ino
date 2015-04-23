@@ -14,14 +14,14 @@
 #include "phoenix_cfg.h"
 #include "phoenix.h"
 
-//NrLiftedPos    — Number of positions that a single leg is lifted (1-3)
-//FrontDownPos   — Where the leg should be put down to ground
-//LiftDivFactor  — Default: 2, when NrLiftedPos = 5: 4
-//HalfLiftHeight — How high to lift at halfway up
-//TLDivFactor    — Number of steps that a leg is on the floor while walking
-//StepsInGait    — Number of steps in gait
-//NomGaitSpeed   — Nominal speed of the gait
-//GaitLegNr[6]   — Init position of the leg
+// [0] NrLiftedPos    — Number of positions that a single leg is lifted (1-5)
+// [1] FrontDownPos   — Where the leg should be put down to ground
+// [2] LiftDivFactor  — Default: 2, when NrLiftedPos = 5: 4
+// [3] HalfLiftHeight — How high to lift at halfway up
+// [4] TLDivFactor    — Number of steps that a leg is on the floor while walking
+// [5] StepsInGait    — Number of steps in gait
+// [6] NomGaitSpeed   — Nominal speed of the gait
+// [7] GaitLegNr[6]   — Init position of the leg (LR, RF, LM, RR, LF, RM)
 
 const gait Gaits[] = { 
   { 3,  2,  2,  3,  8, 12, 70, {  1,  3,  5,  7,  9, 11 } }, //Ripple 12 steps
