@@ -14,14 +14,14 @@
 #include "phoenix_cfg.h"
 #include "phoenix.h"
 
-// [0] NrLiftedPos    — Number of positions that a single leg is lifted (1-5)
-// [1] FrontDownPos   — Where the leg should be put down to ground
-// [2] LiftDivFactor  — Default: 2, when NrLiftedPos = 5: 4
-// [3] HalfLiftHeight — How high to lift at halfway up
-// [4] TLDivFactor    — Number of steps that a leg is on the floor while walking
-// [5] StepsInGait    — Number of steps in gait
-// [6] NomGaitSpeed   — Nominal speed of the gait
-// [7] GaitLegNr[6]   — Init position of the leg (LR, RF, LM, RR, LF, RM)
+//[0] NrLiftedPos    — Number of positions that a single leg is lifted (1-5)
+//[1] FrontDownPos   — Where the leg should be put down to ground
+//[2] LiftDivFactor  — Default: 2, when NrLiftedPos = 5: 4
+//[3] HalfLiftHeight — How high to lift at halfway up
+//[4] TLDivFactor    — Number of steps that a leg is on the floor while walking
+//[5] StepsInGait    — Number of steps in gait
+//[6] NomGaitSpeed   — Nominal speed of the gait
+//[7] GaitLegNr[6]   — Init position of the leg (LR, RF, LM, RR, LF, RM)
 
 const gait Gaits[] = { 
   { 3,  2,  2,  3,  8, 12, 70, {  1,  3,  5,  7,  9, 11 } }, //Ripple 12 steps
@@ -143,35 +143,6 @@ void SingleLegControl() {
   }
 }
 
-void GaitSelect() {
-  if (GaitType < GaitsNumber) { 
-    GaitCurrent = Gaits[GaitType];
-  }
-}
-
-void GaitSequence() {
-  //Check if the gait is in motion
-  TravelRequest = (abs(TravelLengthX) > TRAVEL_DEADZONE) || (abs(TravelLengthZ) > TRAVEL_DEADZONE) || (abs(TravelLengthY) > TRAVEL_DEADZONE) || Walking;
-
-  //Clear values under the TRAVEL_DEADZONE
-  if (!TravelRequest) {
-    TravelLengthX = 0;
-    TravelLengthZ = 0;
-    TravelLengthY = 0;
-  }
-
-  //Calculate gait sequence
-  for (byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
-    Gait(LegIndex);
-  }
-
-  //Advance to the next step
-  GaitStep++;
-  if (GaitStep > GaitCurrent.StepsInGait) {
-    GaitStep = 1;
-  }
-}
-
 void Gait(byte LegIndex) {
   //Try to reduce the number of time we look at GaitLegNr and GaitStep
   short LegStep = GaitStep - GaitCurrent.GaitLegNr[LegIndex];
@@ -231,6 +202,35 @@ void Gait(byte LegIndex) {
     GaitPosY[LegIndex] = 0;
     GaitPosZ[LegIndex] = GaitPosZ[LegIndex] - (TravelLengthZ / GaitCurrent.TLDivFactor);
     GaitRotY[LegIndex] = GaitRotY[LegIndex] - (TravelLengthY / GaitCurrent.TLDivFactor);
+  }
+}
+
+void GaitSelect() {
+  if (GaitType < GaitsNumber) { 
+    GaitCurrent = Gaits[GaitType];
+  }
+}
+
+void GaitSequence() {
+  //Check if the gait is in motion
+  TravelRequest = (abs(TravelLengthX) > TRAVEL_DEADZONE) || (abs(TravelLengthZ) > TRAVEL_DEADZONE) || (abs(TravelLengthY) > TRAVEL_DEADZONE) || Walking;
+
+  //Clear values under the TRAVEL_DEADZONE
+  if (!TravelRequest) {
+    TravelLengthX = 0;
+    TravelLengthZ = 0;
+    TravelLengthY = 0;
+  }
+
+  //Calculate gait sequence
+  for (byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
+    Gait(LegIndex);
+  }
+
+  //Advance to the next step
+  GaitStep++;
+  if (GaitStep > GaitCurrent.StepsInGait) {
+    GaitStep = 1;
   }
 }
 
