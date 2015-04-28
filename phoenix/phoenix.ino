@@ -53,15 +53,15 @@ void setup() {
   Sound.begin(BUZZER);
 #endif
 
-  //Setup init positions
+  //Set start positions for each leg
   for (byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
-    LegPosX[LegIndex] = (short)pgm_read_word(&InitPosX[LegIndex]); //Set start positions for each leg
+    LegPosX[LegIndex] = (short)pgm_read_word(&InitPosX[LegIndex]);
     LegPosY[LegIndex] = (short)pgm_read_word(&InitPosY[LegIndex]);
     LegPosZ[LegIndex] = (short)pgm_read_word(&InitPosZ[LegIndex]);
   }
 
-  //Single leg control. Make sure no leg is selected
-  SelectedLeg = 255; //No leg selected
+  //Single leg control
+  SelectedLeg = 255;
   Prev_SelectedLeg = 255;
 
   //Gait
@@ -80,150 +80,25 @@ void loop() {
   TimerStart = millis();
 
   //Read controller
-  InputControl();
+  ReadControl();
 
   //Single leg control
   SingleLegControl();
 
-  //Gait
+  //Gait sequence
   GaitSequence();
 
   //Balance calculations
-  TotalTransX = 0; //Reset values used for calculation of balance
-  TotalTransY = 0;
-  TotalTransZ = 0;
-  TotalBalX = 0;
-  TotalBalY = 0;
-  TotalBalZ = 0;
+  BalanceCalc();
 
-  if (BalanceMode) {
-    for (byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
-      if (LegIndex <= 2) {
-        //Balance calculations for all right legs
-        BalanceLeg(-LegPosX[LegIndex] + GaitPosX[LegIndex],
-        LegPosY[LegIndex] - (short)pgm_read_word(&InitPosY[LegIndex]) + GaitPosY[LegIndex],
-        LegPosZ[LegIndex] + GaitPosZ[LegIndex], LegIndex);
-      }
-      else {
-        //Balance calculations for all left legs
-        BalanceLeg(LegPosX[LegIndex] + GaitPosX[LegIndex],
-        LegPosY[LegIndex] - (short)pgm_read_word(&InitPosY[LegIndex]) + GaitPosY[LegIndex],
-        LegPosZ[LegIndex] + GaitPosZ[LegIndex], LegIndex);
-      }
-    }
-    BalanceBody();
-  }
+  //Kinematic calculations
+  KinematicCalc();
 
-  for (byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
-    if (LegIndex <= 2) {
-      //Do IK for all right legs
-      BodyFK(-LegPosX[LegIndex] + BodyPosX + GaitPosX[LegIndex] - TotalTransX,
-      LegPosY[LegIndex] + BodyPosY + GaitPosY[LegIndex] - TotalTransY,
-      LegPosZ[LegIndex] + BodyPosZ + GaitPosZ[LegIndex] - TotalTransZ,
-      GaitRotY[LegIndex], LegIndex);
-
-      LegIK(LegPosX[LegIndex] - BodyPosX + BodyFKPosX - GaitPosX[LegIndex] - TotalTransX,
-      LegPosY[LegIndex] + BodyPosY - BodyFKPosY + GaitPosY[LegIndex] - TotalTransY,
-      LegPosZ[LegIndex] + BodyPosZ - BodyFKPosZ + GaitPosZ[LegIndex] - TotalTransZ, LegIndex);
-    }
-    else {
-      //Do IK for all left legs
-      BodyFK(LegPosX[LegIndex] - BodyPosX + GaitPosX[LegIndex] - TotalTransX,
-      LegPosY[LegIndex] + BodyPosY + GaitPosY[LegIndex] - TotalTransY,
-      LegPosZ[LegIndex] + BodyPosZ + GaitPosZ[LegIndex] - TotalTransZ,
-      GaitRotY[LegIndex], LegIndex);
-
-      LegIK(LegPosX[LegIndex] + BodyPosX - BodyFKPosX + GaitPosX[LegIndex] - TotalTransX,
-      LegPosY[LegIndex] + BodyPosY - BodyFKPosY + GaitPosY[LegIndex] - TotalTransY,
-      LegPosZ[LegIndex] + BodyPosZ - BodyFKPosZ + GaitPosZ[LegIndex] - TotalTransZ, LegIndex);
-    }
-  }
-
-  //Check mechanical limits
+  //Check of mechanical limits
   CheckAngles();
 
   //Drive servos
-  if (HexOn) {
-    if (HexOn && !Prev_HexOn) {
-#ifdef SOUND_MODE
-      Sound.play(3, 1661, 60, 2217, 80, 2794, 100);
-#endif
-    }
-
-    //Set SSC time
-    if ((abs(TravelLengthX) > TRAVEL_DEADZONE) || (abs(TravelLengthZ) > TRAVEL_DEADZONE) || (abs(TravelLengthY * 2) > TRAVEL_DEADZONE)) {
-      SSCTime = GaitCurrent.NomGaitSpeed + (InputTimeDelay * 2) + SpeedControl;
-
-      //Add additional delay when balance mode is on
-      if (BalanceMode) {
-        SSCTime += 100;
-      }
-    }
-    else { //Movement speed excl. Walking
-      SSCTime = 200 + SpeedControl;
-    }
-
-    //Update servo positions without committing
-    ServoDriverUpdate();
-
-    //Finding any the biggest value for GaitPos/Rot
-    for (byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
-      if ((GaitPosX[LegIndex] > 2) || (GaitPosX[LegIndex] < -2) ||
-          (GaitRotY[LegIndex] > 2) || (GaitRotY[LegIndex] < -2) ||
-          (GaitPosZ[LegIndex] > 2) || (GaitPosZ[LegIndex] < -2)) {
-        ExtraCycle = GaitCurrent.NrLiftedPos + 1; //For making sure that we are using timed move until all legs are down
-        break;
-      }
-    }
-
-    if (ExtraCycle > 0) {
-      ExtraCycle--;
-      Walking = !(ExtraCycle == 0);
-
-      //Get endtime and calculate wait time
-      byte CycleTime = (millis() - TimerStart);
-
-#ifdef DEBUG_MODE
-      if (Walking && !Prev_Walking) {
-        DBGSerial.println("Walking: Start");
-        Prev_Walking = true;
-      }
-      else if (!Walking) {
-        DBGSerial.println("Walking: Finish");
-        Prev_Walking = false;
-      }
-#endif
-
-      //Wait for previous commands to be completed while walking
-      delay(max(Prev_SSCTime - CycleTime, 1)); //Min 1 ensures that there always is a value in the pause command
-    }
-
-    //Commit servo positions
-    ServoDriverCommit();
-  }
-  else if (Prev_HexOn || !AllDown) { //Turn the bot off
-    SSCTime = 600;
-    ServoDriverUpdate();
-    ServoDriverCommit();
-#ifdef SOUND_MODE
-    Sound.play(3, 2794, 100, 2217, 80, 1661, 60);
-#endif
-    delay(600);
-  }
-  else {
-    ServoDriverFree();
-    delay(20);
-  }
-
-  Prev_SSCTime = SSCTime;
-
-  //Store previous HexOn state
-  if (HexOn) {
-    Prev_HexOn = true;
-  }
-  else {
-    Prev_HexOn = false;
-  }
+  ServoDriver();
 }
 
 void SingleLegControl() {
@@ -313,7 +188,7 @@ void Gait(byte LegIndex) {
   //Optional half height Rear (2, 3, 5 lifted positions)
   else if ((((GaitCurrent.NrLiftedPos == 2) && (LegStep == 0)) || ((GaitCurrent.NrLiftedPos >= 3) && ((LegStep == -1) || (LegStep == (GaitCurrent.StepsInGait - 1))))) && TravelRequest) {
     GaitPosX[LegIndex] = -TravelLengthX / GaitCurrent.LiftDivFactor;
-    GaitPosY[LegIndex] = -3 * LegLiftHeight / (3 + GaitCurrent.HalfLiftHeight); //Easier to shift between div factor: /1 (3/3), /2 (3/6) and 3/4
+    GaitPosY[LegIndex] = -3 * LegLiftHeight / (3 + GaitCurrent.HalfLiftHeight);
     GaitPosZ[LegIndex] = -TravelLengthZ / GaitCurrent.LiftDivFactor;
     GaitRotY[LegIndex] = -TravelLengthY / GaitCurrent.LiftDivFactor;
   }
@@ -321,7 +196,7 @@ void Gait(byte LegIndex) {
   //Optional half height Front (2, 3, 5 lifted positions)
   else if ((GaitCurrent.NrLiftedPos >= 2) && ((LegStep == 1) || (LegStep == -(GaitCurrent.StepsInGait - 1))) && TravelRequest) {
     GaitPosX[LegIndex] = TravelLengthX / GaitCurrent.LiftDivFactor;
-    GaitPosY[LegIndex] = -3 * LegLiftHeight / (3 + GaitCurrent.HalfLiftHeight); //Easier to shift between div factor: /1 (3/3), /2 (3/6) and 3/4
+    GaitPosY[LegIndex] = -3 * LegLiftHeight / (3 + GaitCurrent.HalfLiftHeight);
     GaitPosZ[LegIndex] = TravelLengthZ / GaitCurrent.LiftDivFactor;
     GaitRotY[LegIndex] = TravelLengthY / GaitCurrent.LiftDivFactor;
   }
@@ -356,6 +231,34 @@ void Gait(byte LegIndex) {
     GaitPosY[LegIndex] = 0;
     GaitPosZ[LegIndex] = GaitPosZ[LegIndex] - (TravelLengthZ / GaitCurrent.TLDivFactor);
     GaitRotY[LegIndex] = GaitRotY[LegIndex] - (TravelLengthY / GaitCurrent.TLDivFactor);
+  }
+}
+
+void BalanceCalc() {
+  //Reset values used for calculation of balance
+  TotalTransX = 0;
+  TotalTransY = 0;
+  TotalTransZ = 0;
+  TotalBalX = 0;
+  TotalBalY = 0;
+  TotalBalZ = 0;
+
+  if (BalanceMode) {
+    for (byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
+      if (LegIndex <= 2) {
+        //Balance calculations for all right legs
+        BalanceLeg(-LegPosX[LegIndex] + GaitPosX[LegIndex],
+        LegPosY[LegIndex] - (short)pgm_read_word(&InitPosY[LegIndex]) + GaitPosY[LegIndex],
+        LegPosZ[LegIndex] + GaitPosZ[LegIndex], LegIndex);
+      }
+      else {
+        //Balance calculations for all left legs
+        BalanceLeg(LegPosX[LegIndex] + GaitPosX[LegIndex],
+        LegPosY[LegIndex] - (short)pgm_read_word(&InitPosY[LegIndex]) + GaitPosY[LegIndex],
+        LegPosZ[LegIndex] + GaitPosZ[LegIndex], LegIndex);
+      }
+    }
+    BalanceBody();
   }
 }
 
@@ -428,6 +331,31 @@ angle GetSinCos(short AngleDeg) {
   return Angle;
 }
 
+void KinematicCalc() {
+  for (byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
+    if (LegIndex <= 2) {
+      //Kinematic calculations for all right legs
+      BodyFK(-LegPosX[LegIndex] + BodyPosX + GaitPosX[LegIndex] - TotalTransX,
+      LegPosY[LegIndex] + BodyPosY + GaitPosY[LegIndex] - TotalTransY,
+      LegPosZ[LegIndex] + BodyPosZ + GaitPosZ[LegIndex] - TotalTransZ, GaitRotY[LegIndex], LegIndex);
+
+      LegIK(LegPosX[LegIndex] - BodyPosX + BodyFKPosX - GaitPosX[LegIndex] - TotalTransX,
+      LegPosY[LegIndex] + BodyPosY - BodyFKPosY + GaitPosY[LegIndex] - TotalTransY,
+      LegPosZ[LegIndex] + BodyPosZ - BodyFKPosZ + GaitPosZ[LegIndex] - TotalTransZ, LegIndex);
+    }
+    else {
+      //Kinematic calculations for all left legs
+      BodyFK(LegPosX[LegIndex] - BodyPosX + GaitPosX[LegIndex] - TotalTransX,
+      LegPosY[LegIndex] + BodyPosY + GaitPosY[LegIndex] - TotalTransY,
+      LegPosZ[LegIndex] + BodyPosZ + GaitPosZ[LegIndex] - TotalTransZ, GaitRotY[LegIndex], LegIndex);
+
+      LegIK(LegPosX[LegIndex] + BodyPosX - BodyFKPosX + GaitPosX[LegIndex] - TotalTransX,
+      LegPosY[LegIndex] + BodyPosY - BodyFKPosY + GaitPosY[LegIndex] - TotalTransY,
+      LegPosZ[LegIndex] + BodyPosZ - BodyFKPosZ + GaitPosZ[LegIndex] - TotalTransZ, LegIndex);
+    }
+  }
+}
+
 void BodyFK(short PosX, short PosY, short PosZ, short RotY, byte LegIndex) {
   //Calculating totals from center of the body to the feet
   short TotalX = (short)pgm_read_word(&OffsetX[LegIndex]) + PosX;
@@ -468,6 +396,89 @@ void CheckAngles() {
     CoxaAngle[LegIndex] = min(max(CoxaAngle[LegIndex], (short)pgm_read_word(&CoxaMin[LegIndex])), (short)pgm_read_word(&CoxaMax[LegIndex]));
     FemurAngle[LegIndex] = min(max(FemurAngle[LegIndex], (short)pgm_read_word(&FemurMin[LegIndex])), (short)pgm_read_word(&FemurMax[LegIndex]));
     TibiaAngle[LegIndex] = min(max(TibiaAngle[LegIndex], (short)pgm_read_word(&TibiaMin[LegIndex])), (short)pgm_read_word(&TibiaMax[LegIndex]));
+  }
+}
+
+void ServoDriver() {
+  if (HexOn) {
+    if (HexOn && !Prev_HexOn) {
+#ifdef SOUND_MODE
+      Sound.play(3, 1661, 60, 2217, 80, 2794, 100);
+#endif
+    }
+
+    //Set SSC time
+    if ((abs(TravelLengthX) > TRAVEL_DEADZONE) || (abs(TravelLengthZ) > TRAVEL_DEADZONE) || (abs(TravelLengthY * 2) > TRAVEL_DEADZONE)) {
+      SSCTime = GaitCurrent.NomGaitSpeed + (InputTimeDelay * 2) + SpeedControl;
+      //Add additional delay when balance mode is on
+      if (BalanceMode) {
+        SSCTime += 100;
+      }
+    }
+    else { //Movement speed excl. Walking
+      SSCTime = 200 + SpeedControl;
+    }
+
+    //Update servo positions without committing
+    ServoDriverUpdate();
+
+    //Finding any the biggest value for GaitPos/Rot
+    for (byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
+      if ((GaitPosX[LegIndex] > 2) || (GaitPosX[LegIndex] < -2) ||
+          (GaitRotY[LegIndex] > 2) || (GaitRotY[LegIndex] < -2) ||
+          (GaitPosZ[LegIndex] > 2) || (GaitPosZ[LegIndex] < -2)) {
+        ExtraCycle = GaitCurrent.NrLiftedPos + 1; //For making sure that we are using timed move until all legs are down
+        break;
+      }
+    }
+
+    if (ExtraCycle > 0) {
+      ExtraCycle--;
+      Walking = !(ExtraCycle == 0);
+
+      //Get endtime and calculate wait time
+      byte CycleTime = (millis() - TimerStart);
+
+#ifdef DEBUG_MODE
+      if (Walking && !Prev_Walking) {
+        DBGSerial.println("Walking: Start");
+        Prev_Walking = true;
+      }
+      else if (!Walking) {
+        DBGSerial.println("Walking: Finish");
+        Prev_Walking = false;
+      }
+#endif
+
+      //Wait for previous commands to be completed while walking
+      delay(max(Prev_SSCTime - CycleTime, 1)); //Min 1 ensures that there always is a value in the pause command
+    }
+
+    //Commit servo positions
+    ServoDriverCommit();
+  }
+  else if (Prev_HexOn || !AllDown) { //Turn the bot off
+    SSCTime = 600;
+    ServoDriverUpdate();
+    ServoDriverCommit();
+#ifdef SOUND_MODE
+    Sound.play(3, 2794, 100, 2217, 80, 1661, 60);
+#endif
+    delay(600);
+  }
+  else {
+    ServoDriverFree();
+    delay(20);
+  }
+
+  Prev_SSCTime = SSCTime;
+
+  //Store previous HexOn state
+  if (HexOn) {
+    Prev_HexOn = true;
+  }
+  else {
+    Prev_HexOn = false;
   }
 }
 

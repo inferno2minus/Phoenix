@@ -34,7 +34,7 @@ void InitControl() {
   SpeedControl = 100;
 }
 
-void InputControl() {
+void ReadControl() {
   if (PS2.read_gamepad()) {
     //Switch bot on/off
     if (PS2.ButtonPressed(PSB_START) && !TravelRequest) { //Start button
