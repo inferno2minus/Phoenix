@@ -228,8 +228,10 @@ void GaitSequence() {
   }
 
   //Advance to the next step
-  GaitStep++;
-  if (GaitStep > GaitCurrent.StepsInGait) {
+  if (GaitStep < GaitCurrent.StepsInGait) {
+    GaitStep++;
+  }
+  else {
     GaitStep = 1;
   }
 }
