@@ -19,16 +19,16 @@ PS2X    PS2;
 short   BodyYShift;
 short   BodyYOffset;
 byte    ControlMode;
-bool    DoubleHeightOn;
-bool    DoubleTravelOn;
+bool    DoubleHeight;
+bool    DoubleTravel;
 bool    WalkMethod;
 
 void InitControl() {
   PS2.config_gamepad(PS2_CLK, PS2_CMD, PS2_ATT, PS2_DAT);
 
   ControlMode = WALKMODE;
-  DoubleHeightOn = false;
-  DoubleTravelOn = false;
+  DoubleHeight = false;
+  DoubleTravel = false;
   WalkMethod = false;
 
   SpeedControl = 100;
@@ -105,7 +105,7 @@ void ReadControl() {
 #ifdef SOUND_MODE
         Sound.play(2217, 40);
 #endif
-        DebugOutputOn = !DebugOutputOn;
+        DebugOutput = !DebugOutput;
       }
 #endif      
 
@@ -185,11 +185,11 @@ void ReadControl() {
 
       if (PS2.ButtonPressed(PSB_CROSS)) { //Cross button
         if (SpeedControl > 0) {
-          Prev_SpeedControl = SpeedControl;
+          PrevSpeedControl = SpeedControl;
           SpeedControl = 0;
         }
         else {
-          SpeedControl = Prev_SpeedControl;
+          SpeedControl = PrevSpeedControl;
         }
 #ifdef DEBUG_MODE
         DBGSerial.print("SpeedControl: ");
@@ -270,8 +270,8 @@ void ReadControl() {
 #ifdef SOUND_MODE
           Sound.play(2217, 40);
 #endif
-          DoubleHeightOn = !DoubleHeightOn;
-          if (DoubleHeightOn) {
+          DoubleHeight = !DoubleHeight;
+          if (DoubleHeight) {
             LegLiftHeight = 80;
 #ifdef DEBUG_MODE
             DBGSerial.println("DoubleHeight: On");
@@ -290,9 +290,9 @@ void ReadControl() {
 #ifdef SOUND_MODE
           Sound.play(2217, 40);
 #endif
-          DoubleTravelOn = !DoubleTravelOn;
+          DoubleTravel = !DoubleTravel;
 #ifdef DEBUG_MODE
-          if (DoubleTravelOn) {
+          if (DoubleTravel) {
             DBGSerial.println("DoubleTravel: On");
           }
           else {
@@ -326,7 +326,7 @@ void ReadControl() {
           TravelLengthZ = (PS2.Analog(PSS_LY) - 128);
         }
 
-        if (!DoubleTravelOn) { //Double travel length
+        if (!DoubleTravel) { //Double travel length
           TravelLengthX /= 2;
           TravelLengthZ /= 2;
         }

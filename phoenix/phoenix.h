@@ -75,14 +75,14 @@ short    BodyRotZ;           //Global input roll of the body
 //Timing
 byte     InputTimeDelay;     //Delay that depends on the input to get the "sneaking" effect
 long     TimerStart;         //Start time of the calculation cycles
-word     Prev_SSCTime;       //Previous time for the servo updates
-word     Prev_SpeedControl;
+word     PrevSSCTime;        //Previous time for the servo updates
+word     PrevSpeedControl;
 word     SpeedControl;       //Adjustable delay
 word     SSCTime;            //Time for servo updates
 
 //Power
 bool     HexOn;              //Switch to turn on Phoenix
-bool     Prev_HexOn;         //Previous loop state 
+bool     PrevHexOn;          //Previous loop state 
 
 //Balance
 bool     BalanceMode;
@@ -96,7 +96,7 @@ short    TotalBalZ;
 //Single leg
 bool     AllDown;
 bool     SLHold;             //Single leg control mode
-byte     Prev_SelectedLeg;
+byte     PrevSelectedLeg;
 byte     SelectedLeg;
 short    LegPosX[6];         //Actual X position of the leg
 short    LegPosY[6];         //Actual Y position of the leg
@@ -122,8 +122,8 @@ short    TravelLengthY;      //Current travel rotation Y
 short    TravelLengthZ;      //Current travel length Z
 
 #ifdef DEBUG_MODE
-bool     Prev_Walking;
-bool     DebugOutputOn;
+bool     PrevWalking;
+bool     DebugOutput;
 #endif
 
 #ifdef SOUND_MODE

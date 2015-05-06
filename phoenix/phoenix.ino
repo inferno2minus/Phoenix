@@ -62,7 +62,7 @@ void setup() {
 
   //Single leg control
   SelectedLeg = 255;
-  Prev_SelectedLeg = 255;
+  PrevSelectedLeg = 255;
 
   //Gait
   GaitType = 0;
@@ -111,16 +111,16 @@ void SingleLegControl() {
     (LegPosY[LF] == (short)pgm_read_word(&InitPosY[LF]));
 
   if (SelectedLeg <= 5) {
-    if (SelectedLeg != Prev_SelectedLeg) {
+    if (SelectedLeg != PrevSelectedLeg) {
       if (AllDown) { //Lift leg a bit when it got selected
         LegPosY[SelectedLeg] = (short)pgm_read_word(&InitPosY[SelectedLeg]) - 20;
         //Store current status
-        Prev_SelectedLeg = SelectedLeg;
+        PrevSelectedLeg = SelectedLeg;
       }
       else { //Return prev leg back to the init position
-        LegPosX[Prev_SelectedLeg] = (short)pgm_read_word(&InitPosX[Prev_SelectedLeg]);
-        LegPosY[Prev_SelectedLeg] = (short)pgm_read_word(&InitPosY[Prev_SelectedLeg]);
-        LegPosZ[Prev_SelectedLeg] = (short)pgm_read_word(&InitPosZ[Prev_SelectedLeg]);
+        LegPosX[PrevSelectedLeg] = (short)pgm_read_word(&InitPosX[PrevSelectedLeg]);
+        LegPosY[PrevSelectedLeg] = (short)pgm_read_word(&InitPosY[PrevSelectedLeg]);
+        LegPosZ[PrevSelectedLeg] = (short)pgm_read_word(&InitPosZ[PrevSelectedLeg]);
       }
     }
     else if (!SLHold) {
@@ -137,8 +137,8 @@ void SingleLegControl() {
         LegPosZ[LegIndex] = (short)pgm_read_word(&InitPosZ[LegIndex]);
       }
     }
-    if (Prev_SelectedLeg != 255) {
-      Prev_SelectedLeg = 255;
+    if (PrevSelectedLeg != 255) {
+      PrevSelectedLeg = 255;
     }
   }
 }
@@ -403,7 +403,7 @@ void CheckAngles() {
 
 void ServoDriver() {
   if (HexOn) {
-    if (HexOn && !Prev_HexOn) {
+    if (HexOn && !PrevHexOn) {
 #ifdef SOUND_MODE
       Sound.play(3, 1661, 60, 2217, 80, 2794, 100);
 #endif
@@ -442,24 +442,24 @@ void ServoDriver() {
       byte CycleTime = (millis() - TimerStart);
 
 #ifdef DEBUG_MODE
-      if (Walking && !Prev_Walking) {
+      if (Walking && !PrevWalking) {
         DBGSerial.println("Walking: Start");
-        Prev_Walking = true;
+        PrevWalking = true;
       }
       else if (!Walking) {
         DBGSerial.println("Walking: Finish");
-        Prev_Walking = false;
+        PrevWalking = false;
       }
 #endif
 
       //Wait for previous commands to be completed while walking
-      delay(max(Prev_SSCTime - CycleTime, 1)); //Min 1 ensures that there always is a value in the pause command
+      delay(max(PrevSSCTime - CycleTime, 1)); //Min 1 ensures that there always is a value in the pause command
     }
 
     //Commit servo positions
     ServoDriverCommit();
   }
-  else if (Prev_HexOn || !AllDown) { //Turn the bot off
+  else if (PrevHexOn || !AllDown) { //Turn the bot off
     SSCTime = 600;
     ServoDriverUpdate();
     ServoDriverCommit();
@@ -473,14 +473,14 @@ void ServoDriver() {
     delay(20);
   }
 
-  Prev_SSCTime = SSCTime;
+  PrevSSCTime = SSCTime;
 
   //Store previous HexOn state
   if (HexOn) {
-    Prev_HexOn = true;
+    PrevHexOn = true;
   }
   else {
-    Prev_HexOn = false;
+    PrevHexOn = false;
   }
 }
 
@@ -501,7 +501,7 @@ void ServoDriverUpdate() {
     }
 
 #ifdef DEBUG_MODE
-    if(DebugOutputOn) {
+    if(DebugOutput) {
       DBGSerial.print(LegIndex + 1, DEC);
       DBGSerial.print(": ");
       DBGSerial.print(CoxaPWM, DEC);
