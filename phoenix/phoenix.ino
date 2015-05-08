@@ -65,9 +65,9 @@ void setup() {
   PrevSelectedLeg = 255;
 
   //Gait
-  GaitType = 0;
   BalanceMode = false;
   LegLiftHeight = 50;
+  GaitType = 0;
   GaitStep = 1;
   GaitSelect();
 
@@ -250,14 +250,14 @@ void BalanceCalc() {
       if (LegIndex <= 2) {
         //Balance calculations for all right legs
         BalanceLeg(-LegPosX[LegIndex] + GaitPosX[LegIndex],
-        LegPosY[LegIndex] - (short)pgm_read_word(&InitPosY[LegIndex]) + GaitPosY[LegIndex],
-        LegPosZ[LegIndex] + GaitPosZ[LegIndex], LegIndex);
+          LegPosY[LegIndex] - (short)pgm_read_word(&InitPosY[LegIndex]) + GaitPosY[LegIndex],
+          LegPosZ[LegIndex] + GaitPosZ[LegIndex], LegIndex);
       }
       else {
         //Balance calculations for all left legs
         BalanceLeg(LegPosX[LegIndex] + GaitPosX[LegIndex],
-        LegPosY[LegIndex] - (short)pgm_read_word(&InitPosY[LegIndex]) + GaitPosY[LegIndex],
-        LegPosZ[LegIndex] + GaitPosZ[LegIndex], LegIndex);
+          LegPosY[LegIndex] - (short)pgm_read_word(&InitPosY[LegIndex]) + GaitPosY[LegIndex],
+          LegPosZ[LegIndex] + GaitPosZ[LegIndex], LegIndex);
       }
     }
     BalanceBody();
@@ -338,22 +338,22 @@ void KinematicCalc() {
     if (LegIndex <= 2) {
       //Kinematic calculations for all right legs
       BodyFK(-LegPosX[LegIndex] + BodyPosX + GaitPosX[LegIndex] - TotalTransX,
-      LegPosY[LegIndex] + BodyPosY + GaitPosY[LegIndex] - TotalTransY,
-      LegPosZ[LegIndex] + BodyPosZ + GaitPosZ[LegIndex] - TotalTransZ, GaitRotY[LegIndex], LegIndex);
+        LegPosY[LegIndex] + BodyPosY + GaitPosY[LegIndex] - TotalTransY,
+        LegPosZ[LegIndex] + BodyPosZ + GaitPosZ[LegIndex] - TotalTransZ, GaitRotY[LegIndex], LegIndex);
 
       LegIK(LegPosX[LegIndex] - BodyPosX + BodyFKPosX - GaitPosX[LegIndex] - TotalTransX,
-      LegPosY[LegIndex] + BodyPosY - BodyFKPosY + GaitPosY[LegIndex] - TotalTransY,
-      LegPosZ[LegIndex] + BodyPosZ - BodyFKPosZ + GaitPosZ[LegIndex] - TotalTransZ, LegIndex);
+        LegPosY[LegIndex] + BodyPosY - BodyFKPosY + GaitPosY[LegIndex] - TotalTransY,
+        LegPosZ[LegIndex] + BodyPosZ - BodyFKPosZ + GaitPosZ[LegIndex] - TotalTransZ, LegIndex);
     }
     else {
       //Kinematic calculations for all left legs
       BodyFK(LegPosX[LegIndex] - BodyPosX + GaitPosX[LegIndex] - TotalTransX,
-      LegPosY[LegIndex] + BodyPosY + GaitPosY[LegIndex] - TotalTransY,
-      LegPosZ[LegIndex] + BodyPosZ + GaitPosZ[LegIndex] - TotalTransZ, GaitRotY[LegIndex], LegIndex);
+        LegPosY[LegIndex] + BodyPosY + GaitPosY[LegIndex] - TotalTransY,
+        LegPosZ[LegIndex] + BodyPosZ + GaitPosZ[LegIndex] - TotalTransZ, GaitRotY[LegIndex], LegIndex);
 
       LegIK(LegPosX[LegIndex] + BodyPosX - BodyFKPosX + GaitPosX[LegIndex] - TotalTransX,
-      LegPosY[LegIndex] + BodyPosY - BodyFKPosY + GaitPosY[LegIndex] - TotalTransY,
-      LegPosZ[LegIndex] + BodyPosZ - BodyFKPosZ + GaitPosZ[LegIndex] - TotalTransZ, LegIndex);
+        LegPosY[LegIndex] + BodyPosY - BodyFKPosY + GaitPosY[LegIndex] - TotalTransY,
+        LegPosZ[LegIndex] + BodyPosZ - BodyFKPosZ + GaitPosZ[LegIndex] - TotalTransZ, LegIndex);
     }
   }
 }
@@ -410,7 +410,9 @@ void ServoDriver() {
     }
 
     //Set SSC time
-    if ((abs(TravelLengthX) > TRAVEL_DEADZONE) || (abs(TravelLengthZ) > TRAVEL_DEADZONE) || (abs(TravelLengthY * 2) > TRAVEL_DEADZONE)) {
+    if ((abs(TravelLengthX) > TRAVEL_DEADZONE) ||
+        (abs(TravelLengthZ) > TRAVEL_DEADZONE) ||
+        (abs(TravelLengthY * 2) > TRAVEL_DEADZONE)) {
       SSCTime = GaitCurrent.NomGaitSpeed + (InputTimeDelay * 2) + SpeedControl;
       //Add additional delay when balance mode is on
       if (BalanceMode) {
@@ -518,27 +520,27 @@ void ServoDriverUpdate() {
     }
 #endif
 
-    SSCWrite(pgm_read_byte(&CoxaPin[LegIndex]) + 0x80, highByte(CoxaPWM), lowByte(CoxaPWM));
-    SSCWrite(pgm_read_byte(&FemurPin[LegIndex]) + 0x80, highByte(FemurPWM), lowByte(FemurPWM));
-    SSCWrite(pgm_read_byte(&TibiaPin[LegIndex]) + 0x80, highByte(TibiaPWM), lowByte(TibiaPWM));
+    SSCWrite(pgm_read_byte(&CoxaPin[LegIndex]) + 0x80, CoxaPWM);
+    SSCWrite(pgm_read_byte(&FemurPin[LegIndex]) + 0x80, FemurPWM);
+    SSCWrite(pgm_read_byte(&TibiaPin[LegIndex]) + 0x80, TibiaPWM);
   }
 }
 
 void ServoDriverCommit() {
-  SSCWrite(0xA1, highByte(SSCTime), lowByte(SSCTime));
+  SSCWrite(0xA1, SSCTime);
 }
 
 void ServoDriverFree() {
   for (byte LegIndex = 0; LegIndex <= 31; LegIndex++) {
-    SSCWrite(LegIndex + 0x80, 0x00, 0x00);
+    SSCWrite(LegIndex + 0x80, 0x00);
   }
-  SSCWrite(0xA1, 0x00, 0xC8);
+  SSCWrite(0xA1, 0xC8);
 }
 
-void SSCWrite(byte a, byte b, byte c) {
+void SSCWrite(byte Command, byte Data) {
   byte Array[3];
-  Array[0] = a;
-  Array[1] = b;
-  Array[2] = c;
+  Array[0] = Command;
+  Array[1] = highByte(Data);
+  Array[2] = lowByte(Data);
   SSCSerial.write(Array, 3);
 }
