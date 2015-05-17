@@ -53,12 +53,8 @@ void setup() {
   Sound.begin(BUZZER);
 #endif
 
-  //Set start positions for each leg
-  for (byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
-    LegPosX[LegIndex] = (short)pgm_read_word(&InitPosX[LegIndex]);
-    LegPosY[LegIndex] = (short)pgm_read_word(&InitPosY[LegIndex]);
-    LegPosZ[LegIndex] = (short)pgm_read_word(&InitPosZ[LegIndex]);
-  }
+  //Initialize leg positions
+  InitLegPosition();
 
   //Single leg control
   SelectedLeg = 255;
@@ -101,6 +97,14 @@ void loop() {
   ServoDriver();
 }
 
+void InitLegPosition() {
+  for (byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
+    LegPosX[LegIndex] = (short)pgm_read_word(&InitPosX[LegIndex]);
+    LegPosY[LegIndex] = (short)pgm_read_word(&InitPosY[LegIndex]);
+    LegPosZ[LegIndex] = (short)pgm_read_word(&InitPosZ[LegIndex]);
+  }
+}
+
 void SingleLegControl() {
   //Check if all legs are down
   AllDown = (LegPosY[RF] == (short)pgm_read_word(&InitPosY[RF])) &&
@@ -131,11 +135,7 @@ void SingleLegControl() {
   }
   else { //All legs to init position
     if (!AllDown) {
-      for(byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
-        LegPosX[LegIndex] = (short)pgm_read_word(&InitPosX[LegIndex]);
-        LegPosY[LegIndex] = (short)pgm_read_word(&InitPosY[LegIndex]);
-        LegPosZ[LegIndex] = (short)pgm_read_word(&InitPosZ[LegIndex]);
-      }
+      InitLegPosition();
     }
     if (PrevSelectedLeg != 255) {
       PrevSelectedLeg = 255;
