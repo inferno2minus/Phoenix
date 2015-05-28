@@ -148,8 +148,9 @@ void Gait(byte LegIndex) {
   short LegStep = GaitStep - GaitCurrent.GaitLegNr[LegIndex];
 
   //Leg middle up position
-  if ((TravelRequest && (GaitCurrent.NrLiftedPos & 1) && (LegStep == 0)) || (!TravelRequest && (LegStep == 0) &&
-    ((abs(GaitPosX[LegIndex]) > 2) || (abs(GaitPosZ[LegIndex]) > 2) || (abs(GaitRotY[LegIndex]) > 2)))) {
+  if ((TravelRequest && (GaitCurrent.NrLiftedPos & 1) && (LegStep == 0)) ||
+    (!TravelRequest && (LegStep == 0) && ((abs(GaitPosX[LegIndex]) > 2) ||
+    (abs(GaitPosZ[LegIndex]) > 2) || (abs(GaitRotY[LegIndex]) > 2)))) {
     GaitPosX[LegIndex] = 0;
     GaitPosY[LegIndex] = -LegLiftHeight;
     GaitPosZ[LegIndex] = 0;
@@ -157,7 +158,9 @@ void Gait(byte LegIndex) {
   }
 
   //Optional half height Rear (2, 3, 5 lifted positions)
-  else if ((((GaitCurrent.NrLiftedPos == 2) && (LegStep == 0)) || ((GaitCurrent.NrLiftedPos >= 3) && ((LegStep == -1) || (LegStep == (GaitCurrent.StepsInGait - 1))))) && TravelRequest) {
+  else if ((((GaitCurrent.NrLiftedPos == 2) && (LegStep == 0)) ||
+    ((GaitCurrent.NrLiftedPos >= 3) && ((LegStep == -1) ||
+    (LegStep == (GaitCurrent.StepsInGait - 1))))) && TravelRequest) {
     GaitPosX[LegIndex] = -TravelLengthX / GaitCurrent.LiftDivFactor;
     GaitPosY[LegIndex] = -3 * LegLiftHeight / (3 + GaitCurrent.HalfLiftHeight);
     GaitPosZ[LegIndex] = -TravelLengthZ / GaitCurrent.LiftDivFactor;
@@ -165,7 +168,8 @@ void Gait(byte LegIndex) {
   }
 
   //Optional half height Front (2, 3, 5 lifted positions)
-  else if ((GaitCurrent.NrLiftedPos >= 2) && ((LegStep == 1) || (LegStep == -(GaitCurrent.StepsInGait - 1))) && TravelRequest) {
+  else if ((GaitCurrent.NrLiftedPos >= 2) && ((LegStep == 1) ||
+    (LegStep == -(GaitCurrent.StepsInGait - 1))) && TravelRequest) {
     GaitPosX[LegIndex] = TravelLengthX / GaitCurrent.LiftDivFactor;
     GaitPosY[LegIndex] = -3 * LegLiftHeight / (3 + GaitCurrent.HalfLiftHeight);
     GaitPosZ[LegIndex] = TravelLengthZ / GaitCurrent.LiftDivFactor;
@@ -181,7 +185,8 @@ void Gait(byte LegIndex) {
   }
 
   //Optional half height Front (5 lifted positions)
-  else if ((GaitCurrent.NrLiftedPos == 5) && ((LegStep == 2) || (LegStep == -(GaitCurrent.StepsInGait - 2))) && TravelRequest) {
+  else if ((GaitCurrent.NrLiftedPos == 5) && ((LegStep == 2) ||
+    (LegStep == -(GaitCurrent.StepsInGait - 2))) && TravelRequest) {
     GaitPosX[LegIndex] = TravelLengthX / 2;
     GaitPosY[LegIndex] = -LegLiftHeight / 2;
     GaitPosZ[LegIndex] = TravelLengthZ / 2;
@@ -189,7 +194,8 @@ void Gait(byte LegIndex) {
   }
 
   //Leg front down position
-  else if (((LegStep == GaitCurrent.FrontDownPos) || (LegStep == -(GaitCurrent.StepsInGait - GaitCurrent.FrontDownPos))) && (GaitPosY[LegIndex] < 0)) {
+  else if (((LegStep == GaitCurrent.FrontDownPos) ||
+    (LegStep == -(GaitCurrent.StepsInGait - GaitCurrent.FrontDownPos))) && (GaitPosY[LegIndex] < 0)) {
     GaitPosX[LegIndex] = TravelLengthX / 2;
     GaitPosY[LegIndex] = 0;
     GaitPosZ[LegIndex] = TravelLengthZ / 2;
@@ -213,7 +219,10 @@ void GaitSelect() {
 
 void GaitSequence() {
   //Check if the gait is in motion
-  TravelRequest = (abs(TravelLengthX) > TRAVEL_DEADZONE) || (abs(TravelLengthZ) > TRAVEL_DEADZONE) || (abs(TravelLengthY) > TRAVEL_DEADZONE) || Walking;
+  TravelRequest =  Walking ||
+    (abs(TravelLengthX) > TRAVEL_DEADZONE) ||
+    (abs(TravelLengthZ) > TRAVEL_DEADZONE) ||
+    (abs(TravelLengthY) > TRAVEL_DEADZONE);
 
   //Clear values under the TRAVEL_DEADZONE
   if (!TravelRequest) {
@@ -339,21 +348,25 @@ void KinematicCalc() {
       //Kinematic calculations for all right legs
       BodyFK(-LegPosX[LegIndex] + BodyPosX + GaitPosX[LegIndex] - TotalTransX,
         LegPosY[LegIndex] + BodyPosY + GaitPosY[LegIndex] - TotalTransY,
-        LegPosZ[LegIndex] + BodyPosZ + GaitPosZ[LegIndex] - TotalTransZ, GaitRotY[LegIndex], LegIndex);
+        LegPosZ[LegIndex] + BodyPosZ + GaitPosZ[LegIndex] - TotalTransZ,
+        GaitRotY[LegIndex], LegIndex);
 
       LegIK(LegPosX[LegIndex] - BodyPosX + BodyFKPosX - GaitPosX[LegIndex] - TotalTransX,
         LegPosY[LegIndex] + BodyPosY - BodyFKPosY + GaitPosY[LegIndex] - TotalTransY,
-        LegPosZ[LegIndex] + BodyPosZ - BodyFKPosZ + GaitPosZ[LegIndex] - TotalTransZ, LegIndex);
+        LegPosZ[LegIndex] + BodyPosZ - BodyFKPosZ + GaitPosZ[LegIndex] - TotalTransZ,
+        LegIndex);
     }
     else {
       //Kinematic calculations for all left legs
       BodyFK(LegPosX[LegIndex] - BodyPosX + GaitPosX[LegIndex] - TotalTransX,
         LegPosY[LegIndex] + BodyPosY + GaitPosY[LegIndex] - TotalTransY,
-        LegPosZ[LegIndex] + BodyPosZ + GaitPosZ[LegIndex] - TotalTransZ, GaitRotY[LegIndex], LegIndex);
+        LegPosZ[LegIndex] + BodyPosZ + GaitPosZ[LegIndex] - TotalTransZ,
+        GaitRotY[LegIndex], LegIndex);
 
       LegIK(LegPosX[LegIndex] + BodyPosX - BodyFKPosX + GaitPosX[LegIndex] - TotalTransX,
         LegPosY[LegIndex] + BodyPosY - BodyFKPosY + GaitPosY[LegIndex] - TotalTransY,
-        LegPosZ[LegIndex] + BodyPosZ - BodyFKPosZ + GaitPosZ[LegIndex] - TotalTransZ, LegIndex);
+        LegPosZ[LegIndex] + BodyPosZ - BodyFKPosZ + GaitPosZ[LegIndex] - TotalTransZ,
+        LegIndex);
     }
   }
 }
@@ -371,8 +384,10 @@ void BodyFK(short PosX, short PosY, short PosZ, short RotY, byte LegIndex) {
 
   //Calculation of rotation matrix
   BodyFKPosX = TotalX - (TotalX * A.Cos * B.Cos - TotalZ * B.Cos * A.Sin + TotalY * B.Sin);
-  BodyFKPosY = TotalY - (TotalX * A.Sin * G.Sin - TotalX * A.Cos * G.Cos * B.Sin + TotalZ * A.Cos * G.Sin + TotalZ * G.Cos * A.Sin * B.Sin + TotalY * B.Cos * G.Cos);
-  BodyFKPosZ = TotalZ - (TotalX * G.Cos * A.Sin + TotalX * A.Cos * B.Sin * G.Sin + TotalZ * A.Cos * G.Cos - TotalZ * A.Sin * B.Sin * G.Sin - TotalY * B.Cos * G.Sin);
+  BodyFKPosY = TotalY - (TotalX * A.Sin * G.Sin - TotalX * A.Cos * G.Cos * B.Sin + TotalZ *
+    A.Cos * G.Sin + TotalZ * G.Cos * A.Sin * B.Sin + TotalY * B.Cos * G.Cos);
+  BodyFKPosZ = TotalZ - (TotalX * G.Cos * A.Sin + TotalX * A.Cos * B.Sin * G.Sin + TotalZ *
+    A.Cos * G.Cos - TotalZ * A.Sin * B.Sin * G.Sin - TotalY * B.Cos * G.Sin);
 }
 
 void LegIK(short PosX, short PosY, short PosZ, byte LegIndex) {
@@ -390,14 +405,18 @@ void LegIK(short PosX, short PosY, short PosZ, byte LegIndex) {
 
   CoxaAngle[LegIndex] = atan2(PosZ, PosX) * 180 / PI + (short)pgm_read_word(&LegAngle[LegIndex]);
   FemurAngle[LegIndex] = -(IKA1 + IKA2) * 180 / PI + 90;
-  TibiaAngle[LegIndex] = -(90 - acos((pow(FemurLength, 2) + pow(TibiaLength, 2) - pow(IKSW, 2)) / (2 * FemurLength * TibiaLength)) * 180 / PI);
+  TibiaAngle[LegIndex] = -(90 - acos((pow(FemurLength, 2) + pow(TibiaLength, 2) - pow(IKSW, 2)) / 
+    (2 * FemurLength * TibiaLength)) * 180 / PI);
 }
 
 void CheckAngles() {
   for (byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
-    CoxaAngle[LegIndex] = min(max(CoxaAngle[LegIndex], (short)pgm_read_word(&CoxaMin[LegIndex])), (short)pgm_read_word(&CoxaMax[LegIndex]));
-    FemurAngle[LegIndex] = min(max(FemurAngle[LegIndex], (short)pgm_read_word(&FemurMin[LegIndex])), (short)pgm_read_word(&FemurMax[LegIndex]));
-    TibiaAngle[LegIndex] = min(max(TibiaAngle[LegIndex], (short)pgm_read_word(&TibiaMin[LegIndex])), (short)pgm_read_word(&TibiaMax[LegIndex]));
+    CoxaAngle[LegIndex] = min(max(CoxaAngle[LegIndex],
+      (short)pgm_read_word(&CoxaMin[LegIndex])), (short)pgm_read_word(&CoxaMax[LegIndex]));
+    FemurAngle[LegIndex] = min(max(FemurAngle[LegIndex],
+      (short)pgm_read_word(&FemurMin[LegIndex])), (short)pgm_read_word(&FemurMax[LegIndex]));
+    TibiaAngle[LegIndex] = min(max(TibiaAngle[LegIndex],
+      (short)pgm_read_word(&TibiaMin[LegIndex])), (short)pgm_read_word(&TibiaMax[LegIndex]));
   }
 }
 
@@ -431,7 +450,8 @@ void ServoDriver() {
       if ((GaitPosX[LegIndex] > 2) || (GaitPosX[LegIndex] < -2) ||
           (GaitRotY[LegIndex] > 2) || (GaitRotY[LegIndex] < -2) ||
           (GaitPosZ[LegIndex] > 2) || (GaitPosZ[LegIndex] < -2)) {
-        ExtraCycle = GaitCurrent.NrLiftedPos + 1; //For making sure that we are using timed move until all legs are down
+        //For making sure that we are using timed move until all legs are down
+        ExtraCycle = GaitCurrent.NrLiftedPos + 1;
         break;
       }
     }

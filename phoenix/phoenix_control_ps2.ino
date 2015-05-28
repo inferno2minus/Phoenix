@@ -411,7 +411,8 @@ void ReadControl() {
       }
 
       //Calculate walking time delay
-      InputTimeDelay = 128 - max(max(abs(PS2.Analog(PSS_LX) - 128), abs(PS2.Analog(PSS_LY) - 128)), abs(PS2.Analog(PSS_RX) - 128));
+      InputTimeDelay = 128 - max(max(abs(PS2.Analog(PSS_LX) - 128), 
+        abs(PS2.Analog(PSS_LY) - 128)), abs(PS2.Analog(PSS_RX) - 128));
     }
 
     //Calculate BodyPosY
