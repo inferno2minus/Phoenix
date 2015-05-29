@@ -32,7 +32,7 @@ const gait Gaits[] = {
   { 3,  2,  2,  3, 20, 24, 70, {  1, 21,  5, 13,  9, 17 } }  //Wave 24 steps
 };
 
-const byte GaitsNumber = sizeof(Gaits)/sizeof(Gaits[0]) - 1;
+const byte GaitsLength = sizeof(Gaits)/sizeof(Gaits[0]);
 
 void setup() {
   SSCSerial.begin(SSC_BAUD);
@@ -148,8 +148,8 @@ void Gait(byte LegIndex) {
   short LegStep = GaitStep - GaitCurrent.GaitLegNr[LegIndex];
 
   //Leg middle up position
-  if ((TravelRequest && (GaitCurrent.NrLiftedPos & 1) && (LegStep == 0)) ||
-    (!TravelRequest && (LegStep == 0) && ((abs(GaitPosX[LegIndex]) > 2) ||
+  if ((GaitInMotion && (GaitCurrent.NrLiftedPos & 1) && (LegStep == 0)) ||
+    (!GaitInMotion && (LegStep == 0) && ((abs(GaitPosX[LegIndex]) > 2) ||
     (abs(GaitPosZ[LegIndex]) > 2) || (abs(GaitRotY[LegIndex]) > 2)))) {
     GaitPosX[LegIndex] = 0;
     GaitPosY[LegIndex] = -LegLiftHeight;
@@ -160,7 +160,7 @@ void Gait(byte LegIndex) {
   //Optional half height Rear (2, 3, 5 lifted positions)
   else if ((((GaitCurrent.NrLiftedPos == 2) && (LegStep == 0)) ||
     ((GaitCurrent.NrLiftedPos >= 3) && ((LegStep == -1) ||
-    (LegStep == (GaitCurrent.StepsInGait - 1))))) && TravelRequest) {
+    (LegStep == (GaitCurrent.StepsInGait - 1))))) && GaitInMotion) {
     GaitPosX[LegIndex] = -TravelLengthX / GaitCurrent.LiftDivFactor;
     GaitPosY[LegIndex] = -3 * LegLiftHeight / (3 + GaitCurrent.HalfLiftHeight);
     GaitPosZ[LegIndex] = -TravelLengthZ / GaitCurrent.LiftDivFactor;
@@ -169,7 +169,7 @@ void Gait(byte LegIndex) {
 
   //Optional half height Front (2, 3, 5 lifted positions)
   else if ((GaitCurrent.NrLiftedPos >= 2) && ((LegStep == 1) ||
-    (LegStep == -(GaitCurrent.StepsInGait - 1))) && TravelRequest) {
+    (LegStep == -(GaitCurrent.StepsInGait - 1))) && GaitInMotion) {
     GaitPosX[LegIndex] = TravelLengthX / GaitCurrent.LiftDivFactor;
     GaitPosY[LegIndex] = -3 * LegLiftHeight / (3 + GaitCurrent.HalfLiftHeight);
     GaitPosZ[LegIndex] = TravelLengthZ / GaitCurrent.LiftDivFactor;
@@ -177,7 +177,7 @@ void Gait(byte LegIndex) {
   }
 
   //Optional half height Rear (5 lifted positions)
-  else if ((GaitCurrent.NrLiftedPos == 5) && (LegStep == -2) && TravelRequest) {
+  else if ((GaitCurrent.NrLiftedPos == 5) && (LegStep == -2) && GaitInMotion) {
     GaitPosX[LegIndex] = -TravelLengthX / 2;
     GaitPosY[LegIndex] = -LegLiftHeight / 2;
     GaitPosZ[LegIndex] = -TravelLengthZ / 2;
@@ -186,7 +186,7 @@ void Gait(byte LegIndex) {
 
   //Optional half height Front (5 lifted positions)
   else if ((GaitCurrent.NrLiftedPos == 5) && ((LegStep == 2) ||
-    (LegStep == -(GaitCurrent.StepsInGait - 2))) && TravelRequest) {
+    (LegStep == -(GaitCurrent.StepsInGait - 2))) && GaitInMotion) {
     GaitPosX[LegIndex] = TravelLengthX / 2;
     GaitPosY[LegIndex] = -LegLiftHeight / 2;
     GaitPosZ[LegIndex] = TravelLengthZ / 2;
@@ -212,20 +212,20 @@ void Gait(byte LegIndex) {
 }
 
 void GaitSelect() {
-  if (GaitType < GaitsNumber) { 
+  if (GaitType < GaitsLength - 1) { 
     GaitCurrent = Gaits[GaitType];
   }
 }
 
 void GaitSequence() {
   //Check if the gait is in motion
-  TravelRequest =  Walking ||
+  GaitInMotion =  Walking ||
     (abs(TravelLengthX) > TRAVEL_DEADZONE) ||
     (abs(TravelLengthZ) > TRAVEL_DEADZONE) ||
     (abs(TravelLengthY) > TRAVEL_DEADZONE);
 
   //Clear values under the TRAVEL_DEADZONE
-  if (!TravelRequest) {
+  if (!GaitInMotion) {
     TravelLengthX = 0;
     TravelLengthZ = 0;
     TravelLengthY = 0;
@@ -475,7 +475,7 @@ void ServoDriver() {
 #endif
 
       //Wait for previous commands to be completed while walking
-      delay(max(PrevSSCTime - CycleTime, 1)); //Min 1 ensures that there always is a value in the pause command
+      delay(max(PrevSSCTime - CycleTime, 1));
     }
 
     //Commit servo positions
@@ -540,27 +540,27 @@ void ServoDriverUpdate() {
     }
 #endif
 
-    SSCWrite(pgm_read_byte(&CoxaPin[LegIndex]) + 0x80, CoxaPWM);
-    SSCWrite(pgm_read_byte(&FemurPin[LegIndex]) + 0x80, FemurPWM);
-    SSCWrite(pgm_read_byte(&TibiaPin[LegIndex]) + 0x80, TibiaPWM);
+    SSCWrite(pgm_read_byte(&CoxaPin[LegIndex]) + 0x80, highByte(CoxaPWM), lowByte(CoxaPWM));
+    SSCWrite(pgm_read_byte(&FemurPin[LegIndex]) + 0x80, highByte(FemurPWM), lowByte(FemurPWM));
+    SSCWrite(pgm_read_byte(&TibiaPin[LegIndex]) + 0x80, highByte(TibiaPWM), lowByte(TibiaPWM));
   }
 }
 
 void ServoDriverCommit() {
-  SSCWrite(0xA1, SSCTime);
+  SSCWrite(0xA1, highByte(SSCTime), lowByte(SSCTime));
 }
 
 void ServoDriverFree() {
   for (byte LegIndex = 0; LegIndex <= 31; LegIndex++) {
-    SSCWrite(LegIndex + 0x80, 0x00);
+    SSCWrite(LegIndex + 0x80, 0x00, 0x00);
   }
-  SSCWrite(0xA1, 0xC8);
+  SSCWrite(0xA1, 0x00, 0xC8);
 }
 
-void SSCWrite(byte Command, byte Data) {
+void SSCWrite(byte Command, byte HighByte, byte LowByte) {
   byte Array[3];
   Array[0] = Command;
-  Array[1] = highByte(Data);
-  Array[2] = lowByte(Data);
+  Array[1] = HighByte;
+  Array[2] = LowByte;
   SSCSerial.write(Array, 3);
 }

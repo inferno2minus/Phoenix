@@ -106,7 +106,7 @@ short    SLLegY;
 short    SLLegZ;
 
 //Gait
-bool     TravelRequest;      //Temp to check if the gait is in motion
+bool     GaitInMotion;       //Temp to check if the gait is in motion
 bool     Walking;            //True if the robot are walking
 byte     ExtraCycle;         //Forcing some extra timed cycles for avoiding "end of gait bug"
 byte     GaitStep;           //Actual gait step

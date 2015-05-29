@@ -37,7 +37,7 @@ void InitControl() {
 void ReadControl() {
   if (PS2.read_gamepad()) {
     //Switch bot on/off
-    if (PS2.ButtonPressed(PSB_START) && !TravelRequest) { //Start button
+    if (PS2.ButtonPressed(PSB_START) && !GaitInMotion) { //Start button
       if (HexOn) {
         TurnRobotOff(); //Turn off
       }
@@ -51,7 +51,7 @@ void ReadControl() {
 
     if (HexOn) {
       //Translate mode
-      if (PS2.ButtonPressed(PSB_L1) && !TravelRequest) { //L1 button
+      if (PS2.ButtonPressed(PSB_L1) && !GaitInMotion) { //L1 button
 #ifdef SOUND_MODE
         Sound.play(2217, 40);
 #endif
@@ -76,7 +76,7 @@ void ReadControl() {
       }
 
       //Rotate mode
-      if (PS2.ButtonPressed(PSB_L2) && !TravelRequest) { //L2 button
+      if (PS2.ButtonPressed(PSB_L2) && !GaitInMotion) { //L2 button
 #ifdef SOUND_MODE
         Sound.play(2217, 40);
 #endif
@@ -101,7 +101,7 @@ void ReadControl() {
       }
 
 #ifdef DEBUG_MODE
-      if (PS2.ButtonPressed(PSB_L3) && !TravelRequest) { //L3 button
+      if (PS2.ButtonPressed(PSB_L3) && !GaitInMotion) { //L3 button
 #ifdef SOUND_MODE
         Sound.play(2217, 40);
 #endif
@@ -110,7 +110,7 @@ void ReadControl() {
 #endif      
 
       //Single leg mode
-      if (PS2.ButtonPressed(PSB_CIRCLE) && !TravelRequest) { //Circle button
+      if (PS2.ButtonPressed(PSB_CIRCLE) && !GaitInMotion) { //Circle button
 #ifdef SOUND_MODE
         Sound.play(2217, 40);
 #endif
@@ -134,7 +134,7 @@ void ReadControl() {
 
       //[Common functions]
       //Switch balance mode on/off
-      if (PS2.ButtonPressed(PSB_SQUARE) && !TravelRequest) { //Square button
+      if (PS2.ButtonPressed(PSB_SQUARE) && !GaitInMotion) { //Square button
 #ifdef SOUND_MODE
         Sound.play(2217, 40);
 #endif
@@ -226,8 +226,8 @@ void ReadControl() {
       //[Walk functions]
       if (ControlMode == WALKMODE) {
         //Switch gates
-        if (PS2.ButtonPressed(PSB_SELECT) && !TravelRequest) { //Select button
-          if (GaitType < GaitsNumber) {
+        if (PS2.ButtonPressed(PSB_SELECT) && !GaitInMotion) { //Select button
+          if (GaitType < GaitsLength - 1) {
 #ifdef SOUND_MODE
             Sound.play(2217, 40);
 #endif
@@ -266,7 +266,7 @@ void ReadControl() {
         }
 
         //Double leg lift height
-        if (PS2.ButtonPressed(PSB_R1) && !TravelRequest) { //R1 button
+        if (PS2.ButtonPressed(PSB_R1) && !GaitInMotion) { //R1 button
 #ifdef SOUND_MODE
           Sound.play(2217, 40);
 #endif
@@ -286,7 +286,7 @@ void ReadControl() {
         }
 
         //Double travel length
-        if (PS2.ButtonPressed(PSB_R2) && !TravelRequest) { //R2 button
+        if (PS2.ButtonPressed(PSB_R2) && !GaitInMotion) { //R2 button
 #ifdef SOUND_MODE
           Sound.play(2217, 40);
 #endif
@@ -302,7 +302,7 @@ void ReadControl() {
         }
 
         //Switch between Walk method 1 and Walk method 2
-        if (PS2.ButtonPressed(PSB_R3) && !TravelRequest) { //R3 button
+        if (PS2.ButtonPressed(PSB_R3) && !GaitInMotion) { //R3 button
 #ifdef SOUND_MODE
           Sound.play(2217, 40);
 #endif
