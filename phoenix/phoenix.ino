@@ -475,7 +475,7 @@ void ServoDriver() {
 #endif
 
       //Wait for previous commands to be completed while walking
-      delay(max(PrevSSCTime - CycleTime, 1));
+      delay(PrevSSCTime - CycleTime);
     }
 
     //Commit servo positions
