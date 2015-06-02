@@ -43,7 +43,7 @@ const short InitPosZ[] PROGMEM = { RRInitPosZ, RMInitPosZ, RFInitPosZ, LRInitPos
 typedef struct {
   float  Cos;
   float  Sin;
-} angle;
+} trig;
 
 typedef struct {
   byte   NrLiftedPos;        //Number of positions that a single leg is lifted (1-5)

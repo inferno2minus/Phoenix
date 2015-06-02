@@ -143,6 +143,40 @@ void SingleLegControl() {
   }
 }
 
+void GaitSequence() {
+  //Check if the gait is in motion
+  GaitInMotion =  Walking ||
+    (abs(TravelLengthX) > TRAVEL_DEADZONE) ||
+    (abs(TravelLengthZ) > TRAVEL_DEADZONE) ||
+    (abs(TravelLengthY) > TRAVEL_DEADZONE);
+
+  //Clear values under the TRAVEL_DEADZONE
+  if (!GaitInMotion) {
+    TravelLengthX = 0;
+    TravelLengthZ = 0;
+    TravelLengthY = 0;
+  }
+
+  //Calculate gait sequence
+  for (byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
+    Gait(LegIndex);
+  }
+
+  //Advance to the next step
+  if (GaitStep < GaitCurrent.StepsInGait) {
+    GaitStep++;
+  }
+  else {
+    GaitStep = 1;
+  }
+}
+
+void GaitSelect() {
+  if (GaitType < GaitsLength - 1) { 
+    GaitCurrent = Gaits[GaitType];
+  }
+}
+
 void Gait(byte LegIndex) {
   //Try to reduce the number of time we look at GaitLegNr and GaitStep
   short LegStep = GaitStep - GaitCurrent.GaitLegNr[LegIndex];
@@ -211,68 +245,6 @@ void Gait(byte LegIndex) {
   }
 }
 
-void GaitSelect() {
-  if (GaitType < GaitsLength - 1) { 
-    GaitCurrent = Gaits[GaitType];
-  }
-}
-
-void GaitSequence() {
-  //Check if the gait is in motion
-  GaitInMotion =  Walking ||
-    (abs(TravelLengthX) > TRAVEL_DEADZONE) ||
-    (abs(TravelLengthZ) > TRAVEL_DEADZONE) ||
-    (abs(TravelLengthY) > TRAVEL_DEADZONE);
-
-  //Clear values under the TRAVEL_DEADZONE
-  if (!GaitInMotion) {
-    TravelLengthX = 0;
-    TravelLengthZ = 0;
-    TravelLengthY = 0;
-  }
-
-  //Calculate gait sequence
-  for (byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
-    Gait(LegIndex);
-  }
-
-  //Advance to the next step
-  if (GaitStep < GaitCurrent.StepsInGait) {
-    GaitStep++;
-  }
-  else {
-    GaitStep = 1;
-  }
-}
-
-void BalanceCalc() {
-  //Reset values used for calculation of balance
-  TotalTransX = 0;
-  TotalTransY = 0;
-  TotalTransZ = 0;
-  TotalBalX = 0;
-  TotalBalY = 0;
-  TotalBalZ = 0;
-
-  if (BalanceMode) {
-    for (byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
-      if (LegIndex <= 2) {
-        //Balance calculations for all right legs
-        BalanceLeg(-LegPosX[LegIndex] + GaitPosX[LegIndex],
-          LegPosY[LegIndex] - (short)pgm_read_word(&InitPosY[LegIndex]) + GaitPosY[LegIndex],
-          LegPosZ[LegIndex] + GaitPosZ[LegIndex], LegIndex);
-      }
-      else {
-        //Balance calculations for all left legs
-        BalanceLeg(LegPosX[LegIndex] + GaitPosX[LegIndex],
-          LegPosY[LegIndex] - (short)pgm_read_word(&InitPosY[LegIndex]) + GaitPosY[LegIndex],
-          LegPosZ[LegIndex] + GaitPosZ[LegIndex], LegIndex);
-      }
-    }
-    BalanceBody();
-  }
-}
-
 void BalanceLeg(short PosX, short PosY, short PosZ, byte LegIndex) {
   //Calculating totals from center of the body to the feet
   short TotalX = (short)pgm_read_word(&OffsetX[LegIndex]) + PosX;
@@ -314,9 +286,36 @@ void BalanceBody() {
   TotalBalZ = TotalBalZ / 6;
 }
 
-angle GetSinCos(short AngleDeg) {
-  //Get the absolute value of AngleDeg
-  angle Angle;
+void BalanceCalc() {
+  //Reset values used for calculation of balance
+  TotalTransX = 0;
+  TotalTransY = 0;
+  TotalTransZ = 0;
+  TotalBalX = 0;
+  TotalBalY = 0;
+  TotalBalZ = 0;
+
+  if (BalanceMode) {
+    for (byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
+      if (LegIndex <= 2) {
+        //Balance calculations for all right legs
+        BalanceLeg(-LegPosX[LegIndex] + GaitPosX[LegIndex],
+          LegPosY[LegIndex] - (short)pgm_read_word(&InitPosY[LegIndex]) + GaitPosY[LegIndex],
+          LegPosZ[LegIndex] + GaitPosZ[LegIndex], LegIndex);
+      }
+      else {
+        //Balance calculations for all left legs
+        BalanceLeg(LegPosX[LegIndex] + GaitPosX[LegIndex],
+          LegPosY[LegIndex] - (short)pgm_read_word(&InitPosY[LegIndex]) + GaitPosY[LegIndex],
+          LegPosZ[LegIndex] + GaitPosZ[LegIndex], LegIndex);
+      }
+    }
+    BalanceBody();
+  }
+}
+
+trig GetSinCos(short AngleDeg) {
+  trig Trig;
   short ABSAngleDeg = abs(AngleDeg);
 
   //Shift rotation to a full circle of 360 deg
@@ -330,16 +329,54 @@ angle GetSinCos(short AngleDeg) {
   if (AngleDeg < 180) { //Angle between 0 and 180
     //Subtract 90 to shift range
     AngleDeg = AngleDeg - 90;
-    Angle.Sin = cos(radians(AngleDeg));
-    Angle.Cos = -sin(radians(AngleDeg));
+    Trig.Sin = cos(radians(AngleDeg));
+    Trig.Cos = -sin(radians(AngleDeg));
   }
   else { //Angle between 180 and 360
     //Subtract 270 to shift range
     AngleDeg = AngleDeg - 270;
-    Angle.Sin = -cos(radians(AngleDeg));
-    Angle.Cos = sin(radians(AngleDeg));
+    Trig.Sin = -cos(radians(AngleDeg));
+    Trig.Cos = sin(radians(AngleDeg));
   }
-  return Angle;
+  return Trig;
+}
+
+void BodyFK(short PosX, short PosY, short PosZ, short RotY, byte LegIndex) {
+  //Calculating totals from center of the body to the feet
+  short TotalX = (short)pgm_read_word(&OffsetX[LegIndex]) + PosX;
+  short TotalY = PosY;
+  short TotalZ = (short)pgm_read_word(&OffsetZ[LegIndex]) + PosZ;
+
+  //First calculate sinus and cosinus for each rotation
+  trig G = GetSinCos(BodyRotX + TotalBalX);
+  trig B = GetSinCos(BodyRotZ + TotalBalZ);
+  trig A = GetSinCos(BodyRotY + TotalBalY + RotY);
+
+  //Calculation of rotation matrix
+  BodyFKPosX = TotalX - (TotalX * A.Cos * B.Cos - TotalZ * B.Cos * A.Sin + TotalY * B.Sin);
+  BodyFKPosY = TotalY - (TotalX * A.Sin * G.Sin - TotalX * A.Cos * G.Cos * B.Sin + TotalZ *
+    A.Cos * G.Sin + TotalZ * G.Cos * A.Sin * B.Sin + TotalY * B.Cos * G.Cos);
+  BodyFKPosZ = TotalZ - (TotalX * G.Cos * A.Sin + TotalX * A.Cos * B.Sin * G.Sin + TotalZ *
+    A.Cos * G.Cos - TotalZ * A.Sin * B.Sin * G.Sin - TotalY * B.Cos * G.Sin);
+}
+
+void LegIK(short PosX, short PosY, short PosZ, byte LegIndex) {
+  //Length between the coxa and feet
+  float PosXZ = sqrt(pow(PosX, 2) + pow(PosZ, 2));
+
+  //Length between shoulder and wrist
+  float IKSW = sqrt(pow(PosXZ - CoxaLength, 2) + pow(PosY, 2));
+
+  //Angle of the line SW with respect to the ground in radians
+  float IKA1 = atan2(PosXZ - CoxaLength, PosY);
+
+  //Angle of the line SW with respect to the femur in radians
+  float IKA2 = acos((pow(FemurLength, 2) - pow(TibiaLength, 2) + pow(IKSW, 2)) / (2 * FemurLength * IKSW));
+
+  CoxaAngle[LegIndex] = atan2(PosZ, PosX) * 180 / PI + (short)pgm_read_word(&LegAngle[LegIndex]);
+  FemurAngle[LegIndex] = -(IKA1 + IKA2) * 180 / PI + 90;
+  TibiaAngle[LegIndex] = -(90 - acos((pow(FemurLength, 2) + pow(TibiaLength, 2) - pow(IKSW, 2)) / 
+    (2 * FemurLength * TibiaLength)) * 180 / PI);
 }
 
 void KinematicCalc() {
@@ -371,44 +408,6 @@ void KinematicCalc() {
   }
 }
 
-void BodyFK(short PosX, short PosY, short PosZ, short RotY, byte LegIndex) {
-  //Calculating totals from center of the body to the feet
-  short TotalX = (short)pgm_read_word(&OffsetX[LegIndex]) + PosX;
-  short TotalY = PosY;
-  short TotalZ = (short)pgm_read_word(&OffsetZ[LegIndex]) + PosZ;
-
-  //First calculate sinus and cosinus for each rotation
-  angle G = GetSinCos(BodyRotX + TotalBalX);
-  angle B = GetSinCos(BodyRotZ + TotalBalZ);
-  angle A = GetSinCos(BodyRotY + TotalBalY + RotY);
-
-  //Calculation of rotation matrix
-  BodyFKPosX = TotalX - (TotalX * A.Cos * B.Cos - TotalZ * B.Cos * A.Sin + TotalY * B.Sin);
-  BodyFKPosY = TotalY - (TotalX * A.Sin * G.Sin - TotalX * A.Cos * G.Cos * B.Sin + TotalZ *
-    A.Cos * G.Sin + TotalZ * G.Cos * A.Sin * B.Sin + TotalY * B.Cos * G.Cos);
-  BodyFKPosZ = TotalZ - (TotalX * G.Cos * A.Sin + TotalX * A.Cos * B.Sin * G.Sin + TotalZ *
-    A.Cos * G.Cos - TotalZ * A.Sin * B.Sin * G.Sin - TotalY * B.Cos * G.Sin);
-}
-
-void LegIK(short PosX, short PosY, short PosZ, byte LegIndex) {
-  //Length between the coxa and feet
-  float PosXZ = sqrt(pow(PosX, 2) + pow(PosZ, 2));
-
-  //Length between shoulder and wrist
-  float IKSW = sqrt(pow(PosXZ - CoxaLength, 2) + pow(PosY, 2));
-
-  //Angle of the line SW with respect to the ground in radians
-  float IKA1 = atan2(PosXZ - CoxaLength, PosY);
-
-  //Angle of the line SW with respect to the femur in radians
-  float IKA2 = acos((pow(FemurLength, 2) - pow(TibiaLength, 2) + pow(IKSW, 2)) / (2 * FemurLength * IKSW));
-
-  CoxaAngle[LegIndex] = atan2(PosZ, PosX) * 180 / PI + (short)pgm_read_word(&LegAngle[LegIndex]);
-  FemurAngle[LegIndex] = -(IKA1 + IKA2) * 180 / PI + 90;
-  TibiaAngle[LegIndex] = -(90 - acos((pow(FemurLength, 2) + pow(TibiaLength, 2) - pow(IKSW, 2)) / 
-    (2 * FemurLength * TibiaLength)) * 180 / PI);
-}
-
 void CheckAngles() {
   for (byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
     CoxaAngle[LegIndex] = min(max(CoxaAngle[LegIndex],
@@ -418,6 +417,65 @@ void CheckAngles() {
     TibiaAngle[LegIndex] = min(max(TibiaAngle[LegIndex],
       (short)pgm_read_word(&TibiaMin[LegIndex])), (short)pgm_read_word(&TibiaMax[LegIndex]));
   }
+}
+
+void SSCWrite(byte Command, word Data) {
+  byte Array[3];
+  Array[0] = Command;
+  Array[1] = highByte(Data);
+  Array[2] = lowByte(Data);
+  SSCSerial.write(Array, 3);
+}
+
+void ServoDriverUpdate() {
+  for (byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
+    word CoxaPWM, FemurPWM, TibiaPWM;
+    //Update right legs
+    if (LegIndex <= 2) {
+      CoxaPWM = (-CoxaAngle[LegIndex] + 90) / 0.0991 + 592;
+      FemurPWM = (-FemurAngle[LegIndex] + 90) / 0.0991 + 592;
+      TibiaPWM = (-TibiaAngle[LegIndex] + 90) / 0.0991 + 592;
+    }
+    else {
+      //Update left legs
+      CoxaPWM = (CoxaAngle[LegIndex] + 90) / 0.0991 + 592;
+      FemurPWM = (FemurAngle[LegIndex] + 90) / 0.0991 + 592;
+      TibiaPWM = (TibiaAngle[LegIndex] + 90) / 0.0991 + 592;
+    }
+
+#ifdef DEBUG_MODE
+    if(DebugOutput) {
+      DBGSerial.print(LegIndex + 1, DEC);
+      DBGSerial.print(": ");
+      DBGSerial.print(CoxaPWM, DEC);
+      DBGSerial.print(" ");
+      DBGSerial.print(FemurPWM, DEC);
+      DBGSerial.print(" ");
+      DBGSerial.print(TibiaPWM, DEC);
+      if (LegIndex != 5) {
+        DBGSerial.print(" | ");
+      }
+      else {
+        DBGSerial.println();
+      }
+    }
+#endif
+
+    SSCWrite(pgm_read_byte(&CoxaPin[LegIndex]) + 0x80, CoxaPWM);
+    SSCWrite(pgm_read_byte(&FemurPin[LegIndex]) + 0x80, FemurPWM);
+    SSCWrite(pgm_read_byte(&TibiaPin[LegIndex]) + 0x80, TibiaPWM);
+  }
+}
+
+void ServoDriverCommit() {
+  SSCWrite(0xA1, SSCTime);
+}
+
+void ServoDriverFree() {
+  for (byte LegIndex = 0; LegIndex <= 31; LegIndex++) {
+    SSCWrite(LegIndex + 0x80, 0x00);
+  }
+  SSCWrite(0xA1, 0xC8);
 }
 
 void ServoDriver() {
@@ -504,63 +562,4 @@ void ServoDriver() {
   else {
     PrevHexOn = false;
   }
-}
-
-void ServoDriverUpdate() {
-  for (byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
-    word CoxaPWM, FemurPWM, TibiaPWM;
-    //Update right legs
-    if (LegIndex <= 2) {
-      CoxaPWM = (-CoxaAngle[LegIndex] + 90) / 0.0991 + 592;
-      FemurPWM = (-FemurAngle[LegIndex] + 90) / 0.0991 + 592;
-      TibiaPWM = (-TibiaAngle[LegIndex] + 90) / 0.0991 + 592;
-    }
-    else {
-      //Update left legs
-      CoxaPWM = (CoxaAngle[LegIndex] + 90) / 0.0991 + 592;
-      FemurPWM = (FemurAngle[LegIndex] + 90) / 0.0991 + 592;
-      TibiaPWM = (TibiaAngle[LegIndex] + 90) / 0.0991 + 592;
-    }
-
-#ifdef DEBUG_MODE
-    if(DebugOutput) {
-      DBGSerial.print(LegIndex + 1, DEC);
-      DBGSerial.print(": ");
-      DBGSerial.print(CoxaPWM, DEC);
-      DBGSerial.print(" ");
-      DBGSerial.print(FemurPWM, DEC);
-      DBGSerial.print(" ");
-      DBGSerial.print(TibiaPWM, DEC);
-      if (LegIndex != 5) {
-        DBGSerial.print(" | ");
-      }
-      else {
-        DBGSerial.println();
-      }
-    }
-#endif
-
-    SSCWrite(pgm_read_byte(&CoxaPin[LegIndex]) + 0x80, highByte(CoxaPWM), lowByte(CoxaPWM));
-    SSCWrite(pgm_read_byte(&FemurPin[LegIndex]) + 0x80, highByte(FemurPWM), lowByte(FemurPWM));
-    SSCWrite(pgm_read_byte(&TibiaPin[LegIndex]) + 0x80, highByte(TibiaPWM), lowByte(TibiaPWM));
-  }
-}
-
-void ServoDriverCommit() {
-  SSCWrite(0xA1, highByte(SSCTime), lowByte(SSCTime));
-}
-
-void ServoDriverFree() {
-  for (byte LegIndex = 0; LegIndex <= 31; LegIndex++) {
-    SSCWrite(LegIndex + 0x80, 0x00, 0x00);
-  }
-  SSCWrite(0xA1, 0x00, 0xC8);
-}
-
-void SSCWrite(byte Command, byte HighByte, byte LowByte) {
-  byte Array[3];
-  Array[0] = Command;
-  Array[1] = HighByte;
-  Array[2] = LowByte;
-  SSCSerial.write(Array, 3);
 }
