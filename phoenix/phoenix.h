@@ -11,6 +11,9 @@
 #ifndef PHOENIX_H
 #define PHOENIX_H
 
+//Changing the sign, depending on the legs
+#define sign(leg) ((leg) <= (2) ? (-1) : (1))
+
 //Build tables for leg configuration like I/O and Min/Max values to easy access values using a for loop
 //Constants are still defined as single values in the cfg file to make it easy to read/configure
 

@@ -297,18 +297,11 @@ void BalanceCalc() {
 
   if (BalanceMode) {
     for (byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
-      if (LegIndex <= 2) {
-        //Balance calculations for all right legs
-        BalanceLeg(-LegPosX[LegIndex] + GaitPosX[LegIndex],
-          LegPosY[LegIndex] - (short)pgm_read_word(&InitPosY[LegIndex]) + GaitPosY[LegIndex],
-          LegPosZ[LegIndex] + GaitPosZ[LegIndex], LegIndex);
-      }
-      else {
-        //Balance calculations for all left legs
-        BalanceLeg(LegPosX[LegIndex] + GaitPosX[LegIndex],
-          LegPosY[LegIndex] - (short)pgm_read_word(&InitPosY[LegIndex]) + GaitPosY[LegIndex],
-          LegPosZ[LegIndex] + GaitPosZ[LegIndex], LegIndex);
-      }
+      byte Sign = sign(LegIndex);
+      //Balance calculations for all legs
+      BalanceLeg(Sign * LegPosX[LegIndex] + GaitPosX[LegIndex],
+        LegPosY[LegIndex] - (short)pgm_read_word(&InitPosY[LegIndex]) + GaitPosY[LegIndex],
+        LegPosZ[LegIndex] + GaitPosZ[LegIndex], LegIndex);
     }
     BalanceBody();
   }
@@ -381,30 +374,17 @@ void LegIK(short PosX, short PosY, short PosZ, byte LegIndex) {
 
 void KinematicCalc() {
   for (byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
-    if (LegIndex <= 2) {
-      //Kinematic calculations for all right legs
-      BodyFK(-LegPosX[LegIndex] + BodyPosX + GaitPosX[LegIndex] - TotalTransX,
-        LegPosY[LegIndex] + BodyPosY + GaitPosY[LegIndex] - TotalTransY,
-        LegPosZ[LegIndex] + BodyPosZ + GaitPosZ[LegIndex] - TotalTransZ,
-        GaitRotY[LegIndex], LegIndex);
+    byte Sign = sign(LegIndex);
+    //Kinematic calculations for all legs
+    BodyFK(Sign * (LegPosX[LegIndex] + BodyPosX) + GaitPosX[LegIndex] - TotalTransX,
+      LegPosY[LegIndex] + BodyPosY + GaitPosY[LegIndex] - TotalTransY,
+      LegPosZ[LegIndex] + BodyPosZ + GaitPosZ[LegIndex] - TotalTransZ,
+      GaitRotY[LegIndex], LegIndex);
 
-      LegIK(LegPosX[LegIndex] - BodyPosX + BodyFKPosX - GaitPosX[LegIndex] - TotalTransX,
-        LegPosY[LegIndex] + BodyPosY - BodyFKPosY + GaitPosY[LegIndex] - TotalTransY,
-        LegPosZ[LegIndex] + BodyPosZ - BodyFKPosZ + GaitPosZ[LegIndex] - TotalTransZ,
-        LegIndex);
-    }
-    else {
-      //Kinematic calculations for all left legs
-      BodyFK(LegPosX[LegIndex] - BodyPosX + GaitPosX[LegIndex] - TotalTransX,
-        LegPosY[LegIndex] + BodyPosY + GaitPosY[LegIndex] - TotalTransY,
-        LegPosZ[LegIndex] + BodyPosZ + GaitPosZ[LegIndex] - TotalTransZ,
-        GaitRotY[LegIndex], LegIndex);
-
-      LegIK(LegPosX[LegIndex] + BodyPosX - BodyFKPosX + GaitPosX[LegIndex] - TotalTransX,
-        LegPosY[LegIndex] + BodyPosY - BodyFKPosY + GaitPosY[LegIndex] - TotalTransY,
-        LegPosZ[LegIndex] + BodyPosZ - BodyFKPosZ + GaitPosZ[LegIndex] - TotalTransZ,
-        LegIndex);
-    }
+    LegIK(LegPosX[LegIndex] + Sign * (BodyPosX - BodyFKPosX + GaitPosX[LegIndex]) - TotalTransX,
+      LegPosY[LegIndex] + BodyPosY - BodyFKPosY + GaitPosY[LegIndex] - TotalTransY,
+      LegPosZ[LegIndex] + BodyPosZ - BodyFKPosZ + GaitPosZ[LegIndex] - TotalTransZ,
+      LegIndex);
   }
 }
 
@@ -429,19 +409,11 @@ void SSCWrite(byte Command, word Data) {
 
 void ServoDriverUpdate() {
   for (byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
-    word CoxaPWM, FemurPWM, TibiaPWM;
-    //Update right legs
-    if (LegIndex <= 2) {
-      CoxaPWM = (-CoxaAngle[LegIndex] + 90) / 0.0991 + 592;
-      FemurPWM = (-FemurAngle[LegIndex] + 90) / 0.0991 + 592;
-      TibiaPWM = (-TibiaAngle[LegIndex] + 90) / 0.0991 + 592;
-    }
-    else {
-      //Update left legs
-      CoxaPWM = (CoxaAngle[LegIndex] + 90) / 0.0991 + 592;
-      FemurPWM = (FemurAngle[LegIndex] + 90) / 0.0991 + 592;
-      TibiaPWM = (TibiaAngle[LegIndex] + 90) / 0.0991 + 592;
-    }
+    byte Sign = sign(LegIndex);
+    //Update all legs
+    word CoxaPWM = (Sign * CoxaAngle[LegIndex] + 90) / 0.0991 + 592;
+    word FemurPWM = (Sign * FemurAngle[LegIndex] + 90) / 0.0991 + 592;
+    word TibiaPWM = (Sign * TibiaAngle[LegIndex] + 90) / 0.0991 + 592;
 
 #ifdef DEBUG_MODE
     if(DebugOutput) {
