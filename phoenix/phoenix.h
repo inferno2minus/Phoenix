@@ -59,6 +59,8 @@ typedef struct {
   byte   GaitLegNr[6];       //Init position of the leg (LR, RF, LM, RR, LF, RM)
 } gait;
 
+typedef int8_t sbyte;
+
 //Angles
 float    CoxaAngle[6];       //Actual angle of the horizontal hip
 float    FemurAngle[6];      //Actual angle of the vertical hip

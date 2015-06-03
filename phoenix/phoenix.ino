@@ -297,7 +297,7 @@ void BalanceCalc() {
 
   if (BalanceMode) {
     for (byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
-      byte Sign = sign(LegIndex);
+      sbyte Sign = sign(LegIndex);
       //Balance calculations for all legs
       BalanceLeg(Sign * LegPosX[LegIndex] + GaitPosX[LegIndex],
         LegPosY[LegIndex] - (short)pgm_read_word(&InitPosY[LegIndex]) + GaitPosY[LegIndex],
@@ -374,7 +374,7 @@ void LegIK(short PosX, short PosY, short PosZ, byte LegIndex) {
 
 void KinematicCalc() {
   for (byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
-    byte Sign = sign(LegIndex);
+    sbyte Sign = sign(LegIndex);
     //Kinematic calculations for all legs
     BodyFK(Sign * (LegPosX[LegIndex] + BodyPosX) + GaitPosX[LegIndex] - TotalTransX,
       LegPosY[LegIndex] + BodyPosY + GaitPosY[LegIndex] - TotalTransY,
@@ -409,7 +409,7 @@ void SSCWrite(byte Command, word Data) {
 
 void ServoDriverUpdate() {
   for (byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
-    byte Sign = sign(LegIndex);
+    sbyte Sign = sign(LegIndex);
     //Update all legs
     word CoxaPWM = (Sign * CoxaAngle[LegIndex] + 90) / 0.0991 + 592;
     word FemurPWM = (Sign * FemurAngle[LegIndex] + 90) / 0.0991 + 592;
