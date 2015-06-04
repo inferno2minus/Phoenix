@@ -59,7 +59,10 @@ typedef struct {
   byte   GaitLegNr[6];       //Init position of the leg (LR, RF, LM, RR, LF, RM)
 } gait;
 
-typedef int8_t sbyte;
+//Typedefs
+typedef signed char sbyte;
+typedef unsigned int word;
+typedef unsigned long ulong;
 
 //Angles
 float    CoxaAngle[6];       //Actual angle of the horizontal hip
@@ -79,7 +82,7 @@ short    BodyRotZ;           //Global input roll of the body
 
 //Timing
 byte     InputTimeDelay;     //Delay that depends on the input to get the "sneaking" effect
-long     TimerStart;         //Start time of the calculation cycles
+ulong    TimerStart;         //Start time of the calculation cycles
 word     PrevSSCTime;        //Previous time for the servo updates
 word     PrevSpeedControl;
 word     SpeedControl;       //Adjustable delay
