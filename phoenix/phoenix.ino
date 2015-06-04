@@ -133,13 +133,11 @@ void SingleLegControl() {
       LegPosZ[SelectedLeg] = (short)pgm_read_word(&InitPosZ[SelectedLeg]) + SLLegZ;
     }
   }
-  else { //All legs to init position
-    if (!AllDown) {
-      InitLegPosition();
-    }
-    if (PrevSelectedLeg != 255) {
-      PrevSelectedLeg = 255;
-    }
+  else if (!AllDown) { //All legs to init position
+    InitLegPosition();
+  }
+  else if (PrevSelectedLeg != 255) {
+    PrevSelectedLeg = 255;
   }
 }
 
