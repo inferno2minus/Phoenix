@@ -488,9 +488,6 @@ void ServoDriver() {
       ExtraCycle--;
       Walking = !(ExtraCycle == 0);
 
-      //Get endtime and calculate wait time
-      byte CycleTime = (millis() - TimerStart);
-
 #ifdef DEBUG_MODE
       if (Walking && !PrevWalking) {
         DBGSerial.println("Walking: Start");
@@ -501,6 +498,9 @@ void ServoDriver() {
         PrevWalking = false;
       }
 #endif
+
+      //Get endtime and calculate wait time
+      byte CycleTime = (millis() - TimerStart);
 
       //Wait for previous commands to be completed while walking
       delay(PrevSSCTime - CycleTime);
