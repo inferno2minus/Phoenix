@@ -107,7 +107,7 @@ void ReadControl() {
 #endif
         DebugOutput = !DebugOutput;
       }
-#endif      
+#endif
 
       //Single leg mode
       if (PS2.ButtonPressed(PSB_CIRCLE) && !GaitInMotion) { //Circle button

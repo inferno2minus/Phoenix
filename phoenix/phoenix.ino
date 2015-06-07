@@ -23,7 +23,7 @@
 //[6] NomGaitSpeed   — Nominal speed of the gait
 //[7] GaitLegNr[6]   — Init position of the leg (LR, RF, LM, RR, LF, RM)
 
-const gait Gaits[] = { 
+const gait Gaits[] = {
   { 3,  2,  2,  3,  8, 12, 70, {  1,  3,  5,  7,  9, 11 } }, //Ripple 12 steps
   { 2,  1,  2,  1,  4,  6, 60, {  4,  1,  1,  1,  4,  4 } }, //Tripod 6 steps
   { 3,  2,  2,  3,  4,  8, 70, {  5,  1,  1,  1,  5,  5 } }, //Tripod 8 steps
@@ -170,7 +170,7 @@ void GaitSequence() {
 }
 
 void GaitSelect() {
-  if (GaitType < GaitsLength - 1) { 
+  if (GaitType < GaitsLength - 1) {
     GaitCurrent = Gaits[GaitType];
   }
 }
@@ -366,7 +366,7 @@ void LegIK(short PosX, short PosY, short PosZ, byte LegIndex) {
 
   CoxaAngle[LegIndex] = atan2(PosZ, PosX) * 180 / PI + (short)pgm_read_word(&LegAngle[LegIndex]);
   FemurAngle[LegIndex] = -(IKA1 + IKA2) * 180 / PI + 90;
-  TibiaAngle[LegIndex] = -(90 - acos((pow(FemurLength, 2) + pow(TibiaLength, 2) - pow(IKSW, 2)) / 
+  TibiaAngle[LegIndex] = -(90 - acos((pow(FemurLength, 2) + pow(TibiaLength, 2) - pow(IKSW, 2)) /
     (2 * FemurLength * TibiaLength)) * 180 / PI);
 }
 
