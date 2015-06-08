@@ -119,7 +119,7 @@ void ReadControl() {
 #ifdef DEBUG_MODE
           DBGSerial.println("ControlMode: SINGLELEGMODE");
 #endif
-          if (SelectedLeg == 255) { //Select leg if none is selected
+          if (SelectedLeg == 255) {
             SelectedLeg = RF; //Start leg
           }
         }
@@ -149,7 +149,7 @@ void ReadControl() {
 #endif
       }
 
-      //Stand up, sit down 
+      //Stand up, sit down
       if (PS2.ButtonPressed(PSB_TRIANGLE)) { //Triangle button
         if (BodyYOffset > 0) {
           BodyYOffset = 0;
@@ -163,6 +163,7 @@ void ReadControl() {
 #endif
       }
 
+      //Stand up
       if (PS2.ButtonPressed(PSB_PAD_UP)) { //D-Up button
         if (BodyYOffset < 100) {
           BodyYOffset += 10;
@@ -173,6 +174,7 @@ void ReadControl() {
         }
       }
 
+      //Sit down
       if (PS2.ButtonPressed(PSB_PAD_DOWN)) { //D-Down button
         if (BodyYOffset > 0) {
           BodyYOffset -= 10;
@@ -183,6 +185,7 @@ void ReadControl() {
         }
       }
 
+      //Speed up, previous speed
       if (PS2.ButtonPressed(PSB_CROSS)) { //Cross button
         if (SpeedControl > 0) {
           PrevSpeedControl = SpeedControl;
@@ -197,6 +200,7 @@ void ReadControl() {
 #endif
       }
 
+      //Slow down
       if (PS2.ButtonPressed(PSB_PAD_RIGHT)) { //D-Right button
         if (SpeedControl < 1000) {
 #ifdef SOUND_MODE
@@ -210,6 +214,7 @@ void ReadControl() {
         }
       }
 
+      //Speed up
       if (PS2.ButtonPressed(PSB_PAD_LEFT)) { //D-Left button
         if (SpeedControl > 0) {
 #ifdef SOUND_MODE
@@ -411,7 +416,7 @@ void ReadControl() {
       }
 
       //Calculate walking time delay
-      InputTimeDelay = 128 - max(max(abs(PS2.Analog(PSS_LX) - 128), 
+      InputTimeDelay = 128 - max(max(abs(PS2.Analog(PSS_LX) - 128),
         abs(PS2.Analog(PSS_LY) - 128)), abs(PS2.Analog(PSS_RX) - 128));
     }
 
