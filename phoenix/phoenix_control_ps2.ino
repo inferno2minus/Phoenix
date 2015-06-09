@@ -25,13 +25,6 @@ int16_t BodyYShift;
 
 void InitControl() {
   PS2.config_gamepad(PS2_CLK, PS2_CMD, PS2_ATT, PS2_DAT);
-
-  ControlMode = WALKMODE;
-  DoubleHeight = false;
-  DoubleTravel = false;
-  WalkMethod = false;
-
-  SpeedControl = 100;
 }
 
 void ReadControl() {
@@ -42,10 +35,7 @@ void ReadControl() {
         TurnRobotOff(); //Turn off
       }
       else {
-        HexOn = true; //Turn on
-#ifdef DEBUG_MODE
-        DBGSerial.println("Power: Turn on");
-#endif
+        TurnRobotOn(); //Turn on
       }
     }
 
@@ -428,21 +418,33 @@ void ReadControl() {
   }
 }
 
+void TurnRobotOn() {
+#ifdef DEBUG_MODE
+  DBGSerial.println("Power: Turn on");
+#endif
+  HexOn = true;
+  DoubleHeight = false;
+  DoubleTravel = false;
+  WalkMethod = false;
+  ControlMode = WALKMODE;
+  SpeedControl = 100;
+}
+
 void TurnRobotOff() {
 #ifdef DEBUG_MODE
   DBGSerial.println("Power: Turn off");
 #endif
+  HexOn = false;
   BodyPosX = 0;
   BodyPosY = 0;
   BodyPosZ = 0;
   BodyRotX = 0;
   BodyRotY = 0;
   BodyRotZ = 0;
-  TravelLengthX = 0;
-  TravelLengthY = 0;
-  TravelLengthZ = 0;
   BodyYOffset = 0;
   BodyYShift = 0;
   SelectedLeg = 255;
-  HexOn = false;
+  TravelLengthX = 0;
+  TravelLengthY = 0;
+  TravelLengthZ = 0;
 }
