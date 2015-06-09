@@ -16,12 +16,12 @@
 #define SINGLELEGMODE      3
 
 PS2X    PS2;
-short   BodyYShift;
-short   BodyYOffset;
-byte    ControlMode;
 bool    DoubleHeight;
 bool    DoubleTravel;
 bool    WalkMethod;
+uint8_t ControlMode;
+int16_t BodyYOffset;
+int16_t BodyYShift;
 
 void InitControl() {
   PS2.config_gamepad(PS2_CLK, PS2_CMD, PS2_ATT, PS2_DAT);

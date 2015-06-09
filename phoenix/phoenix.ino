@@ -32,7 +32,7 @@ const gait Gaits[] = {
   { 3,  2,  2,  3, 20, 24, 70, {  1, 21,  5, 13,  9, 17 } }  //Wave 24 steps
 };
 
-const byte GaitsLength = sizeof(Gaits)/sizeof(Gaits[0]);
+const uint8_t GaitsLength = sizeof(Gaits)/sizeof(Gaits[0]);
 
 void setup() {
   SSCSerial.begin(SSC_BAUD);
@@ -63,8 +63,8 @@ void setup() {
   //Gait
   BalanceMode = false;
   LegLiftHeight = 50;
-  GaitType = 0;
   GaitStep = 1;
+  GaitType = 0;
   GaitSelect();
 
   //Initialize controller
@@ -98,39 +98,39 @@ void loop() {
 }
 
 void InitLegPosition() {
-  for (byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
-    LegPosX[LegIndex] = (short)pgm_read_word(&InitPosX[LegIndex]);
-    LegPosY[LegIndex] = (short)pgm_read_word(&InitPosY[LegIndex]);
-    LegPosZ[LegIndex] = (short)pgm_read_word(&InitPosZ[LegIndex]);
+  for (uint8_t LegIndex = 0; LegIndex <= 5; LegIndex++) {
+    LegPosX[LegIndex] = (int16_t)pgm_read_word(&InitPosX[LegIndex]);
+    LegPosY[LegIndex] = (int16_t)pgm_read_word(&InitPosY[LegIndex]);
+    LegPosZ[LegIndex] = (int16_t)pgm_read_word(&InitPosZ[LegIndex]);
   }
 }
 
 void SingleLegControl() {
   //Check if all legs are down
-  AllDown = (LegPosY[RF] == (short)pgm_read_word(&InitPosY[RF])) &&
-    (LegPosY[RM] == (short)pgm_read_word(&InitPosY[RM])) &&
-    (LegPosY[RR] == (short)pgm_read_word(&InitPosY[RR])) &&
-    (LegPosY[LR] == (short)pgm_read_word(&InitPosY[LR])) &&
-    (LegPosY[LM] == (short)pgm_read_word(&InitPosY[LM])) &&
-    (LegPosY[LF] == (short)pgm_read_word(&InitPosY[LF]));
+  AllDown = (LegPosY[RF] == (int16_t)pgm_read_word(&InitPosY[RF])) &&
+    (LegPosY[RM] == (int16_t)pgm_read_word(&InitPosY[RM])) &&
+    (LegPosY[RR] == (int16_t)pgm_read_word(&InitPosY[RR])) &&
+    (LegPosY[LR] == (int16_t)pgm_read_word(&InitPosY[LR])) &&
+    (LegPosY[LM] == (int16_t)pgm_read_word(&InitPosY[LM])) &&
+    (LegPosY[LF] == (int16_t)pgm_read_word(&InitPosY[LF]));
 
   if (SelectedLeg <= 5) {
     if (SelectedLeg != PrevSelectedLeg) {
       if (AllDown) { //Lift leg a bit when it got selected
-        LegPosY[SelectedLeg] = (short)pgm_read_word(&InitPosY[SelectedLeg]) - 20;
+        LegPosY[SelectedLeg] = (int16_t)pgm_read_word(&InitPosY[SelectedLeg]) - 20;
         //Store current status
         PrevSelectedLeg = SelectedLeg;
       }
       else { //Return prev leg back to the init position
-        LegPosX[PrevSelectedLeg] = (short)pgm_read_word(&InitPosX[PrevSelectedLeg]);
-        LegPosY[PrevSelectedLeg] = (short)pgm_read_word(&InitPosY[PrevSelectedLeg]);
-        LegPosZ[PrevSelectedLeg] = (short)pgm_read_word(&InitPosZ[PrevSelectedLeg]);
+        LegPosX[PrevSelectedLeg] = (int16_t)pgm_read_word(&InitPosX[PrevSelectedLeg]);
+        LegPosY[PrevSelectedLeg] = (int16_t)pgm_read_word(&InitPosY[PrevSelectedLeg]);
+        LegPosZ[PrevSelectedLeg] = (int16_t)pgm_read_word(&InitPosZ[PrevSelectedLeg]);
       }
     }
     else if (!SLHold) {
-      LegPosX[SelectedLeg] = (short)pgm_read_word(&InitPosX[SelectedLeg]) + SLLegX;
-      LegPosY[SelectedLeg] = (short)pgm_read_word(&InitPosY[SelectedLeg]) + SLLegY;
-      LegPosZ[SelectedLeg] = (short)pgm_read_word(&InitPosZ[SelectedLeg]) + SLLegZ;
+      LegPosX[SelectedLeg] = (int16_t)pgm_read_word(&InitPosX[SelectedLeg]) + SLLegX;
+      LegPosY[SelectedLeg] = (int16_t)pgm_read_word(&InitPosY[SelectedLeg]) + SLLegY;
+      LegPosZ[SelectedLeg] = (int16_t)pgm_read_word(&InitPosZ[SelectedLeg]) + SLLegZ;
     }
   }
   else if (!AllDown) { //All legs to init position
@@ -141,43 +141,9 @@ void SingleLegControl() {
   }
 }
 
-void GaitSequence() {
-  //Check if the gait is in motion
-  GaitInMotion =  Walking ||
-    (abs(TravelLengthX) > TRAVEL_DEADZONE) ||
-    (abs(TravelLengthZ) > TRAVEL_DEADZONE) ||
-    (abs(TravelLengthY) > TRAVEL_DEADZONE);
-
-  //Clear values under the TRAVEL_DEADZONE
-  if (!GaitInMotion) {
-    TravelLengthX = 0;
-    TravelLengthZ = 0;
-    TravelLengthY = 0;
-  }
-
-  //Calculate gait sequence
-  for (byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
-    Gait(LegIndex);
-  }
-
-  //Advance to the next step
-  if (GaitStep < GaitCurrent.StepsInGait) {
-    GaitStep++;
-  }
-  else {
-    GaitStep = 1;
-  }
-}
-
-void GaitSelect() {
-  if (GaitType < GaitsLength - 1) {
-    GaitCurrent = Gaits[GaitType];
-  }
-}
-
-void Gait(byte LegIndex) {
+void Gait(uint8_t LegIndex) {
   //Try to reduce the number of time we look at GaitLegNr and GaitStep
-  short LegStep = GaitStep - GaitCurrent.GaitLegNr[LegIndex];
+  int16_t LegStep = GaitStep - GaitCurrent.GaitLegNr[LegIndex];
 
   //Leg middle up position
   if ((GaitInMotion && (GaitCurrent.NrLiftedPos & 1) && (LegStep == 0)) ||
@@ -243,11 +209,45 @@ void Gait(byte LegIndex) {
   }
 }
 
-void BalanceLeg(short PosX, short PosY, short PosZ, byte LegIndex) {
+void GaitSelect() {
+  if (GaitType < GaitsLength - 1) {
+    GaitCurrent = Gaits[GaitType];
+  }
+}
+
+void GaitSequence() {
+  //Check if the gait is in motion
+  GaitInMotion =  Walking ||
+    (abs(TravelLengthX) > TRAVEL_DEADZONE) ||
+    (abs(TravelLengthZ) > TRAVEL_DEADZONE) ||
+    (abs(TravelLengthY) > TRAVEL_DEADZONE);
+
+  //Clear values under the TRAVEL_DEADZONE
+  if (!GaitInMotion) {
+    TravelLengthX = 0;
+    TravelLengthZ = 0;
+    TravelLengthY = 0;
+  }
+
+  //Calculate gait sequence
+  for (uint8_t LegIndex = 0; LegIndex <= 5; LegIndex++) {
+    Gait(LegIndex);
+  }
+
+  //Advance to the next step
+  if (GaitStep < GaitCurrent.StepsInGait) {
+    GaitStep++;
+  }
+  else {
+    GaitStep = 1;
+  }
+}
+
+void BalanceLeg(int16_t PosX, int16_t PosY, int16_t PosZ, uint8_t LegIndex) {
   //Calculating totals from center of the body to the feet
-  short TotalX = (short)pgm_read_word(&OffsetX[LegIndex]) + PosX;
-  short TotalY = 150 + PosY; //Using the value 150 to lower the center point of rotation BodyPosY
-  short TotalZ = (short)pgm_read_word(&OffsetZ[LegIndex]) + PosZ;
+  int16_t TotalX = (int16_t)pgm_read_word(&OffsetX[LegIndex]) + PosX;
+  int16_t TotalY = 150 + PosY; //Using the value 150 to lower the center point of rotation BodyPosY
+  int16_t TotalZ = (int16_t)pgm_read_word(&OffsetZ[LegIndex]) + PosZ;
 
   TotalTransX += TotalX;
   TotalTransY += PosY;
@@ -286,28 +286,28 @@ void BalanceBody() {
 
 void BalanceCalc() {
   //Reset values used for calculation of balance
-  TotalTransX = 0;
-  TotalTransY = 0;
-  TotalTransZ = 0;
   TotalBalX = 0;
   TotalBalY = 0;
   TotalBalZ = 0;
+  TotalTransX = 0;
+  TotalTransY = 0;
+  TotalTransZ = 0;
 
   if (BalanceMode) {
-    for (byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
-      sbyte Sign = sign(LegIndex);
+    for (uint8_t LegIndex = 0; LegIndex <= 5; LegIndex++) {
+      int8_t Sign = sign(LegIndex);
       //Balance calculations for all legs
       BalanceLeg(Sign * LegPosX[LegIndex] + GaitPosX[LegIndex],
-        LegPosY[LegIndex] - (short)pgm_read_word(&InitPosY[LegIndex]) + GaitPosY[LegIndex],
+        LegPosY[LegIndex] - (int16_t)pgm_read_word(&InitPosY[LegIndex]) + GaitPosY[LegIndex],
         LegPosZ[LegIndex] + GaitPosZ[LegIndex], LegIndex);
     }
     BalanceBody();
   }
 }
 
-trig GetSinCos(short AngleDeg) {
+trig GetSinCos(int16_t AngleDeg) {
   trig Trig;
-  short ABSAngleDeg = abs(AngleDeg);
+  int16_t ABSAngleDeg = abs(AngleDeg);
 
   //Shift rotation to a full circle of 360 deg
   if (AngleDeg < 0) { //Negative values
@@ -332,11 +332,11 @@ trig GetSinCos(short AngleDeg) {
   return Trig;
 }
 
-void BodyFK(short PosX, short PosY, short PosZ, short RotY, byte LegIndex) {
+void BodyFK(int16_t PosX, int16_t PosY, int16_t PosZ, int16_t RotY, uint8_t LegIndex) {
   //Calculating totals from center of the body to the feet
-  short TotalX = (short)pgm_read_word(&OffsetX[LegIndex]) + PosX;
-  short TotalY = PosY;
-  short TotalZ = (short)pgm_read_word(&OffsetZ[LegIndex]) + PosZ;
+  int16_t TotalX = (int16_t)pgm_read_word(&OffsetX[LegIndex]) + PosX;
+  int16_t TotalY = PosY;
+  int16_t TotalZ = (int16_t)pgm_read_word(&OffsetZ[LegIndex]) + PosZ;
 
   //First calculate sinus and cosinus for each rotation
   trig G = GetSinCos(BodyRotX + TotalBalX);
@@ -351,7 +351,7 @@ void BodyFK(short PosX, short PosY, short PosZ, short RotY, byte LegIndex) {
     A.Cos * G.Cos - TotalZ * A.Sin * B.Sin * G.Sin - TotalY * B.Cos * G.Sin);
 }
 
-void LegIK(short PosX, short PosY, short PosZ, byte LegIndex) {
+void LegIK(int16_t PosX, int16_t PosY, int16_t PosZ, uint8_t LegIndex) {
   //Length between the coxa and feet
   float PosXZ = sqrt(pow(PosX, 2) + pow(PosZ, 2));
 
@@ -364,15 +364,15 @@ void LegIK(short PosX, short PosY, short PosZ, byte LegIndex) {
   //Angle of the line SW with respect to the femur in radians
   float IKA2 = acos((pow(FemurLength, 2) - pow(TibiaLength, 2) + pow(IKSW, 2)) / (2 * FemurLength * IKSW));
 
-  CoxaAngle[LegIndex] = atan2(PosZ, PosX) * 180 / PI + (short)pgm_read_word(&LegAngle[LegIndex]);
+  CoxaAngle[LegIndex] = atan2(PosZ, PosX) * 180 / PI + (int16_t)pgm_read_word(&LegAngle[LegIndex]);
   FemurAngle[LegIndex] = -(IKA1 + IKA2) * 180 / PI + 90;
   TibiaAngle[LegIndex] = -(90 - acos((pow(FemurLength, 2) + pow(TibiaLength, 2) - pow(IKSW, 2)) /
     (2 * FemurLength * TibiaLength)) * 180 / PI);
 }
 
 void KinematicCalc() {
-  for (byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
-    sbyte Sign = sign(LegIndex);
+  for (uint8_t LegIndex = 0; LegIndex <= 5; LegIndex++) {
+    int8_t Sign = sign(LegIndex);
     //Kinematic calculations for all legs
     BodyFK(Sign * (LegPosX[LegIndex] + BodyPosX) + GaitPosX[LegIndex] - TotalTransX,
       LegPosY[LegIndex] + BodyPosY + GaitPosY[LegIndex] - TotalTransY,
@@ -387,18 +387,18 @@ void KinematicCalc() {
 }
 
 void CheckAngles() {
-  for (byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
+  for (uint8_t LegIndex = 0; LegIndex <= 5; LegIndex++) {
     CoxaAngle[LegIndex] = min(max(CoxaAngle[LegIndex],
-      (short)pgm_read_word(&CoxaMin[LegIndex])), (short)pgm_read_word(&CoxaMax[LegIndex]));
+      (int16_t)pgm_read_word(&CoxaMin[LegIndex])), (int16_t)pgm_read_word(&CoxaMax[LegIndex]));
     FemurAngle[LegIndex] = min(max(FemurAngle[LegIndex],
-      (short)pgm_read_word(&FemurMin[LegIndex])), (short)pgm_read_word(&FemurMax[LegIndex]));
+      (int16_t)pgm_read_word(&FemurMin[LegIndex])), (int16_t)pgm_read_word(&FemurMax[LegIndex]));
     TibiaAngle[LegIndex] = min(max(TibiaAngle[LegIndex],
-      (short)pgm_read_word(&TibiaMin[LegIndex])), (short)pgm_read_word(&TibiaMax[LegIndex]));
+      (int16_t)pgm_read_word(&TibiaMin[LegIndex])), (int16_t)pgm_read_word(&TibiaMax[LegIndex]));
   }
 }
 
-void SSCWrite(byte Command, word Data) {
-  byte Array[3];
+void SSCWrite(uint8_t Command, uint16_t Data) {
+  uint8_t Array[3];
   Array[0] = Command;
   Array[1] = highByte(Data);
   Array[2] = lowByte(Data);
@@ -406,12 +406,12 @@ void SSCWrite(byte Command, word Data) {
 }
 
 void ServoDriverUpdate() {
-  for (byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
-    sbyte Sign = sign(LegIndex);
+  for (uint8_t LegIndex = 0; LegIndex <= 5; LegIndex++) {
+    int8_t Sign = sign(LegIndex);
     //Update all legs
-    word CoxaPWM = (Sign * CoxaAngle[LegIndex] + 90) / 0.0991 + 592;
-    word FemurPWM = (Sign * FemurAngle[LegIndex] + 90) / 0.0991 + 592;
-    word TibiaPWM = (Sign * TibiaAngle[LegIndex] + 90) / 0.0991 + 592;
+    uint16_t CoxaPWM = (Sign * CoxaAngle[LegIndex] + 90) / 0.0991 + 592;
+    uint16_t FemurPWM = (Sign * FemurAngle[LegIndex] + 90) / 0.0991 + 592;
+    uint16_t TibiaPWM = (Sign * TibiaAngle[LegIndex] + 90) / 0.0991 + 592;
 
 #ifdef DEBUG_MODE
     if(DebugOutput) {
@@ -442,7 +442,7 @@ void ServoDriverCommit() {
 }
 
 void ServoDriverFree() {
-  for (byte LegIndex = 0; LegIndex <= 31; LegIndex++) {
+  for (uint8_t LegIndex = 0; LegIndex <= 31; LegIndex++) {
     SSCWrite(LegIndex + 0x80, 0x00);
   }
   SSCWrite(0xA1, 0xC8);
@@ -474,7 +474,7 @@ void ServoDriver() {
     ServoDriverUpdate();
 
     //Finding any the biggest value for GaitPos/Rot
-    for (byte LegIndex = 0; LegIndex <= 5; LegIndex++) {
+    for (uint8_t LegIndex = 0; LegIndex <= 5; LegIndex++) {
       if ((GaitPosX[LegIndex] > 2) || (GaitPosX[LegIndex] < -2) ||
           (GaitRotY[LegIndex] > 2) || (GaitRotY[LegIndex] < -2) ||
           (GaitPosZ[LegIndex] > 2) || (GaitPosZ[LegIndex] < -2)) {
@@ -500,7 +500,7 @@ void ServoDriver() {
 #endif
 
       //Get endtime and calculate wait time
-      byte CycleTime = (millis() - TimerStart);
+      uint8_t CycleTime = (millis() - TimerStart);
 
       //Wait for previous commands to be completed while walking
       delay(PrevSSCTime - CycleTime);
