@@ -14,6 +14,15 @@
 //Changing the sign, depending on the legs
 #define sign(leg) ((leg) <= (2) ? (-1) : (1))
 
+#define square(x) ((x) * (x))
+#define min(a, b) ((a) < (b) ? (a) : (b))
+#define max(a, b) ((a) > (b) ? (a) : (b))
+
+//Mathematical Constants
+#define PI         3.1415926535897932384626433832795
+#define DEG_IN_RAD 0.0174532925199432957692369076848
+#define RAD_IN_DEG 57.295779513082320876798154814105
+
 //Build tables for leg configuration like I/O and Min/Max values to easy access values using a for loop
 //Constants are still defined as single values in the cfg file to make it easy to read/configure
 

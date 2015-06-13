@@ -320,14 +320,14 @@ trig GetSinCos(int16_t AngleDeg) {
   if (AngleDeg < 180) { //Angle between 0 and 180
     //Subtract 90 to shift range
     AngleDeg = AngleDeg - 90;
-    Trig.Sin = cos(radians(AngleDeg));
-    Trig.Cos = -sin(radians(AngleDeg));
+    Trig.Sin = cos(AngleDeg * DEG_IN_RAD);
+    Trig.Cos = -sin(AngleDeg * DEG_IN_RAD);
   }
   else { //Angle between 180 and 360
     //Subtract 270 to shift range
     AngleDeg = AngleDeg - 270;
-    Trig.Sin = -cos(radians(AngleDeg));
-    Trig.Cos = sin(radians(AngleDeg));
+    Trig.Sin = -cos(AngleDeg * DEG_IN_RAD);
+    Trig.Cos = sin(AngleDeg * DEG_IN_RAD);
   }
   return Trig;
 }
@@ -353,21 +353,21 @@ void BodyFK(int16_t PosX, int16_t PosY, int16_t PosZ, int16_t RotY, uint8_t LegI
 
 void LegIK(int16_t PosX, int16_t PosY, int16_t PosZ, uint8_t LegIndex) {
   //Length between the coxa and feet
-  float PosXZ = sqrt(pow(PosX, 2) + pow(PosZ, 2));
+  float PosXZ = sqrt(square(PosX) + square(PosZ));
 
   //Length between shoulder and wrist
-  float IKSW = sqrt(pow(PosXZ - CoxaLength, 2) + pow(PosY, 2));
+  float IKSW = sqrt(square(PosXZ - CoxaLength) + square(PosY));
 
   //Angle of the line SW with respect to the ground in radians
   float IKA1 = atan2(PosXZ - CoxaLength, PosY);
 
   //Angle of the line SW with respect to the femur in radians
-  float IKA2 = acos((pow(FemurLength, 2) - pow(TibiaLength, 2) + pow(IKSW, 2)) / (2 * FemurLength * IKSW));
+  float IKA2 = acos((square(FemurLength) - square(TibiaLength) + square(IKSW)) / (2 * FemurLength * IKSW));
 
-  CoxaAngle[LegIndex] = atan2(PosZ, PosX) * 180 / PI + (int16_t)pgm_read_word(&LegAngle[LegIndex]);
-  FemurAngle[LegIndex] = -(IKA1 + IKA2) * 180 / PI + 90;
-  TibiaAngle[LegIndex] = -(90 - acos((pow(FemurLength, 2) + pow(TibiaLength, 2) - pow(IKSW, 2)) /
-    (2 * FemurLength * TibiaLength)) * 180 / PI);
+  CoxaAngle[LegIndex] = atan2(PosZ, PosX) * RAD_IN_DEG + (int16_t)pgm_read_word(&LegAngle[LegIndex]);
+  FemurAngle[LegIndex] = -(IKA1 + IKA2) * RAD_IN_DEG + 90;
+  TibiaAngle[LegIndex] = -(90 - acos((square(FemurLength) + square(TibiaLength) - square(IKSW)) /
+    (2 * FemurLength * TibiaLength)) * RAD_IN_DEG);
 }
 
 void KinematicCalc() {
@@ -400,8 +400,8 @@ void CheckAngles() {
 void SSCWrite(uint8_t Command, uint16_t Data) {
   uint8_t Array[3];
   Array[0] = Command;
-  Array[1] = highByte(Data);
-  Array[2] = lowByte(Data);
+  Array[1] = Data >> 8;
+  Array[2] = Data & 0xFF;
   SSCSerial.write(Array, 3);
 }
 
