@@ -24,7 +24,7 @@ int16_t BodyYOffset;
 int16_t BodyYShift;
 
 void InitControl() {
-  PS2.config_gamepad(PS2_CLK, PS2_CMD, PS2_ATT, PS2_DAT);
+  PS2.config_gamepad(PS2_DAT, PS2_CMD, PS2_ATT, PS2_CLK);
 }
 
 void ReadControl() {
