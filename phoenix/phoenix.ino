@@ -253,9 +253,9 @@ void BalanceLeg(int16_t PosX, int16_t PosY, int16_t PosZ, uint8_t LegIndex) {
   TotalTransY += PosY;
   TotalTransZ += TotalZ;
 
-  TotalBalX += atan2(TotalY, TotalZ) * 180 / PI - 90; //Rotate balance circle 90 deg
-  TotalBalY += atan2(TotalZ, TotalX) * 180 / PI;
-  TotalBalZ += atan2(TotalY, TotalX) * 180 / PI - 90; //Rotate balance circle 90 deg
+  TotalBalX += atan2(TotalY, TotalZ) * RAD_IN_DEG - 90; //Rotate balance circle 90 deg
+  TotalBalY += atan2(TotalZ, TotalX) * RAD_IN_DEG;
+  TotalBalZ += atan2(TotalY, TotalX) * RAD_IN_DEG - 90; //Rotate balance circle 90 deg
 }
 
 void BalanceBody() {
