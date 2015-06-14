@@ -39,13 +39,13 @@ void setup() {
 
 #ifdef DEBUG_MODE
   DBGSerial.begin(DBG_BAUD);
-  DBGSerial.println(" _____                       _ ");
-  DBGSerial.println("|  |  |___ _ _ ___ ___ ___ _| |");
-  DBGSerial.println("|     | -_|_'_| .'| . | . | . |");
-  DBGSerial.println("|__|__|___|_,_|__,|  _|___|___|");
-  DBGSerial.println("       Lynxmotion |_| Phoenix  ");
+  DBGSerial.println(F(" _____                       _ "));
+  DBGSerial.println(F("|  |  |___ _ _ ___ ___ ___ _| |"));
+  DBGSerial.println(F("|     | -_|_'_| .'| . | . | . |"));
+  DBGSerial.println(F("|__|__|___|_,_|__,|  _|___|___|"));
+  DBGSerial.println(F("       Lynxmotion |_| Phoenix  "));
   DBGSerial.println();
-  DBGSerial.println("Press 'Start' to initialize...");
+  DBGSerial.println(F("Press 'Start' to initialize..."));
   DBGSerial.println();
 #endif
 
@@ -416,14 +416,14 @@ void ServoDriverUpdate() {
 #ifdef DEBUG_MODE
     if(DebugOutput) {
       DBGSerial.print(LegIndex + 1, DEC);
-      DBGSerial.print(": ");
+      DBGSerial.print(F(": "));
       DBGSerial.print(CoxaPWM, DEC);
-      DBGSerial.print(" ");
+      DBGSerial.print(F(" "));
       DBGSerial.print(FemurPWM, DEC);
-      DBGSerial.print(" ");
+      DBGSerial.print(F(" "));
       DBGSerial.print(TibiaPWM, DEC);
       if (LegIndex != 5) {
-        DBGSerial.print(" | ");
+        DBGSerial.print(F(" | "));
       }
       else {
         DBGSerial.println();
@@ -490,11 +490,11 @@ void ServoDriver() {
 
 #ifdef DEBUG_MODE
       if (Walking && !PrevWalking) {
-        DBGSerial.println("Walking: Start");
+        DBGSerial.println(F("Walking: Start"));
         PrevWalking = true;
       }
       else if (!Walking) {
-        DBGSerial.println("Walking: Finish");
+        DBGSerial.println(F("Walking: Finish"));
         PrevWalking = false;
       }
 #endif

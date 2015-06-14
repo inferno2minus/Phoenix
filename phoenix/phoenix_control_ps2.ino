@@ -48,19 +48,19 @@ void ReadControl() {
         if (ControlMode != TRANSLATEMODE) {
           ControlMode = TRANSLATEMODE;
 #ifdef DEBUG_MODE
-          DBGSerial.println("ControlMode: TRANSLATEMODE");
+          DBGSerial.println(F("ControlMode: TRANSLATEMODE"));
 #endif
         }
         else if (SelectedLeg == 255) {
           ControlMode = WALKMODE;
 #ifdef DEBUG_MODE
-          DBGSerial.println("ControlMode: WALKMODE");
+          DBGSerial.println(F("ControlMode: WALKMODE"));
 #endif
         }
         else {
           ControlMode = SINGLELEGMODE;
 #ifdef DEBUG_MODE
-          DBGSerial.println("ControlMode: SINGLELEGMODE");
+          DBGSerial.println(F("ControlMode: SINGLELEGMODE"));
 #endif
         }
       }
@@ -73,19 +73,19 @@ void ReadControl() {
         if (ControlMode != ROTATEMODE) {
           ControlMode = ROTATEMODE;
 #ifdef DEBUG_MODE
-          DBGSerial.println("ControlMode: ROTATEMODE");
+          DBGSerial.println(F("ControlMode: ROTATEMODE"));
 #endif
         }
         else if (SelectedLeg == 255) {
           ControlMode = WALKMODE;
 #ifdef DEBUG_MODE
-          DBGSerial.println("ControlMode: WALKMODE");
+          DBGSerial.println(F("ControlMode: WALKMODE"));
 #endif
         }
         else {
           ControlMode = SINGLELEGMODE;
 #ifdef DEBUG_MODE
-          DBGSerial.println("ControlMode: SINGLELEGMODE");
+          DBGSerial.println(F("ControlMode: SINGLELEGMODE"));
 #endif
         }
       }
@@ -107,7 +107,7 @@ void ReadControl() {
         if (ControlMode != SINGLELEGMODE) {
           ControlMode = SINGLELEGMODE;
 #ifdef DEBUG_MODE
-          DBGSerial.println("ControlMode: SINGLELEGMODE");
+          DBGSerial.println(F("ControlMode: SINGLELEGMODE"));
 #endif
           if (SelectedLeg == 255) {
             SelectedLeg = RF; //Start leg
@@ -116,7 +116,7 @@ void ReadControl() {
         else {
           ControlMode = WALKMODE;
 #ifdef DEBUG_MODE
-          DBGSerial.println("ControlMode: WALKMODE");
+          DBGSerial.println(F("ControlMode: WALKMODE"));
 #endif
           SelectedLeg = 255;
         }
@@ -131,10 +131,10 @@ void ReadControl() {
         BalanceMode = !BalanceMode;
 #ifdef DEBUG_MODE
         if (BalanceMode) {
-          DBGSerial.println("BalanceMode: On");
+          DBGSerial.println(F("BalanceMode: On"));
         }
         else {
-          DBGSerial.println("BalanceMode: Off");
+          DBGSerial.println(F("BalanceMode: Off"));
         }
 #endif
       }
@@ -148,7 +148,7 @@ void ReadControl() {
           BodyYOffset = 40;
         }
 #ifdef DEBUG_MODE
-        DBGSerial.print("BodyYOffset: ");
+        DBGSerial.print(F("BodyYOffset: "));
         DBGSerial.println(BodyYOffset, DEC);
 #endif
       }
@@ -158,7 +158,7 @@ void ReadControl() {
         if (BodyYOffset < 100) {
           BodyYOffset += 10;
 #ifdef DEBUG_MODE
-          DBGSerial.print("BodyYOffset: ");
+          DBGSerial.print(F("BodyYOffset: "));
           DBGSerial.println(BodyYOffset, DEC);
 #endif
         }
@@ -169,7 +169,7 @@ void ReadControl() {
         if (BodyYOffset > 0) {
           BodyYOffset -= 10;
 #ifdef DEBUG_MODE
-          DBGSerial.print("BodyYOffset: ");
+          DBGSerial.print(F("BodyYOffset: "));
           DBGSerial.println(BodyYOffset, DEC);
 #endif
         }
@@ -185,7 +185,7 @@ void ReadControl() {
           SpeedControl = PrevSpeedControl;
         }
 #ifdef DEBUG_MODE
-        DBGSerial.print("SpeedControl: ");
+        DBGSerial.print(F("SpeedControl: "));
         DBGSerial.println(SpeedControl, DEC);
 #endif
       }
@@ -198,7 +198,7 @@ void ReadControl() {
 #endif
           SpeedControl += 50;
 #ifdef DEBUG_MODE
-          DBGSerial.print("SpeedControl: ");
+          DBGSerial.print(F("SpeedControl: "));
           DBGSerial.println(SpeedControl, DEC);
 #endif
         }
@@ -212,7 +212,7 @@ void ReadControl() {
 #endif
           SpeedControl -= 50;
 #ifdef DEBUG_MODE
-          DBGSerial.print("SpeedControl: ");
+          DBGSerial.print(F("SpeedControl: "));
           DBGSerial.println(SpeedControl, DEC);
 #endif
         }
@@ -235,25 +235,25 @@ void ReadControl() {
             GaitType = 0;
           }
 #ifdef DEBUG_MODE
-          DBGSerial.print("GaitType: ");
+          DBGSerial.print(F("GaitType: "));
           switch(GaitType) {
           case 0:
-            DBGSerial.println("Ripple 12");
+            DBGSerial.println(F("Ripple 12"));
             break;
           case 1:
-            DBGSerial.println("Tripod 6");
+            DBGSerial.println(F("Tripod 6"));
             break;
           case 2:
-            DBGSerial.println("Tripod 8");
+            DBGSerial.println(F("Tripod 8"));
             break;
           case 3:
-            DBGSerial.println("Tripod 12");
+            DBGSerial.println(F("Tripod 12"));
             break;
           case 4:
-            DBGSerial.println("Tripod 16");
+            DBGSerial.println(F("Tripod 16"));
             break;
           case 5:
-            DBGSerial.println("Wave 24");
+            DBGSerial.println(F("Wave 24"));
             break;
           }
 #endif
@@ -269,13 +269,13 @@ void ReadControl() {
           if (DoubleHeight) {
             LegLiftHeight = 80;
 #ifdef DEBUG_MODE
-            DBGSerial.println("DoubleHeight: On");
+            DBGSerial.println(F("DoubleHeight: On"));
 #endif
           }
           else {
             LegLiftHeight = 50;
 #ifdef DEBUG_MODE
-            DBGSerial.println("DoubleHeight: Off");
+            DBGSerial.println(F("DoubleHeight: Off"));
 #endif
           }
         }
@@ -288,10 +288,10 @@ void ReadControl() {
           DoubleTravel = !DoubleTravel;
 #ifdef DEBUG_MODE
           if (DoubleTravel) {
-            DBGSerial.println("DoubleTravel: On");
+            DBGSerial.println(F("DoubleTravel: On"));
           }
           else {
-            DBGSerial.println("DoubleTravel: Off");
+            DBGSerial.println(F("DoubleTravel: Off"));
           }
 #endif
         }
@@ -304,10 +304,10 @@ void ReadControl() {
           WalkMethod = !WalkMethod;
 #ifdef DEBUG_MODE
           if (WalkMethod) {
-            DBGSerial.println("WalkMethod: 1");
+            DBGSerial.println(F("WalkMethod: 1"));
           }
           else {
-            DBGSerial.println("WalkMethod: 2");
+            DBGSerial.println(F("WalkMethod: 2"));
           }
 #endif
         }
@@ -360,25 +360,25 @@ void ReadControl() {
             SelectedLeg = 0;
           }
 #ifdef DEBUG_MODE
-          DBGSerial.print("SelectedLeg: ");
+          DBGSerial.print(F("SelectedLeg: "));
           switch(SelectedLeg) {
           case 0:
-            DBGSerial.println("RR");
+            DBGSerial.println(F("RR"));
             break;
           case 1:
-            DBGSerial.println("RM");
+            DBGSerial.println(F("RM"));
             break;
           case 2:
-            DBGSerial.println("RF");
+            DBGSerial.println(F("RF"));
             break;
           case 3:
-            DBGSerial.println("LR");
+            DBGSerial.println(F("LR"));
             break;
           case 4:
-            DBGSerial.println("LM");
+            DBGSerial.println(F("LM"));
             break;
           case 5:
-            DBGSerial.println("LF");
+            DBGSerial.println(F("LF"));
             break;
           }
 #endif
@@ -396,10 +396,10 @@ void ReadControl() {
           SLHold = !SLHold;
 #ifdef DEBUG_MODE
           if (SLHold) {
-            DBGSerial.println("SLHold: On");
+            DBGSerial.println(F("SLHold: On"));
           }
           else {
-            DBGSerial.println("SLHold: Off");
+            DBGSerial.println(F("SLHold: Off"));
           }
 #endif
         }
@@ -420,7 +420,7 @@ void ReadControl() {
 
 void TurnRobotOn() {
 #ifdef DEBUG_MODE
-  DBGSerial.println("Power: Turn on");
+  DBGSerial.println(F("Power: Turn on"));
 #endif
   HexOn = true;
   DoubleHeight = false;
@@ -432,7 +432,7 @@ void TurnRobotOn() {
 
 void TurnRobotOff() {
 #ifdef DEBUG_MODE
-  DBGSerial.println("Power: Turn off");
+  DBGSerial.println(F("Power: Turn off"));
 #endif
   HexOn = false;
   BodyPosX = 0;
