@@ -14,7 +14,6 @@
 //Changing the sign, depending on the legs
 #define sign(leg) ((leg) <= (2) ? (-1) : (1))
 
-#define square(x) ((x) * (x))
 #define min(a, b) ((a) < (b) ? (a) : (b))
 #define max(a, b) ((a) > (b) ? (a) : (b))
 

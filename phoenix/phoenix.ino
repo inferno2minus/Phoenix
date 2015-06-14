@@ -353,20 +353,20 @@ void BodyFK(int16_t PosX, int16_t PosY, int16_t PosZ, int16_t RotY, uint8_t LegI
 
 void LegIK(int16_t PosX, int16_t PosY, int16_t PosZ, uint8_t LegIndex) {
   //Length between the coxa and feet
-  float PosXZ = sqrt(square(PosX) + square(PosZ));
+  float PosXZ = sqrt(pow(PosX, 2) + pow(PosZ, 2));
 
   //Length between shoulder and wrist
-  float IKSW = sqrt(square(PosXZ - CoxaLength) + square(PosY));
+  float IKSW = sqrt(pow(PosXZ - CoxaLength, 2) + pow(PosY, 2));
 
   //Angle of the line SW with respect to the ground in radians
   float IKA1 = atan2(PosXZ - CoxaLength, PosY);
 
   //Angle of the line SW with respect to the femur in radians
-  float IKA2 = acos((square(FemurLength) - square(TibiaLength) + square(IKSW)) / (2 * FemurLength * IKSW));
+  float IKA2 = acos((pow(FemurLength, 2) - pow(TibiaLength, 2) + pow(IKSW, 2)) / (2 * FemurLength * IKSW));
 
   CoxaAngle[LegIndex] = atan2(PosZ, PosX) * RAD_IN_DEG + (int16_t)pgm_read_word(&LegAngle[LegIndex]);
   FemurAngle[LegIndex] = -(IKA1 + IKA2) * RAD_IN_DEG + 90;
-  TibiaAngle[LegIndex] = -(90 - acos((square(FemurLength) + square(TibiaLength) - square(IKSW)) /
+  TibiaAngle[LegIndex] = -(90 - acos((pow(FemurLength, 2) + pow(TibiaLength, 2) - pow(IKSW, 2)) /
     (2 * FemurLength * TibiaLength)) * RAD_IN_DEG);
 }
 
