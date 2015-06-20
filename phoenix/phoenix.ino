@@ -39,6 +39,8 @@ void setup() {
 
 #ifdef DEBUG_MODE
   DBGSerial.begin(DBG_BAUD);
+  const char *Build = "Compiled " __DATE__ ", " __TIME__;
+  DBGSerial.println(Build);
   DBGSerial.println(F(" _____                       _ "));
   DBGSerial.println(F("|  |  |___ _ _ ___ ___ ___ _| |"));
   DBGSerial.println(F("|     | -_|_'_| .'| . | . | . |"));

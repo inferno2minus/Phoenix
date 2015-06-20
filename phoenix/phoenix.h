@@ -12,7 +12,7 @@
 #define PHOENIX_H
 
 //Changing the sign, depending on the legs
-#define sign(leg) ((leg) <= (2) ? (-1) : (1))
+#define sign(x) ((x) <= (2) ? (-1) : (1))
 
 #define min(a, b) ((a) < (b) ? (a) : (b))
 #define max(a, b) ((a) > (b) ? (a) : (b))
