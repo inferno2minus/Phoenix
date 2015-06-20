@@ -41,38 +41,30 @@ SoftwareSerial SSCSerial(SSC_TX, SSC_RX);
 //[ANALOG INPUT]
 #define TRAVEL_DEADZONE    4 //The deadzone for the analog input from the remote
 
-//[CONSTANTS LEGS]
-#define RR                 0
-#define RM                 1
-#define RF                 2
-#define LR                 3
-#define LM                 4
-#define LF                 5
-
 //[SSC PIN NUMBERS]
-#define RRCoxaPin          0  //Rear Right leg hip horizontal
-#define RRFemurPin         1  //Rear Right leg hip vertical
-#define RRTibiaPin         2  //Rear Right leg knee
+#define RRCoxaPin          0  //Right Rear leg hip horizontal
+#define RRFemurPin         1  //Right Rear leg hip vertical
+#define RRTibiaPin         2  //Right Rear leg knee
 
-#define RMCoxaPin          4  //Middle Right leg hip horizontal
-#define RMFemurPin         5  //Middle Right leg hip vertical
-#define RMTibiaPin         6  //Middle Right leg knee
+#define RMCoxaPin          4  //Right Middle leg hip horizontal
+#define RMFemurPin         5  //Right Middle leg hip vertical
+#define RMTibiaPin         6  //Right Middle leg knee
 
-#define RFCoxaPin          8  //Front Right leg hip horizontal
-#define RFFemurPin         9  //Front Right leg hip vertical
-#define RFTibiaPin         10 //Front Right leg knee
+#define RFCoxaPin          8  //Right Front leg hip horizontal
+#define RFFemurPin         9  //Right Front leg hip vertical
+#define RFTibiaPin         10 //Right Front leg knee
 
-#define LRCoxaPin          16 //Rear Left leg hip horizontal
-#define LRFemurPin         17 //Rear Left leg hip vertical
-#define LRTibiaPin         18 //Rear Left leg knee
+#define LRCoxaPin          16 //Left Rear leg hip horizontal
+#define LRFemurPin         17 //Left Rear leg hip vertical
+#define LRTibiaPin         18 //Left Rear leg knee
 
-#define LMCoxaPin          20 //Middle Left leg hip horizontal
-#define LMFemurPin         21 //Middle Left leg hip vertical
-#define LMTibiaPin         22 //Middle Left leg knee
+#define LMCoxaPin          20 //Left Middle leg hip horizontal
+#define LMFemurPin         21 //Left Middle leg hip vertical
+#define LMTibiaPin         22 //Left Middle leg knee
 
-#define LFCoxaPin          24 //Front Left leg hip horizontal
-#define LFFemurPin         25 //Front Left leg hip vertical
-#define LFTibiaPin         26 //Front Left leg knee
+#define LFCoxaPin          24 //Left Front leg hip horizontal
+#define LFFemurPin         25 //Left Front leg hip vertical
+#define LFTibiaPin         26 //Left Front leg knee
 
 //[MIN/MAX ANGLES]
 #define RRCoxaMin         -26 //Mechanical limits of the Right Rear leg

@@ -10,10 +10,10 @@
 
 #include <PS2X.h>
 
-#define WALKMODE           0
-#define TRANSLATEMODE      1
-#define ROTATEMODE         2
-#define SINGLELEGMODE      3
+#define WALKMODE         0
+#define TRANSLATEMODE    1
+#define ROTATEMODE       2
+#define SINGLELEGMODE    3
 
 PS2X    PS2;
 bool    DoubleHeight;
