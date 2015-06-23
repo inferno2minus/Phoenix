@@ -419,6 +419,9 @@ void ReadControl() {
 }
 
 void TurnRobotOn() {
+#ifdef SOUND_MODE
+  Sound.play(3, 1661, 60, 2217, 80, 2794, 100);
+#endif
 #ifdef DEBUG_MODE
   DBGSerial.println(F("Power: Turn on"));
 #endif
@@ -431,6 +434,9 @@ void TurnRobotOn() {
 }
 
 void TurnRobotOff() {
+#ifdef SOUND_MODE
+  Sound.play(3, 2794, 100, 2217, 80, 1661, 60);
+#endif
 #ifdef DEBUG_MODE
   DBGSerial.println(F("Power: Turn off"));
 #endif

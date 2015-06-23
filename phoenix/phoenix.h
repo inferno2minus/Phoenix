@@ -101,7 +101,7 @@ uint32_t  TimerStart;         //Start time of the calculation cycles
 
 //Power
 bool      HexOn;              //Switch to turn on Phoenix
-bool      PrevHexOn;          //Previous loop state 
+bool      PrevHexOn;          //Previous loop state
 
 //Balance
 bool      BalanceMode;

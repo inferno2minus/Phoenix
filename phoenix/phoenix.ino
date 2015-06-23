@@ -452,12 +452,6 @@ void ServoDriverFree() {
 
 void ServoDriver() {
   if (HexOn) {
-    if (HexOn && !PrevHexOn) {
-#ifdef SOUND_MODE
-      Sound.play(3, 1661, 60, 2217, 80, 2794, 100);
-#endif
-    }
-
     //Set SSC time
     if ((abs(TravelLengthX) > TRAVEL_DEADZONE) ||
         (abs(TravelLengthZ) > TRAVEL_DEADZONE) ||
@@ -515,9 +509,6 @@ void ServoDriver() {
     SSCTime = 600;
     ServoDriverUpdate();
     ServoDriverCommit();
-#ifdef SOUND_MODE
-    Sound.play(3, 2794, 100, 2217, 80, 1661, 60);
-#endif
     delay(600);
   }
   else {
