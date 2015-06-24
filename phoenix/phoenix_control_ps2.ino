@@ -32,10 +32,10 @@ void ReadControl() {
     //Switch bot on/off
     if (PS2.ButtonPressed(PSB_START) && !GaitInMotion) { //Start button
       if (HexOn) {
-        TurnRobotOff(); //Turn off
+        TurnRobotOff();
       }
       else {
-        TurnRobotOn(); //Turn on
+        TurnRobotOn();
       }
     }
 
@@ -312,21 +312,20 @@ void ReadControl() {
 #endif
         }
 
-        //Walking
-        if (WalkMethod) { //Walk method
-          TravelLengthZ = (PS2.Analog(PSS_RY) - 128); //Right stick Up/Down
+        if (WalkMethod) {
+          TravelLengthZ = (PS2.Analog(PSS_RY) - 128);
         }
         else {
           TravelLengthX = -(PS2.Analog(PSS_LX) - 128);
           TravelLengthZ = (PS2.Analog(PSS_LY) - 128);
         }
 
-        if (!DoubleTravel) { //Double travel length
+        if (!DoubleTravel) {
           TravelLengthX /= 2;
           TravelLengthZ /= 2;
         }
 
-        TravelLengthY = -(PS2.Analog(PSS_RX) - 128) / 4; //Right stick Left/Right
+        TravelLengthY = -(PS2.Analog(PSS_RX) - 128) / 4;
       }
 
       //[Translate functions]
@@ -384,9 +383,9 @@ void ReadControl() {
 #endif
         }
 
-        SLLegX = (PS2.Analog(PSS_LX) - 128) / 2; //Left stick Right/Left
-        SLLegY = (PS2.Analog(PSS_RY) - 128) / 10; //Right stick Up/Down
-        SLLegZ = (PS2.Analog(PSS_LY) - 128) / 2; //Left stick Up/Down
+        SLLegX = (PS2.Analog(PSS_LX) - 128) / 2;
+        SLLegY = (PS2.Analog(PSS_RY) - 128) / 10;
+        SLLegZ = (PS2.Analog(PSS_LY) - 128) / 2;
 
         //Hold single leg in place
         if (PS2.ButtonPressed(PSB_R2)) { //R2 button
