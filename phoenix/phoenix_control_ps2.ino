@@ -328,8 +328,9 @@ void ReadControl() {
         TravelLengthY = -(PS2.Analog(PSS_RX) - 128) / 4;
       }
 
-      //[Translate functions]
       BodyYShift = 0;
+
+      //[Translate functions]
       if (ControlMode == TRANSLATEMODE) {
         BodyPosX = (PS2.Analog(PSS_LX) - 128) / 2;
         BodyPosZ = -(PS2.Analog(PSS_LY) - 128) / 3;
@@ -383,10 +384,6 @@ void ReadControl() {
 #endif
         }
 
-        SLLegX = (PS2.Analog(PSS_LX) - 128) / 2;
-        SLLegY = (PS2.Analog(PSS_RY) - 128) / 10;
-        SLLegZ = (PS2.Analog(PSS_LY) - 128) / 2;
-
         //Hold single leg in place
         if (PS2.ButtonPressed(PSB_R2)) { //R2 button
 #ifdef SOUND_MODE
@@ -402,15 +399,19 @@ void ReadControl() {
           }
 #endif
         }
+
+        SLLegX = (PS2.Analog(PSS_LX) - 128) / 2;
+        SLLegY = (PS2.Analog(PSS_RY) - 128) / 10;
+        SLLegZ = (PS2.Analog(PSS_LY) - 128) / 2;
       }
+
+      //Calculate BodyPosY
+      BodyPosY = min(max(BodyYOffset + BodyYShift, 0), 100);
 
       //Calculate walking time delay
       InputTimeDelay = 128 - max(max(abs(PS2.Analog(PSS_LX) - 128),
         abs(PS2.Analog(PSS_LY) - 128)), abs(PS2.Analog(PSS_RX) - 128));
     }
-
-    //Calculate BodyPosY
-    BodyPosY = min(max(BodyYOffset + BodyYShift, 0), 100);
   }
   else if (HexOn) {
     TurnRobotOff();
