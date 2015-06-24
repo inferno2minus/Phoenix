@@ -328,8 +328,6 @@ void ReadControl() {
         TravelLengthY = -(PS2.Analog(PSS_RX) - 128) / 4;
       }
 
-      BodyYShift = 0;
-
       //[Translate functions]
       if (ControlMode == TRANSLATEMODE) {
         BodyPosX = (PS2.Analog(PSS_LX) - 128) / 2;
@@ -403,6 +401,11 @@ void ReadControl() {
         SLLegX = (PS2.Analog(PSS_LX) - 128) / 2;
         SLLegY = (PS2.Analog(PSS_RY) - 128) / 10;
         SLLegZ = (PS2.Analog(PSS_LY) - 128) / 2;
+      }
+
+      //Reset BodyYShift
+      if (ControlMode != TRANSLATEMODE && ControlMode != ROTATEMODE) {
+        BodyYShift = 0;
       }
 
       //Calculate BodyPosY
