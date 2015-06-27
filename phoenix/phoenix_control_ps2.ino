@@ -110,7 +110,7 @@ void ReadControl() {
           DBGSerial.println(F("ControlMode: SINGLELEGMODE"));
 #endif
           if (SelectedLeg == NOT_SELECTED) {
-            SelectedLeg = RF; //Start leg
+            SelectedLeg = LR; //Start leg
           }
         }
         else {
