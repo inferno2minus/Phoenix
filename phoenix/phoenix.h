@@ -18,17 +18,18 @@
 #define max(a, b) ((a) > (b) ? (a) : (b))
 
 //Legs constants
-#define RR            0 //Right Rear
-#define RM            1 //Right Middle
-#define RF            2 //Right Front
-#define LR            3 //Left Rear
-#define LM            4 //Left Middle
-#define LF            5 //Left Front
+#define RR              0 //Right Rear
+#define RM              1 //Right Middle
+#define RF              2 //Right Front
+#define LR              3 //Left Rear
+#define LM              4 //Left Middle
+#define LF              5 //Left Front
+#define NOT_SELECTED    255
 
 //Mathematical constants
-#define PI            3.1415926535897932384626433832795
-#define DEG_IN_RAD    0.0174532925199432957692369076848
-#define RAD_IN_DEG    57.295779513082320876798154814105
+#define PI              3.1415926535897932384626433832795
+#define DEG_IN_RAD      0.0174532925199432957692369076848
+#define RAD_IN_DEG      57.295779513082320876798154814105
 
 //Build tables for leg configuration like I/O and Min/Max values to easy access values using a for loop
 //Constants are still defined as single values in the cfg file to make it easy to read/configure

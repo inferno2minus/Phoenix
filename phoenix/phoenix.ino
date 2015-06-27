@@ -59,8 +59,8 @@ void setup() {
   InitLegPosition();
 
   //Single leg control
-  SelectedLeg = 255;
-  PrevSelectedLeg = 255;
+  PrevSelectedLeg = NOT_SELECTED;
+  SelectedLeg = NOT_SELECTED;
 
   //Gait
   BalanceMode = false;
@@ -138,8 +138,8 @@ void SingleLegControl() {
   else if (!AllDown) { //All legs to init position
     InitLegPosition();
   }
-  else if (PrevSelectedLeg != 255) {
-    PrevSelectedLeg = 255;
+  else if (PrevSelectedLeg != NOT_SELECTED) {
+    PrevSelectedLeg = NOT_SELECTED;
   }
 }
 

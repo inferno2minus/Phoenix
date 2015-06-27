@@ -51,7 +51,7 @@ void ReadControl() {
           DBGSerial.println(F("ControlMode: TRANSLATEMODE"));
 #endif
         }
-        else if (SelectedLeg == 255) {
+        else if (SelectedLeg == NOT_SELECTED) {
           ControlMode = WALKMODE;
 #ifdef DEBUG_MODE
           DBGSerial.println(F("ControlMode: WALKMODE"));
@@ -76,7 +76,7 @@ void ReadControl() {
           DBGSerial.println(F("ControlMode: ROTATEMODE"));
 #endif
         }
-        else if (SelectedLeg == 255) {
+        else if (SelectedLeg == NOT_SELECTED) {
           ControlMode = WALKMODE;
 #ifdef DEBUG_MODE
           DBGSerial.println(F("ControlMode: WALKMODE"));
@@ -109,7 +109,7 @@ void ReadControl() {
 #ifdef DEBUG_MODE
           DBGSerial.println(F("ControlMode: SINGLELEGMODE"));
 #endif
-          if (SelectedLeg == 255) {
+          if (SelectedLeg == NOT_SELECTED) {
             SelectedLeg = RF; //Start leg
           }
         }
@@ -118,7 +118,7 @@ void ReadControl() {
 #ifdef DEBUG_MODE
           DBGSerial.println(F("ControlMode: WALKMODE"));
 #endif
-          SelectedLeg = 255;
+          SelectedLeg = NOT_SELECTED;
         }
       }
 
@@ -452,7 +452,7 @@ void TurnRobotOff() {
   BodyRotZ = 0;
   BodyYOffset = 0;
   BodyYShift = 0;
-  SelectedLeg = 255;
+  SelectedLeg = NOT_SELECTED;
   TravelLengthX = 0;
   TravelLengthY = 0;
   TravelLengthZ = 0;
