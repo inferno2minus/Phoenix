@@ -514,13 +514,7 @@ void ServoDriver() {
     delay(20);
   }
 
+  //Store previous state
   PrevSSCTime = SSCTime;
-
-  //Store previous HexOn state
-  if (HexOn) {
-    PrevHexOn = true;
-  }
-  else {
-    PrevHexOn = false;
-  }
+  PrevHexOn = HexOn;
 }
