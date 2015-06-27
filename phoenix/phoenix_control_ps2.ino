@@ -429,11 +429,6 @@ void TurnRobotOn() {
   DBGSerial.println(F("Power: Turn on"));
 #endif
   HexOn = true;
-  DoubleHeight = false;
-  DoubleTravel = false;
-  WalkMethod = false;
-  ControlMode = WALKMODE;
-  SpeedControl = 100;
 }
 
 void TurnRobotOff() {
@@ -452,8 +447,4 @@ void TurnRobotOff() {
   BodyRotZ = 0;
   BodyYOffset = 0;
   BodyYShift = 0;
-  SelectedLeg = NOT_SELECTED;
-  TravelLengthX = 0;
-  TravelLengthY = 0;
-  TravelLengthZ = 0;
 }

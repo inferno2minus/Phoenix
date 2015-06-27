@@ -63,10 +63,8 @@ void setup() {
   SelectedLeg = NOT_SELECTED;
 
   //Gait
-  BalanceMode = false;
   LegLiftHeight = 50;
   GaitStep = 1;
-  GaitType = 0;
   GaitSelect();
 
   //Initialize controller
