@@ -439,6 +439,7 @@ void TurnRobotOff() {
   DBGSerial.println(F("Power: Turn off"));
 #endif
   HexOn = false;
+  SLHold = false;
   BodyPosX = 0;
   BodyPosY = 0;
   BodyPosZ = 0;

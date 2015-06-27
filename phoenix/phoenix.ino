@@ -503,15 +503,9 @@ void ServoDriver() {
     //Commit servo positions
     ServoDriverCommit();
   }
-  else if (PrevHexOn || !AllDown) { //Turn the bot off
-    SSCTime = 600;
-    ServoDriverUpdate();
-    ServoDriverCommit();
-    delay(600);
-  }
-  else {
+  else if (PrevHexOn) {
+    //Free servo positions
     ServoDriverFree();
-    delay(20);
   }
 
   //Store previous state
