@@ -99,6 +99,7 @@ void loop() {
 
 void InitLegPosition() {
   for (uint8_t LegIndex = 0; LegIndex <= 5; LegIndex++) {
+    //All legs to init position
     LegPosX[LegIndex] = (int16_t)pgm_read_word(&InitPosX[LegIndex]);
     LegPosY[LegIndex] = (int16_t)pgm_read_word(&InitPosY[LegIndex]);
     LegPosZ[LegIndex] = (int16_t)pgm_read_word(&InitPosZ[LegIndex]);
@@ -116,12 +117,14 @@ void SingleLegControl() {
 
   if (SelectedLeg <= 5) {
     if (SelectedLeg != PrevSelectedLeg) {
-      if (AllDown) { //Lift leg a bit when it got selected
+      if (AllDown) {
+        //Lift leg a bit when it got selected
         LegPosY[SelectedLeg] = (int16_t)pgm_read_word(&InitPosY[SelectedLeg]) - 20;
         //Store current status
         PrevSelectedLeg = SelectedLeg;
       }
-      else { //Return prev leg back to the init position
+      else {
+        //Return prev leg back to the init position
         LegPosX[PrevSelectedLeg] = (int16_t)pgm_read_word(&InitPosX[PrevSelectedLeg]);
         LegPosY[PrevSelectedLeg] = (int16_t)pgm_read_word(&InitPosY[PrevSelectedLeg]);
         LegPosZ[PrevSelectedLeg] = (int16_t)pgm_read_word(&InitPosZ[PrevSelectedLeg]);
@@ -133,7 +136,7 @@ void SingleLegControl() {
       LegPosZ[SelectedLeg] = (int16_t)pgm_read_word(&InitPosZ[SelectedLeg]) + SLLegZ;
     }
   }
-  else if (!AllDown) { //All legs to init position
+  else if (!AllDown) {
     InitLegPosition();
   }
   else if (PrevSelectedLeg != NOT_SELECTED) {
@@ -246,7 +249,7 @@ void GaitSequence() {
 void BalanceLeg(int16_t PosX, int16_t PosY, int16_t PosZ, uint8_t LegIndex) {
   //Calculating totals from center of the body to the feet
   int16_t TotalX = (int16_t)pgm_read_word(&OffsetX[LegIndex]) + PosX;
-  int16_t TotalY = 150 + PosY; //Using the value 150 to lower the center point of rotation BodyPosY
+  int16_t TotalY = 150 + PosY; //Using the value 150 to lower the center point of rotation
   int16_t TotalZ = (int16_t)pgm_read_word(&OffsetZ[LegIndex]) + PosZ;
 
   TotalTransX += TotalX;
@@ -263,18 +266,21 @@ void BalanceBody() {
   TotalTransY = TotalTransY / 6;
   TotalTransZ = TotalTransZ / 6;
 
-  if (TotalBalY > 0) { //Rotate balance circle by +/- 180 deg
+  //Rotate balance circle by +/- 180 deg
+  if (TotalBalY > 0) {
     TotalBalY -= 180;
   }
   else {
     TotalBalY += 180;
   }
 
-  if (TotalBalZ < -180) { //Compensate for extreme balance positions that causes overflow
+  //Compensate for extreme balance positions that causes overflow
+  if (TotalBalZ < -180) {
     TotalBalZ += 360;
   }
 
-  if (TotalBalX < -180) { //Compensate for extreme balance positions that causes overflow
+  //Compensate for extreme balance positions that causes overflow
+  if (TotalBalX < -180) {
     TotalBalX += 360;
   }
 
@@ -310,20 +316,20 @@ trig GetSinCos(int16_t AngleDeg) {
   int16_t ABSAngleDeg = abs(AngleDeg);
 
   //Shift rotation to a full circle of 360 deg
-  if (AngleDeg < 0) { //Negative values
+  if (AngleDeg < 0) {
     AngleDeg = 360 - (ABSAngleDeg - (360 * (ABSAngleDeg / 360)));
   }
-  else { //Positive values
+  else {
     AngleDeg = ABSAngleDeg - (360 * (ABSAngleDeg / 360));
   }
 
-  if (AngleDeg < 180) { //Angle between 0 and 180
+  if (AngleDeg < 180) {
     //Subtract 90 to shift range
     AngleDeg = AngleDeg - 90;
     Trig.Sin = cos(AngleDeg * DEG_IN_RAD);
     Trig.Cos = -sin(AngleDeg * DEG_IN_RAD);
   }
-  else { //Angle between 180 and 360
+  else {
     //Subtract 270 to shift range
     AngleDeg = AngleDeg - 270;
     Trig.Sin = -cos(AngleDeg * DEG_IN_RAD);
@@ -450,7 +456,7 @@ void ServoDriverFree() {
 
 void ServoDriver() {
   if (HexOn) {
-    //Set SSC time
+    //Calculate servo move time
     if ((abs(TravelLengthX) > TRAVEL_DEADZONE) ||
         (abs(TravelLengthZ) > TRAVEL_DEADZONE) ||
         (abs(TravelLengthY * 2) > TRAVEL_DEADZONE)) {
@@ -460,7 +466,7 @@ void ServoDriver() {
         SSCTime += 100;
       }
     }
-    else { //Movement speed excl. Walking
+    else {
       SSCTime = 200 + SpeedControl;
     }
 
