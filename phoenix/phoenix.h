@@ -101,7 +101,7 @@ uint16_t  SSCTime;            //Time for servo updates
 uint32_t  TimerStart;         //Start time of the calculation cycles
 
 //Power
-bool      HexOn;              //Switch to turn on Phoenix
+bool      HexOn;              //Switch to turn on robot
 bool      PrevHexOn;          //Previous loop state
 
 //Balance

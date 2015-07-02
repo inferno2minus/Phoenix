@@ -16,10 +16,10 @@
 #define SOUND_MODE
 
 //[ARDUINO PIN NUMBERS]
-#define PS2_DAT            6  //PS2 controller DAT
-#define PS2_CMD            7  //PS2 controller CMD
-#define PS2_ATT            8  //PS2 controller ATT
-#define PS2_CLK            9  //PS2 controller CLK
+#define PS2_DAT            6  //PS2 controller data
+#define PS2_CMD            7  //PS2 controller command
+#define PS2_ATT            8  //PS2 controller attention
+#define PS2_CLK            9  //PS2 controller clock
 #define SSC_TX             10 //(SSC32 TX -> Arduino RX)
 #define SSC_RX             11 //(SSC32 RX <- Arduino TX)
 #define BUZZER             12 //Buzzer module
