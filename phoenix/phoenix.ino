@@ -462,8 +462,8 @@ void ServoDriver() {
     //Finding any the biggest value for GaitPos/Rot
     for (uint8_t LegIndex = 0; LegIndex <= 5; LegIndex++) {
       if ((GaitPosX[LegIndex] > 2) || (GaitPosX[LegIndex] < -2) ||
-          (GaitRotY[LegIndex] > 2) || (GaitRotY[LegIndex] < -2) ||
-          (GaitPosZ[LegIndex] > 2) || (GaitPosZ[LegIndex] < -2)) {
+          (GaitPosZ[LegIndex] > 2) || (GaitPosZ[LegIndex] < -2) ||
+          (GaitRotY[LegIndex] > 2) || (GaitRotY[LegIndex] < -2)) {
         //For making sure that we are using timed move until all legs are down
         ExtraCycle = GaitCurrent.NrLiftedPos + 1;
         break;
