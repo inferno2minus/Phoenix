@@ -66,43 +66,43 @@ typedef struct {
 } trig;
 
 typedef struct {
-  uint8_t NrLiftedPos;        //Number of positions that a single leg is lifted (1-5)
-  uint8_t FrontDownPos;       //Where the leg should be put down to ground
-  uint8_t LiftDivFactor;      //Default: 2, when NrLiftedPos = 5: 4
-  uint8_t HalfLiftHeight;     //How high to lift at halfway up
-  uint8_t TLDivFactor;        //Number of steps that a leg is on the floor while walking
-  uint8_t StepsInGait;        //Number of steps in gait
-  uint8_t NomGaitSpeed;       //Nominal speed of the gait
-  uint8_t GaitLegNr[6];       //Init position of the leg (LR, RF, LM, RR, LF, RM)
+  uint8_t NrLiftedPos;    //Number of positions that a single leg is lifted (1-5)
+  uint8_t FrontDownPos;   //Where the leg should be put down to ground
+  uint8_t LiftDivFactor;  //Default: 2, when NrLiftedPos = 5: 4
+  uint8_t HalfLiftHeight; //How high to lift at halfway up
+  uint8_t TLDivFactor;    //Number of steps that a leg is on the floor while walking
+  uint8_t StepsInGait;    //Number of steps in gait
+  uint8_t NomGaitSpeed;   //Nominal speed of the gait
+  uint8_t GaitLegNr[6];   //Init position of the leg (LR, RF, LM, RR, LF, RM)
 } gait;
 
 //Angles
-float     CoxaAngle[6];       //Actual angle of the horizontal hip
-float     FemurAngle[6];      //Actual angle of the vertical hip
-float     TibiaAngle[6];      //Actual angle of the knee
+float     CoxaAngle[6];
+float     FemurAngle[6];
+float     TibiaAngle[6];
 
 //Body position
-int16_t   BodyFKPosX;         //Output position X of feet with rotation
-int16_t   BodyFKPosY;         //Output position Y of feet with rotation
-int16_t   BodyFKPosZ;         //Output position Z of feet with rotation
-int16_t   BodyPosX;           //Global input for the position of the body
+int16_t   BodyPosX;
 int16_t   BodyPosY;
 int16_t   BodyPosZ;
-int16_t   BodyRotX;           //Global input pitch of the body
-int16_t   BodyRotY;           //Global input rotation of the body
-int16_t   BodyRotZ;           //Global input roll of the body
+int16_t   BodyRotX;
+int16_t   BodyRotY;
+int16_t   BodyRotZ;
+int16_t   BodyFKPosX;
+int16_t   BodyFKPosY;
+int16_t   BodyFKPosZ;
 
 //Timing
-uint8_t   InputTimeDelay;     //Delay that depends on the input to get the "sneaking" effect
+uint8_t   InputTimeDelay;
 uint16_t  PrevSpeedControl;
-uint16_t  PrevSSCTime;        //Previous time for the servo updates
-uint16_t  SpeedControl;       //Adjustable delay
-uint16_t  SSCTime;            //Time for servo updates
-uint32_t  TimerStart;         //Start time of the calculation cycles
+uint16_t  SpeedControl;
+uint16_t  PrevSSCTime;
+uint16_t  SSCTime;
+uint32_t  TimerStart;
 
 //Power
-bool      HexOn;              //Switch to turn on robot
-bool      PrevHexOn;          //Previous loop state
+bool      HexOn;
+bool      PrevHexOn;
 
 //Balance
 bool      BalanceMode;
@@ -115,31 +115,31 @@ int16_t   TotalTransZ;
 
 //Single leg
 bool      AllDown;
-bool      SLHold;             //Single leg control mode
+bool      SLHold;
 uint8_t   PrevSelectedLeg;
 uint8_t   SelectedLeg;
-int16_t   LegPosX[6];         //Actual X position of the leg
-int16_t   LegPosY[6];         //Actual Y position of the leg
-int16_t   LegPosZ[6];         //Actual Z position of the leg
+int16_t   LegPosX[6];
+int16_t   LegPosY[6];
+int16_t   LegPosZ[6];
 int16_t   SLLegX;
 int16_t   SLLegY;
 int16_t   SLLegZ;
 
 //Gait
-bool      GaitInMotion;       //Temp to check if the gait is in motion
-bool      Walking;            //True if the robot are walking
 gait      GaitCurrent;
-uint8_t   ExtraCycle;         //Forcing some extra timed cycles for avoiding "end of gait bug"
-uint8_t   GaitStep;           //Actual gait step
-uint8_t   GaitType;           //Gait type
-uint8_t   LegLiftHeight;      //Current travel height
-int16_t   GaitPosX[6];        //Array containing relative X position corresponding to the gait
-int16_t   GaitPosY[6];        //Array containing relative Y position corresponding to the gait
-int16_t   GaitPosZ[6];        //Array containing relative Z position corresponding to the gait
-int16_t   GaitRotY[6];        //Array containing relative Y rotation corresponding to the gait
-int16_t   TravelLengthX;      //Current travel length X
-int16_t   TravelLengthY;      //Current travel rotation Y
-int16_t   TravelLengthZ;      //Current travel length Z
+bool      GaitInMotion;
+bool      Walking;
+uint8_t   ExtraCycle;
+uint8_t   GaitStep;
+uint8_t   GaitType;
+uint8_t   LegLiftHeight;
+int16_t   GaitPosX[6];
+int16_t   GaitPosY[6];
+int16_t   GaitPosZ[6];
+int16_t   GaitRotY[6];
+int16_t   TravelLengthX;
+int16_t   TravelLengthY;
+int16_t   TravelLengthZ;
 
 #ifdef DEBUG_MODE
 bool      PrevWalking;
