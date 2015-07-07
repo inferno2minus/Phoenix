@@ -418,7 +418,7 @@ void ReadControl() {
       //Calculate servo move time
       if ((abs(TravelLengthX) > TRAVEL_DEADZONE) ||
           (abs(TravelLengthZ) > TRAVEL_DEADZONE) ||
-          (abs(TravelLengthY * 2) > TRAVEL_DEADZONE)) {
+          (abs(TravelLengthY) > TRAVEL_DEADZONE / 2)) {
         SSCTime = GaitCurrent.NomGaitSpeed + (InputTimeDelay * 2) + SpeedControl;
         //Add additional delay when balance mode is on
         if (BalanceMode) {
