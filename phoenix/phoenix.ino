@@ -8,7 +8,6 @@
  * Hardware setup: Arduino, SSC32 V2
  */
 
-#include <Arduino.h>
 #include <MiniTone.h>
 #include <SoftwareSerial.h>
 #include "phoenix_cfg.h"
