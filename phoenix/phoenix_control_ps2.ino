@@ -10,6 +10,7 @@
 
 #include <PS2X.h>
 
+//Control mode
 #define WALKMODE         0
 #define TRANSLATEMODE    1
 #define ROTATEMODE       2
@@ -25,6 +26,35 @@ int16_t BodyYShift;
 
 void InitControl() {
   PS2.config_gamepad(PS2_DAT, PS2_CMD, PS2_ATT, PS2_CLK);
+}
+
+void TurnRobotOn() {
+#ifdef SOUND_MODE
+  Sound.play(3, 1661, 60, 2217, 80, 2794, 100);
+#endif
+#ifdef DEBUG_MODE
+  DBGSerial.println(F("Power: Turn on"));
+#endif
+  HexOn = true;
+}
+
+void TurnRobotOff() {
+#ifdef SOUND_MODE
+  Sound.play(3, 2794, 100, 2217, 80, 1661, 60);
+#endif
+#ifdef DEBUG_MODE
+  DBGSerial.println(F("Power: Turn off"));
+#endif
+  HexOn = false;
+  SLHold = false;
+  BodyPosX = 0;
+  BodyPosY = 0;
+  BodyPosZ = 0;
+  BodyRotX = 0;
+  BodyRotY = 0;
+  BodyRotZ = 0;
+  BodyYOffset = 0;
+  BodyYShift = 0;
 }
 
 void ReadControl() {
@@ -433,33 +463,4 @@ void ReadControl() {
   else if (HexOn) {
     TurnRobotOff();
   }
-}
-
-void TurnRobotOn() {
-#ifdef SOUND_MODE
-  Sound.play(3, 1661, 60, 2217, 80, 2794, 100);
-#endif
-#ifdef DEBUG_MODE
-  DBGSerial.println(F("Power: Turn on"));
-#endif
-  HexOn = true;
-}
-
-void TurnRobotOff() {
-#ifdef SOUND_MODE
-  Sound.play(3, 2794, 100, 2217, 80, 1661, 60);
-#endif
-#ifdef DEBUG_MODE
-  DBGSerial.println(F("Power: Turn off"));
-#endif
-  HexOn = false;
-  SLHold = false;
-  BodyPosX = 0;
-  BodyPosY = 0;
-  BodyPosZ = 0;
-  BodyRotX = 0;
-  BodyRotY = 0;
-  BodyRotZ = 0;
-  BodyYOffset = 0;
-  BodyYShift = 0;
 }
