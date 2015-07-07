@@ -456,20 +456,6 @@ void ServoDriverFree() {
 
 void ServoDriver() {
   if (HexOn) {
-    //Calculate servo move time
-    if ((abs(TravelLengthX) > TRAVEL_DEADZONE) ||
-        (abs(TravelLengthZ) > TRAVEL_DEADZONE) ||
-        (abs(TravelLengthY * 2) > TRAVEL_DEADZONE)) {
-      SSCTime = GaitCurrent.NomGaitSpeed + (InputTimeDelay * 2) + SpeedControl;
-      //Add additional delay when balance mode is on
-      if (BalanceMode) {
-        SSCTime += 100;
-      }
-    }
-    else {
-      SSCTime = 200 + SpeedControl;
-    }
-
     //Update servo positions without committing
     ServoDriverUpdate();
 

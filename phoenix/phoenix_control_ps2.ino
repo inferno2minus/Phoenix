@@ -414,6 +414,20 @@ void ReadControl() {
       //Calculate walking time delay
       InputTimeDelay = 128 - max(max(abs(PS2.Analog(PSS_LX) - 128),
         abs(PS2.Analog(PSS_LY) - 128)), abs(PS2.Analog(PSS_RX) - 128));
+
+      //Calculate servo move time
+      if ((abs(TravelLengthX) > TRAVEL_DEADZONE) ||
+          (abs(TravelLengthZ) > TRAVEL_DEADZONE) ||
+          (abs(TravelLengthY * 2) > TRAVEL_DEADZONE)) {
+        SSCTime = GaitCurrent.NomGaitSpeed + (InputTimeDelay * 2) + SpeedControl;
+        //Add additional delay when balance mode is on
+        if (BalanceMode) {
+          SSCTime += 100;
+        }
+      }
+      else {
+        SSCTime = 200 + SpeedControl;
+      }
     }
   }
   else if (HexOn) {
