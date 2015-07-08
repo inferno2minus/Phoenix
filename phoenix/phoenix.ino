@@ -120,11 +120,11 @@ void SingleLegControl() {
       if (AllDown) {
         //Lift leg a bit when it got selected
         LegPosY[SelectedLeg] = (int16_t)pgm_read_word(&InitPosY[SelectedLeg]) - 20;
-        //Store current status
+        //Store current state
         PrevSelectedLeg = SelectedLeg;
       }
       else {
-        //Return prev leg back to the init position
+        //Return previous leg back to the init position
         LegPosX[PrevSelectedLeg] = (int16_t)pgm_read_word(&InitPosX[PrevSelectedLeg]);
         LegPosY[PrevSelectedLeg] = (int16_t)pgm_read_word(&InitPosY[PrevSelectedLeg]);
         LegPosZ[PrevSelectedLeg] = (int16_t)pgm_read_word(&InitPosZ[PrevSelectedLeg]);
@@ -500,7 +500,7 @@ void ServoDriver() {
     ServoDriverFree();
   }
 
-  //Store previous state
+  //Store current state
   PrevSSCTime = SSCTime;
   PrevHexOn = HexOn;
 }
