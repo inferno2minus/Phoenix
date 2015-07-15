@@ -101,8 +101,8 @@ uint16_t  SSCTime;
 uint32_t  TimerStart;
 
 //Power
-bool      HexOn;
 bool      PrevHexOn;
+bool      HexOn;
 
 //Balance
 bool      BalanceMode;
@@ -128,7 +128,6 @@ int16_t   SLLegZ;
 gait      GaitCurrent;
 bool      GaitInMotion;
 bool      Walking;
-uint8_t   ExtraCycle;
 uint8_t   GaitStep;
 uint8_t   GaitType;
 uint8_t   LegLiftHeight;

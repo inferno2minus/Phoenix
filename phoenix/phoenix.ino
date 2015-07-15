@@ -460,6 +460,7 @@ void ServoDriver() {
     ServoDriverUpdate();
 
     //Finding any the biggest value for GaitPos/Rot
+    uint8_t ExtraCycle;
     for (uint8_t LegIndex = 0; LegIndex <= 5; LegIndex++) {
       if ((GaitPosX[LegIndex] > 2) || (GaitPosX[LegIndex] < -2) ||
           (GaitPosZ[LegIndex] > 2) || (GaitPosZ[LegIndex] < -2) ||
