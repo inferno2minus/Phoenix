@@ -114,7 +114,6 @@ int16_t   TotalTransY;
 int16_t   TotalTransZ;
 
 //Single leg
-bool      AllDown;
 bool      SLHold;
 uint8_t   PrevSelectedLeg;
 uint8_t   SelectedLeg;

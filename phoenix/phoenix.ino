@@ -108,7 +108,7 @@ void InitLegPosition() {
 
 void SingleLegControl() {
   //Check if all legs are down
-  AllDown = (LegPosY[RF] == (int16_t)pgm_read_word(&InitPosY[RF])) &&
+  bool AllDown = (LegPosY[RF] == (int16_t)pgm_read_word(&InitPosY[RF])) &&
     (LegPosY[RM] == (int16_t)pgm_read_word(&InitPosY[RM])) &&
     (LegPosY[RR] == (int16_t)pgm_read_word(&InitPosY[RR])) &&
     (LegPosY[LR] == (int16_t)pgm_read_word(&InitPosY[LR])) &&
