@@ -312,7 +312,7 @@ void BalanceCalc() {
 }
 
 trig GetSinCos(int16_t AngleDeg) {
-  trig Trig;
+  //Get the absolute value of AngleDeg
   int16_t ABSAngleDeg = abs(AngleDeg);
 
   //Shift rotation to a full circle of 360 deg
@@ -323,6 +323,7 @@ trig GetSinCos(int16_t AngleDeg) {
     AngleDeg = ABSAngleDeg - (360 * (ABSAngleDeg / 360));
   }
 
+  trig Trig;
   if (AngleDeg < 180) {
     //Subtract 90 to shift range
     AngleDeg = AngleDeg - 90;
@@ -487,10 +488,10 @@ void ServoDriver() {
 #endif
 
       //Get endtime and calculate wait time
-      uint8_t CycleTime = (millis() - TimerStart);
+      uint8_t TimeCycle = (millis() - TimerStart);
 
       //Wait for previous commands to be completed while walking
-      delay(PrevSSCTime - CycleTime);
+      delay(PrevSSCTime - TimeCycle);
     }
 
     //Commit servo positions
