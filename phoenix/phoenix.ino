@@ -220,7 +220,7 @@ void GaitSelect() {
 
 void GaitSequence() {
   //Check if the gait is in motion
-  GaitInMotion =  Walking ||
+  GaitInMotion = Walking ||
     (abs(TravelLengthX) > TRAVEL_DEADZONE) ||
     (abs(TravelLengthZ) > TRAVEL_DEADZONE) ||
     (abs(TravelLengthY) > TRAVEL_DEADZONE);
