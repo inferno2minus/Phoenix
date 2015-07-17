@@ -128,6 +128,7 @@ int16_t   SLLegZ;
 gait      GaitCurrent;
 bool      GaitInMotion;
 bool      Walking;
+uint8_t   ExtraCycle;
 uint8_t   GaitStep;
 uint8_t   GaitType;
 uint8_t   LegLiftHeight;
