@@ -98,7 +98,7 @@ uint16_t  PrevSpeedControl;
 uint16_t  SpeedControl;
 uint16_t  PrevSSCTime;
 uint16_t  SSCTime;
-uint32_t  TimerStart;
+uint32_t  TimeStart;
 
 //Power
 bool      PrevHexOn;

@@ -73,7 +73,7 @@ void setup() {
 
 void loop() {
   //Start time
-  TimerStart = millis();
+  TimeStart = millis();
 
   //Read controller
   ReadControl();
@@ -486,8 +486,8 @@ void ServoDriver() {
       }
 #endif
 
-      //Get endtime and calculate wait time
-      uint8_t TimeCycle = (millis() - TimerStart);
+      //Get end time and calculate wait time
+      uint8_t TimeCycle = (millis() - TimeStart);
 
       //Wait for previous commands to be completed while walking
       delay(PrevSSCTime - TimeCycle);
