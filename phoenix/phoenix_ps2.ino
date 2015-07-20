@@ -350,7 +350,7 @@ void ReadControl() {
       }
 
       //[Translate functions]
-      if (ControlMode == TRANSLATEMODE) {
+      else if (ControlMode == TRANSLATEMODE) {
         BodyPosX = (PS2.Analog(PSS_LX) - 128) / 2;
         BodyPosZ = -(PS2.Analog(PSS_LY) - 128) / 3;
         BodyRotY = (PS2.Analog(PSS_RX) - 128) / 6;
@@ -358,7 +358,7 @@ void ReadControl() {
       }
 
       //[Rotate functions]
-      if (ControlMode == ROTATEMODE) {
+      else if (ControlMode == ROTATEMODE) {
         BodyRotX = (PS2.Analog(PSS_LY) - 128) / 8;
         BodyRotY = (PS2.Analog(PSS_RX) - 128) / 6;
         BodyRotZ = (PS2.Analog(PSS_LX) - 128) / 8;
@@ -366,7 +366,7 @@ void ReadControl() {
       }
 
       //[Single leg functions]
-      if (ControlMode == SINGLELEGMODE) {
+      else if (ControlMode == SINGLELEGMODE) {
         //Switch leg for single leg control
         if (PS2.ButtonPressed(PSB_SELECT)) { //Select button
           SoundEvent(3);
