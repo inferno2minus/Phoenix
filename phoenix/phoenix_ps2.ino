@@ -28,16 +28,16 @@ void SoundEvent(uint8_t SoundType) {
 #ifdef SOUND_MODE
   switch(SoundType) {
   case 1:
-    Sound.play(3, 1661, 60, 2217, 80, 2794, 100);
+    Sound.play(3, 1568, 60, 2093, 80, 2794, 100);
     break;
   case 2:
-    Sound.play(3, 2794, 100, 2217, 80, 1661, 60);
+    Sound.play(3, 2794, 100, 2093, 80, 1568, 60);
     break;
   case 3:
-    Sound.play(2217, 40);
+    Sound.play(2093, 40);
     break;
   case 4:
-    Sound.play(2794, 80);
+    Sound.play(1568, 80);
     break;
   }
 #endif
