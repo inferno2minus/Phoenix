@@ -133,8 +133,13 @@ void ReadControl() {
 
 #ifdef DEBUG_MODE
       if (PS2.ButtonPressed(PSB_L3) && !GaitInMotion) { //L3 button
-        SoundEvent(3);
         DebugOutput = !DebugOutput;
+        if (DebugOutput) {
+          SoundEvent(3);
+        }
+        else {
+          SoundEvent(4);
+        }
       }
 #endif
 
@@ -147,7 +152,7 @@ void ReadControl() {
           DBGSerial.println(F("ControlMode: SINGLELEGMODE"));
 #endif
           if (SelectedLeg == NOT_SELECTED) {
-            SelectedLeg = LR; //Start leg
+            SelectedLeg = RR; //Start leg
           }
         }
         else {
@@ -162,16 +167,19 @@ void ReadControl() {
       //[Common functions]
       //Switch balance mode on/off
       if (PS2.ButtonPressed(PSB_SQUARE) && !GaitInMotion) { //Square button
-        SoundEvent(3);
         BalanceMode = !BalanceMode;
-#ifdef DEBUG_MODE
         if (BalanceMode) {
+          SoundEvent(3);
+#ifdef DEBUG_MODE
           DBGSerial.println(F("BalanceMode: On"));
+#endif
         }
         else {
+          SoundEvent(4);
+#ifdef DEBUG_MODE
           DBGSerial.println(F("BalanceMode: Off"));
-        }
 #endif
+        }
       }
 
       //Stand up, sit down
@@ -289,15 +297,16 @@ void ReadControl() {
 
         //Double leg lift height
         if (PS2.ButtonPressed(PSB_R1) && !GaitInMotion) { //R1 button
-          SoundEvent(3);
           DoubleHeight = !DoubleHeight;
           if (DoubleHeight) {
+            SoundEvent(3);
             LegLiftHeight = 80;
 #ifdef DEBUG_MODE
             DBGSerial.println(F("DoubleHeight: On"));
 #endif
           }
           else {
+            SoundEvent(4);
             LegLiftHeight = 50;
 #ifdef DEBUG_MODE
             DBGSerial.println(F("DoubleHeight: Off"));
@@ -307,30 +316,36 @@ void ReadControl() {
 
         //Double travel length
         if (PS2.ButtonPressed(PSB_R2) && !GaitInMotion) { //R2 button
-          SoundEvent(3);
           DoubleTravel = !DoubleTravel;
-#ifdef DEBUG_MODE
           if (DoubleTravel) {
+            SoundEvent(3);
+#ifdef DEBUG_MODE
             DBGSerial.println(F("DoubleTravel: On"));
+#endif
           }
           else {
+            SoundEvent(4);
+#ifdef DEBUG_MODE
             DBGSerial.println(F("DoubleTravel: Off"));
-          }
 #endif
+          }
         }
 
         //Switch between Walk method 1 and Walk method 2
         if (PS2.ButtonPressed(PSB_R3) && !GaitInMotion) { //R3 button
-          SoundEvent(3);
           WalkMethod = !WalkMethod;
-#ifdef DEBUG_MODE
           if (WalkMethod) {
+            SoundEvent(3);
+#ifdef DEBUG_MODE
             DBGSerial.println(F("WalkMethod: 1"));
+#endif
           }
           else {
+            SoundEvent(4);
+#ifdef DEBUG_MODE
             DBGSerial.println(F("WalkMethod: 2"));
-          }
 #endif
+          }
         }
 
         if (WalkMethod) {
@@ -369,11 +384,12 @@ void ReadControl() {
       else if (ControlMode == SINGLELEGMODE) {
         //Switch leg for single leg control
         if (PS2.ButtonPressed(PSB_SELECT)) { //Select button
-          SoundEvent(3);
           if (SelectedLeg < 5) {
+            SoundEvent(3);
             SelectedLeg++;
           }
           else {
+            SoundEvent(4);
             SelectedLeg = 0;
           }
 #ifdef DEBUG_MODE
@@ -403,16 +419,19 @@ void ReadControl() {
 
         //Hold single leg in place
         if (PS2.ButtonPressed(PSB_R2)) { //R2 button
-          SoundEvent(3);
           SLHold = !SLHold;
-#ifdef DEBUG_MODE
           if (SLHold) {
+            SoundEvent(3);
+#ifdef DEBUG_MODE
             DBGSerial.println(F("SLHold: On"));
+#endif
           }
           else {
+            SoundEvent(4);
+#ifdef DEBUG_MODE
             DBGSerial.println(F("SLHold: Off"));
-          }
 #endif
+          }
         }
 
         SLLegX = (PS2.Analog(PSS_LX) - 128) / 2;
