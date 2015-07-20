@@ -24,14 +24,31 @@ uint8_t ControlMode;
 int16_t BodyYOffset;
 int16_t BodyYShift;
 
+void SoundEvent(uint8_t SoundType) {
+#ifdef SOUND_MODE
+  switch(SoundType) {
+  case 1:
+    Sound.play(3, 1661, 60, 2217, 80, 2794, 100);
+    break;
+  case 2:
+    Sound.play(3, 2794, 100, 2217, 80, 1661, 60);
+    break;
+  case 3:
+    Sound.play(2217, 40);
+    break;
+  case 4:
+    Sound.play(2794, 80);
+    break;
+  }
+#endif
+}
+
 void InitControl() {
   PS2.config_gamepad(PS2_DAT, PS2_CMD, PS2_ATT, PS2_CLK);
 }
 
 void TurnRobotOn() {
-#ifdef SOUND_MODE
-  Sound.play(3, 1661, 60, 2217, 80, 2794, 100);
-#endif
+  SoundEvent(1);
 #ifdef DEBUG_MODE
   DBGSerial.println(F("Power: Turn on"));
 #endif
@@ -39,9 +56,7 @@ void TurnRobotOn() {
 }
 
 void TurnRobotOff() {
-#ifdef SOUND_MODE
-  Sound.play(3, 2794, 100, 2217, 80, 1661, 60);
-#endif
+  SoundEvent(2);
 #ifdef DEBUG_MODE
   DBGSerial.println(F("Power: Turn off"));
 #endif
@@ -72,9 +87,7 @@ void ReadControl() {
     if (HexOn) {
       //Translate mode
       if (PS2.ButtonPressed(PSB_L1) && !GaitInMotion) { //L1 button
-#ifdef SOUND_MODE
-        Sound.play(2217, 40);
-#endif
+        SoundEvent(3);
         if (ControlMode != TRANSLATEMODE) {
           ControlMode = TRANSLATEMODE;
 #ifdef DEBUG_MODE
@@ -97,9 +110,7 @@ void ReadControl() {
 
       //Rotate mode
       if (PS2.ButtonPressed(PSB_L2) && !GaitInMotion) { //L2 button
-#ifdef SOUND_MODE
-        Sound.play(2217, 40);
-#endif
+        SoundEvent(3);
         if (ControlMode != ROTATEMODE) {
           ControlMode = ROTATEMODE;
 #ifdef DEBUG_MODE
@@ -122,18 +133,14 @@ void ReadControl() {
 
 #ifdef DEBUG_MODE
       if (PS2.ButtonPressed(PSB_L3) && !GaitInMotion) { //L3 button
-#ifdef SOUND_MODE
-        Sound.play(2217, 40);
-#endif
+        SoundEvent(3);
         DebugOutput = !DebugOutput;
       }
 #endif
 
       //Single leg mode
       if (PS2.ButtonPressed(PSB_CIRCLE) && !GaitInMotion) { //Circle button
-#ifdef SOUND_MODE
-        Sound.play(2217, 40);
-#endif
+        SoundEvent(3);
         if (ControlMode != SINGLELEGMODE) {
           ControlMode = SINGLELEGMODE;
 #ifdef DEBUG_MODE
@@ -155,9 +162,7 @@ void ReadControl() {
       //[Common functions]
       //Switch balance mode on/off
       if (PS2.ButtonPressed(PSB_SQUARE) && !GaitInMotion) { //Square button
-#ifdef SOUND_MODE
-        Sound.play(2217, 40);
-#endif
+        SoundEvent(3);
         BalanceMode = !BalanceMode;
 #ifdef DEBUG_MODE
         if (BalanceMode) {
@@ -223,9 +228,7 @@ void ReadControl() {
       //Slow down
       if (PS2.ButtonPressed(PSB_PAD_RIGHT)) { //D-Right button
         if (SpeedControl < 1000) {
-#ifdef SOUND_MODE
-          Sound.play(2217, 40);
-#endif
+          SoundEvent(3);
           SpeedControl += 50;
 #ifdef DEBUG_MODE
           DBGSerial.print(F("SpeedControl: "));
@@ -237,9 +240,7 @@ void ReadControl() {
       //Speed up
       if (PS2.ButtonPressed(PSB_PAD_LEFT)) { //D-Left button
         if (SpeedControl > 0) {
-#ifdef SOUND_MODE
-          Sound.play(2217, 40);
-#endif
+          SoundEvent(3);
           SpeedControl -= 50;
 #ifdef DEBUG_MODE
           DBGSerial.print(F("SpeedControl: "));
@@ -253,15 +254,11 @@ void ReadControl() {
         //Switch gates
         if (PS2.ButtonPressed(PSB_SELECT) && !GaitInMotion) { //Select button
           if (GaitType < GaitsLength - 1) {
-#ifdef SOUND_MODE
-            Sound.play(2217, 40);
-#endif
+            SoundEvent(3);
             GaitType++;
           }
           else {
-#ifdef SOUND_MODE
-            Sound.play(2794, 80);
-#endif
+            SoundEvent(4);
             GaitType = 0;
           }
 #ifdef DEBUG_MODE
@@ -292,9 +289,7 @@ void ReadControl() {
 
         //Double leg lift height
         if (PS2.ButtonPressed(PSB_R1) && !GaitInMotion) { //R1 button
-#ifdef SOUND_MODE
-          Sound.play(2217, 40);
-#endif
+          SoundEvent(3);
           DoubleHeight = !DoubleHeight;
           if (DoubleHeight) {
             LegLiftHeight = 80;
@@ -312,9 +307,7 @@ void ReadControl() {
 
         //Double travel length
         if (PS2.ButtonPressed(PSB_R2) && !GaitInMotion) { //R2 button
-#ifdef SOUND_MODE
-          Sound.play(2217, 40);
-#endif
+          SoundEvent(3);
           DoubleTravel = !DoubleTravel;
 #ifdef DEBUG_MODE
           if (DoubleTravel) {
@@ -328,9 +321,7 @@ void ReadControl() {
 
         //Switch between Walk method 1 and Walk method 2
         if (PS2.ButtonPressed(PSB_R3) && !GaitInMotion) { //R3 button
-#ifdef SOUND_MODE
-          Sound.play(2217, 40);
-#endif
+          SoundEvent(3);
           WalkMethod = !WalkMethod;
 #ifdef DEBUG_MODE
           if (WalkMethod) {
@@ -378,9 +369,7 @@ void ReadControl() {
       if (ControlMode == SINGLELEGMODE) {
         //Switch leg for single leg control
         if (PS2.ButtonPressed(PSB_SELECT)) { //Select button
-#ifdef SOUND_MODE
-          Sound.play(2217, 40);
-#endif
+          SoundEvent(3);
           if (SelectedLeg < 5) {
             SelectedLeg++;
           }
@@ -414,9 +403,7 @@ void ReadControl() {
 
         //Hold single leg in place
         if (PS2.ButtonPressed(PSB_R2)) { //R2 button
-#ifdef SOUND_MODE
-          Sound.play(2217, 40);
-#endif
+          SoundEvent(3);
           SLHold = !SLHold;
 #ifdef DEBUG_MODE
           if (SLHold) {
