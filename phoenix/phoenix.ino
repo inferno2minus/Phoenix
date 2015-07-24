@@ -421,7 +421,7 @@ void ServoDriverUpdate() {
     uint16_t TibiaPWM = (Sign * TibiaAngle[LegIndex] + 90) / 0.0991 + 592;
 
 #ifdef DEBUG_MODE
-    if(DebugOutput) {
+    if (DebugOutput) {
       DBGSerial.print(LegIndex + 1, DEC);
       DBGSerial.print(F(": "));
       DBGSerial.print(CoxaPWM, DEC);

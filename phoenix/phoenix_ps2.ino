@@ -26,7 +26,7 @@ int16_t BodyYShift;
 
 void SoundEvent(uint8_t SoundType) {
 #ifdef SOUND_MODE
-  switch(SoundType) {
+  switch (SoundType) {
   case 1:
     Sound.play(3, 1568, 60, 2093, 80, 2794, 100);
     break;
@@ -271,7 +271,7 @@ void ReadControl() {
           }
 #ifdef DEBUG_MODE
           DBGSerial.print(F("GaitType: "));
-          switch(GaitType) {
+          switch (GaitType) {
           case 0:
             DBGSerial.println(F("Ripple 12"));
             break;
@@ -394,7 +394,7 @@ void ReadControl() {
           }
 #ifdef DEBUG_MODE
           DBGSerial.print(F("SelectedLeg: "));
-          switch(SelectedLeg) {
+          switch (SelectedLeg) {
           case 0:
             DBGSerial.println(F("RR"));
             break;
