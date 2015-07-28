@@ -118,9 +118,9 @@ SoftwareSerial SSCSerial(SSC_TX, SSC_RX);
 #define LFLegAngle         60
 
 //[LEG DIMENSIONS]
-#define CoxaLength         29  //Length of the coxa
-#define FemurLength        83  //Length of the femur
-#define TibiaLength        106 //Length of the tibia
+#define CoxaLength         30  //Length of the coxa
+#define FemurLength        85  //Length of the femur
+#define TibiaLength        125 //Length of the tibia
 
 //[BODY DIMENSIONS]
 #define RROffsetX         -40  //Distance X from center of the body to the Right Rear coxa
