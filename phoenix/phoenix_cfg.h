@@ -11,7 +11,7 @@
 #ifndef PHOENIX_CFG_H
 #define PHOENIX_CFG_H
 
-//[CONDITIONAL COMPILING]
+//[COMPILATION OPTIONS]
 #define DEBUG_MODE
 #define SOUND_MODE
 
@@ -31,15 +31,15 @@
 //[SERIAL CONNECTIONS]
 #define DBGSerial          Serial
 
-//Add support for running on non-mega Arduino boards as well
+//Support for not Mega boards
 #ifndef UBRR1H
-SoftwareSerial SSCSerial(SSC_TX, SSC_RX);
+SoftwareSerial             SSCSerial(SSC_TX, SSC_RX);
 #else
 #define SSCSerial          Serial1
 #endif
 
 //[ANALOG INPUT]
-#define TRAVEL_DEADZONE    4 //The deadzone for the analog input from the remote
+#define TRAVEL_DEADZONE    4 //Dead zone for the analog input
 
 //[SSC PIN NUMBERS]
 #define RRCoxaPin          0  //Right Rear leg hip horizontal
@@ -141,7 +141,7 @@ SoftwareSerial SSCSerial(SSC_TX, SSC_RX);
 #define LFOffsetX          40  //Distance X from center of the body to the Left Front coxa
 #define LFOffsetZ         -75  //Distance Z from center of the body to the Left Front coxa
 
-//[START POSITIONS FEET]
+//[START POSITIONS]
 #define InitXZ             105
 #define InitXZCos60        53
 #define InitXZSin60        91
