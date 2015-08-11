@@ -44,7 +44,7 @@ void SoundEvent(uint8_t SoundType) {
 }
 
 void InitControl() {
-  PS2.config_gamepad(PS2_DAT, PS2_CMD, PS2_ATT, PS2_CLK);
+  PS2.ConfigGamepad(PS2_DAT, PS2_CMD, PS2_ATT, PS2_CLK);
 }
 
 void TurnRobotOn() {
@@ -73,7 +73,7 @@ void TurnRobotOff() {
 }
 
 void ReadControl() {
-  if (PS2.read_gamepad()) {
+  if (PS2.ReadGamepad()) {
     //Switch bot on/off
     if (PS2.ButtonPressed(PSB_START) && !GaitInMotion) { //Start button
       if (HexOn) {
