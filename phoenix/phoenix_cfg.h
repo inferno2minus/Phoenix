@@ -1,11 +1,9 @@
 /**
- * Project Lynxmotion Phoenix
+ * Project:     Lynxmotion Phoenix
  * Description: Phoenix configuration file
- * Version: v1.0
- * Programmer: Jeroen Janssen (aka Xan)
- *             Kompanets Konstantin (aka I2M)
- *
- * Hardware setup: Arduino, SSC32 V2
+ * Version:     v2.0
+ * Author:      Jeroen Janssen (aka Xan)
+ *              Kompanets Konstantin (aka I2M)
  */
 
 #ifndef PHOENIX_CFG_H
