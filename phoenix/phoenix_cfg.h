@@ -1,7 +1,7 @@
 /**
  * Project:     Lynxmotion Phoenix
  * Description: Phoenix configuration file
- * Version:     v2.0
+ * Version:     v2.5
  * Author:      Jeroen Janssen (aka Xan)
  *              Kompanets Konstantin (aka I2M)
  */
