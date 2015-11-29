@@ -9,6 +9,9 @@
 #ifndef PHOENIX_CFG_H
 #define PHOENIX_CFG_H
 
+//[SOFTWARE VERSION]
+#define VERSION            "2.5.0"
+
 //[COMPILATION OPTIONS]
 #define DEBUG_MODE
 #define SOUND_MODE

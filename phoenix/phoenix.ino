@@ -35,8 +35,8 @@ void setup() {
   SSCSerial.begin(SSC_BAUD);
 
 #ifdef DEBUG_MODE
+  const char *Build = "Ver: " VERSION " " __DATE__ " " __TIME__;
   DBGSerial.begin(DBG_BAUD);
-  const char *Build = "Compiled " __DATE__ ", " __TIME__;
   DBGSerial.println(Build);
   DBGSerial.println(F(" _____                       _ "));
   DBGSerial.println(F("|  |  |___ _ _ ___ ___ ___ _| |"));
