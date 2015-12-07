@@ -3,6 +3,7 @@
  * Description: Phoenix configuration file
  * Version:     v2.5
  * Author:      Jeroen Janssen (aka Xan)
+ *              Kåre Halvorsen (aka Zenta)
  *              Kompanets Konstantin (aka I2M)
  */
 
