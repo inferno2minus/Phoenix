@@ -8,7 +8,7 @@
  */
 
 #include <MiniTone.h>
-#include <SoftwareSerial.h>
+#include <PrintfSerial.h>
 #include "phoenix_cfg.h"
 #include "phoenix.h"
 
@@ -36,17 +36,14 @@ void setup() {
   SSCSerial.begin(SSC_BAUD);
 
 #ifdef DEBUG_MODE
-  const char *Build = "Ver: " VERSION " " __DATE__ " " __TIME__;
   DBGSerial.begin(DBG_BAUD);
-  DBGSerial.println(Build);
-  DBGSerial.println(F(" _____                       _ "));
-  DBGSerial.println(F("|  |  |___ _ _ ___ ___ ___ _| |"));
-  DBGSerial.println(F("|     | -_|_'_| .'| . | . | . |"));
-  DBGSerial.println(F("|__|__|___|_,_|__,|  _|___|___|"));
-  DBGSerial.println(F("       Lynxmotion |_| Phoenix  "));
-  DBGSerial.println();
-  DBGSerial.println(F("Press 'Start' to initialize..."));
-  DBGSerial.println();
+  DBGSerial.printf(F("Ver: %s %s %s\n"), VERSION, __DATE__, __TIME__);
+  DBGSerial.printf(F(" _____                       _ \n"));
+  DBGSerial.printf(F("|  |  |___ _ _ ___ ___ ___ _| |\n"));
+  DBGSerial.printf(F("|     | -_|_'_| .'| . | . | . |\n"));
+  DBGSerial.printf(F("|__|__|___|_,_|__,|  _|___|___|\n"));
+  DBGSerial.printf(F("       Lynxmotion |_| Phoenix\n\n"));
+  DBGSerial.printf(F("Press 'Start' to initialize...\n\n"));
 #endif
 
 #ifdef SOUND_MODE
@@ -421,18 +418,12 @@ void ServoDriverUpdate() {
 
 #ifdef DEBUG_MODE
     if (DebugOutput) {
-      DBGSerial.print(LegIndex + 1, DEC);
-      DBGSerial.print(F(": "));
-      DBGSerial.print(CoxaPWM, DEC);
-      DBGSerial.print(F(" "));
-      DBGSerial.print(FemurPWM, DEC);
-      DBGSerial.print(F(" "));
-      DBGSerial.print(TibiaPWM, DEC);
+      DBGSerial.printf(F("%d: %04d %04d %04d"), LegIndex + 1, CoxaPWM, FemurPWM, TibiaPWM);
       if (LegIndex != 5) {
-        DBGSerial.print(F(" | "));
+        DBGSerial.printf(F(" | "));
       }
       else {
-        DBGSerial.println();
+        DBGSerial.printf(F("\n"));
       }
     }
 #endif
@@ -476,11 +467,11 @@ void ServoDriver() {
 
 #ifdef DEBUG_MODE
       if (Walking && !PrevWalking) {
-        DBGSerial.println(F("Walking: Start"));
+        DBGSerial.printf(F("Walking: Start\n"));
         PrevWalking = true;
       }
       else if (!Walking) {
-        DBGSerial.println(F("Walking: Finish"));
+        DBGSerial.printf(F("Walking: Finish\n"));
         PrevWalking = false;
       }
 #endif

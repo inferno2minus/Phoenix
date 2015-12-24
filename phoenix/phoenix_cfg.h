@@ -11,7 +11,7 @@
 #define PHOENIX_CFG_H
 
 //[SOFTWARE VERSION]
-#define VERSION            "2.5.0"
+#define VERSION            "2.5.1"
 
 //[COMPILATION OPTIONS]
 #define DEBUG_MODE
@@ -22,8 +22,10 @@
 #define PS2_CMD            7  //PS2 controller command
 #define PS2_ATT            8  //PS2 controller attention
 #define PS2_CLK            9  //PS2 controller clock
-#define SSC_TX             10 //(SSC32 TX -> Arduino RX)
-#define SSC_RX             11 //(SSC32 RX <- Arduino TX)
+#define DBG_RX             0  //Arduino RX <- Monitor TX
+#define DBG_TX             1  //Arduino TX -> Monitor RX
+#define SSC_RX             10 //Arduino RX <- SSC32 TX
+#define SSC_TX             11 //Arduino TX -> SSC32 RX
 #define BUZZER             12 //Buzzer module
 
 //[SERIAL BAUD RATES]
@@ -31,14 +33,8 @@
 #define SSC_BAUD           115200 //SSC32 baud rate
 
 //[SERIAL CONNECTIONS]
-#define DBGSerial          Serial
-
-//Support for not Mega boards
-#ifndef UBRR1H
-SoftwareSerial             SSCSerial(SSC_TX, SSC_RX);
-#else
-#define SSCSerial          Serial1
-#endif
+PrintfSerial               DBGSerial(DBG_RX, DBG_TX);
+PrintfSerial               SSCSerial(SSC_RX, SSC_TX);
 
 //[ANALOG INPUT]
 #define TRAVEL_DEADZONE    4 //Dead zone for the analog input
