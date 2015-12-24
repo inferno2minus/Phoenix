@@ -53,14 +53,7 @@ void setup() {
   //Initialize leg positions
   InitLegPosition();
 
-  //Single leg control
-  PrevSelectedLeg = NOT_SELECTED;
-  SelectedLeg = NOT_SELECTED;
-
-  //Gait
-  LegLiftHeight = 50;
-  GaitStep = 1;
-  GaitType = 0;
+  //Initialize gait
   GaitSelect();
 
   //Initialize controller
@@ -95,7 +88,7 @@ void loop() {
 
 void InitLegPosition() {
   for (uint8_t LegIndex = 0; LegIndex <= 5; LegIndex++) {
-    //All legs to init position
+    //All legs to the init position
     LegPosX[LegIndex] = (int16_t)pgm_read_word(&InitPosX[LegIndex]);
     LegPosY[LegIndex] = (int16_t)pgm_read_word(&InitPosY[LegIndex]);
     LegPosZ[LegIndex] = (int16_t)pgm_read_word(&InitPosZ[LegIndex]);

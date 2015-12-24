@@ -13,9 +13,6 @@
 //Changing the sign, depending on the legs
 #define sign(x) ((x) <= (2) ? (-1) : (1))
 
-#define min(a, b) ((a) < (b) ? (a) : (b))
-#define max(a, b) ((a) > (b) ? (a) : (b))
-
 //Legs constants
 #define RR              0 //Right Rear
 #define RM              1 //Right Middle
@@ -114,8 +111,8 @@ int16_t   TotalTransZ;
 
 //Single leg
 bool      SLHold;
-uint8_t   PrevSelectedLeg;
-uint8_t   SelectedLeg;
+uint8_t   PrevSelectedLeg = NOT_SELECTED;
+uint8_t   SelectedLeg = NOT_SELECTED;
 int16_t   LegPosX[6];
 int16_t   LegPosY[6];
 int16_t   LegPosZ[6];
@@ -128,9 +125,9 @@ gait      GaitCurrent;
 bool      GaitInMotion;
 bool      Walking;
 uint8_t   ExtraCycle;
-uint8_t   GaitStep;
+uint8_t   GaitStep = 1;
 uint8_t   GaitType;
-uint8_t   LegLiftHeight;
+uint8_t   LegLiftHeight = 50;
 int16_t   GaitPosX[6];
 int16_t   GaitPosY[6];
 int16_t   GaitPosZ[6];

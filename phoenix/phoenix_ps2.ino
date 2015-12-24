@@ -440,11 +440,11 @@ void ReadControl() {
       //Calculate BodyPosY
       BodyPosY = min(max(BodyYOffset + BodyYShift, 0), 100);
 
-      //Calculate walking time delay
+      //Calculate InputTimeDelay
       InputTimeDelay = 128 - max(max(abs(PS2.Analog(PSS_LX) - 128),
         abs(PS2.Analog(PSS_LY) - 128)), abs(PS2.Analog(PSS_RX) - 128));
 
-      //Calculate servo move time
+      //Calculate SSCTime
       if ((abs(TravelLengthX) > TRAVEL_DEADZONE) ||
           (abs(TravelLengthZ) > TRAVEL_DEADZONE) ||
           (abs(TravelLengthY) > TRAVEL_DEADZONE / 2)) {

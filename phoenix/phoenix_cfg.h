@@ -11,7 +11,7 @@
 #define PHOENIX_CFG_H
 
 //[SOFTWARE VERSION]
-#define VERSION            "2.5.1"
+#define VERSION            "2.5.2"
 
 //[COMPILATION OPTIONS]
 #define DEBUG_MODE
@@ -22,10 +22,12 @@
 #define PS2_CMD            7  //PS2 controller command
 #define PS2_ATT            8  //PS2 controller attention
 #define PS2_CLK            9  //PS2 controller clock
+
 #define DBG_RX             0  //Arduino RX <- Monitor TX
 #define DBG_TX             1  //Arduino TX -> Monitor RX
 #define SSC_RX             10 //Arduino RX <- SSC32 TX
 #define SSC_TX             11 //Arduino TX -> SSC32 RX
+
 #define BUZZER             12 //Buzzer module
 
 //[SERIAL BAUD RATES]
