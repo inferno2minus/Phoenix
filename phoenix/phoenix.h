@@ -10,6 +10,9 @@
 #ifndef PHOENIX_H
 #define PHOENIX_H
 
+#include <MiniTone.h>
+#include <PrintfSerial.h>
+
 //Changing the sign, depending on the legs
 #define sign(x) ((x) <= (2) ? (-1) : (1))
 
@@ -144,5 +147,8 @@ bool      DebugOutput;
 #ifdef SOUND_MODE
 MiniTone  Sound;
 #endif
+
+PrintfSerial DBGSerial(DBG_RX, DBG_TX);
+PrintfSerial SSCSerial(SSC_RX, SSC_TX);
 
 #endif

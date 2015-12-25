@@ -7,8 +7,6 @@
  *              Kompanets Konstantin (aka I2M)
  */
 
-#include <MiniTone.h>
-#include <PrintfSerial.h>
 #include "phoenix_cfg.h"
 #include "phoenix.h"
 

@@ -34,10 +34,6 @@
 #define DBG_BAUD           115200 //Debug baud rate
 #define SSC_BAUD           115200 //SSC32 baud rate
 
-//[SERIAL CONNECTIONS]
-PrintfSerial               DBGSerial(DBG_RX, DBG_TX);
-PrintfSerial               SSCSerial(SSC_RX, SSC_TX);
-
 //[ANALOG INPUT]
 #define TRAVEL_DEADZONE    4 //Dead zone for the analog input
 
