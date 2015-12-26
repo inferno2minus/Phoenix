@@ -148,7 +148,9 @@ bool      DebugOutput;
 MiniTone  Sound;
 #endif
 
-PrintfSerial DBGSerial(DBG_RX, DBG_TX);
+#ifdef DEBUG_MODE
+PrintfSerial DBGSerial(0, 1);
+#endif
 PrintfSerial SSCSerial(SSC_RX, SSC_TX);
 
 #endif
