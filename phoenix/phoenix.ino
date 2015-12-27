@@ -40,8 +40,8 @@ void setup() {
   DBGSerial.printf(F("|  |  |___ _ _ ___ ___ ___ _| |\n"));
   DBGSerial.printf(F("|     | -_|_'_| .'| . | . | . |\n"));
   DBGSerial.printf(F("|__|__|___|_,_|__,|  _|___|___|\n"));
-  DBGSerial.printf(F("       Lynxmotion |_| Phoenix\n\n"));
-  DBGSerial.printf(F("Press 'Start' to initialize...\n\n"));
+  DBGSerial.printf(F("       Lynxmotion |_| Phoenix  \n\n"));
+  DBGSerial.printf(F("Press 'Start' to initialize... \n\n"));
 #endif
 
 #ifdef SOUND_MODE
@@ -107,7 +107,7 @@ void SingleLegControl() {
       if (AllDown) {
         //Lift leg a bit when it got selected
         LegPosY[SelectedLeg] = (int16_t)pgm_read_word(&InitPosY[SelectedLeg]) - 20;
-        //Store current state
+        //Store previous state
         PrevSelectedLeg = SelectedLeg;
       }
       else {
@@ -482,7 +482,7 @@ void ServoDriver() {
     ServoDriverFree();
   }
 
-  //Store current state
+  //Store previous state
   PrevSSCTime = SSCTime;
   PrevHexOn = HexOn;
 }
