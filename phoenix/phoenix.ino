@@ -52,7 +52,7 @@ void setup() {
   InitLegPosition();
 
   //Initialize gait
-  GaitSelect();
+  InitGait();
 
   //Initialize controller
   InitControl();
@@ -93,6 +93,12 @@ void InitLegPosition() {
   }
 }
 
+void InitGait() {
+  if (GaitType < GaitsLength - 1) {
+    GaitCurrent = Gaits[GaitType];
+  }
+}
+
 void SingleLegControl() {
   //Check if all legs are down
   bool AllDown = (LegPosY[RF] == (int16_t)pgm_read_word(&InitPosY[RF])) &&
@@ -117,10 +123,10 @@ void SingleLegControl() {
         LegPosZ[PrevSelectedLeg] = (int16_t)pgm_read_word(&InitPosZ[PrevSelectedLeg]);
       }
     }
-    else if (!SLHold) {
-      LegPosX[SelectedLeg] = (int16_t)pgm_read_word(&InitPosX[SelectedLeg]) + SLLegX;
-      LegPosY[SelectedLeg] = (int16_t)pgm_read_word(&InitPosY[SelectedLeg]) + SLLegY;
-      LegPosZ[SelectedLeg] = (int16_t)pgm_read_word(&InitPosZ[SelectedLeg]) + SLLegZ;
+    else if (!SingleLegHold) {
+      LegPosX[SelectedLeg] = (int16_t)pgm_read_word(&InitPosX[SelectedLeg]) + SingleLegX;
+      LegPosY[SelectedLeg] = (int16_t)pgm_read_word(&InitPosY[SelectedLeg]) + SingleLegY;
+      LegPosZ[SelectedLeg] = (int16_t)pgm_read_word(&InitPosZ[SelectedLeg]) + SingleLegZ;
     }
   }
   else if (!AllDown) {
@@ -132,7 +138,6 @@ void SingleLegControl() {
 }
 
 void Gait(uint8_t LegIndex) {
-  //Try to reduce the number of time we look at GaitLegNr and GaitStep
   int16_t LegStep = GaitStep - GaitCurrent.GaitLegNr[LegIndex];
 
   //Leg middle up position
@@ -196,12 +201,6 @@ void Gait(uint8_t LegIndex) {
     GaitPosY[LegIndex] = 0;
     GaitPosZ[LegIndex] = GaitPosZ[LegIndex] - (TravelLengthZ / GaitCurrent.TLDivFactor);
     GaitRotY[LegIndex] = GaitRotY[LegIndex] - (TravelLengthY / GaitCurrent.TLDivFactor);
-  }
-}
-
-void GaitSelect() {
-  if (GaitType < GaitsLength - 1) {
-    GaitCurrent = Gaits[GaitType];
   }
 }
 

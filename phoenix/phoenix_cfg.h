@@ -11,7 +11,7 @@
 #define PHOENIX_CFG_H
 
 //[SOFTWARE VERSION]
-#define VERSION            "2.5.3"
+#define VERSION            "2.5.4"
 
 //[COMPILATION OPTIONS]
 #define DEBUG_MODE

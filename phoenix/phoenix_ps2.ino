@@ -10,10 +10,10 @@
 #include <PS2X.h>
 
 //Control mode
-#define WALKMODE         0
-#define TRANSLATEMODE    1
-#define ROTATEMODE       2
-#define SINGLELEGMODE    3
+#define WALK_MODE         0
+#define ROTATE_MODE       1
+#define TRANSLATE_MODE    2
+#define SINGLELEG_MODE    3
 
 PS2X    PS2;
 bool    DoubleHeight;
@@ -26,16 +26,16 @@ int16_t BodyYShift;
 void SoundEvent(uint8_t SoundType) {
 #ifdef SOUND_MODE
   switch (SoundType) {
-  case 1:
+  case 0:
     Sound.play(3, 1568, 60, 2093, 80, 2794, 100);
     break;
-  case 2:
+  case 1:
     Sound.play(3, 2794, 100, 2093, 80, 1568, 60);
     break;
-  case 3:
+  case 2:
     Sound.play(2093, 40);
     break;
-  case 4:
+  case 3:
     Sound.play(1568, 80);
     break;
   }
@@ -47,20 +47,20 @@ void InitControl() {
 }
 
 void TurnRobotOn() {
-  SoundEvent(1);
+  SoundEvent(0);
 #ifdef DEBUG_MODE
-  DBGSerial.printf(F("Power: Turn on\n"));
+  DBGSerial.printf(F("TurnRobot: On\n"));
 #endif
   HexOn = true;
 }
 
 void TurnRobotOff() {
-  SoundEvent(2);
+  SoundEvent(1);
 #ifdef DEBUG_MODE
-  DBGSerial.printf(F("Power: Turn off\n"));
+  DBGSerial.printf(F("TurnRobot: Off\n"));
 #endif
   HexOn = false;
-  SLHold = false;
+  SingleLegHold = false;
   BodyPosX = 0;
   BodyPosY = 0;
   BodyPosZ = 0;
@@ -86,46 +86,46 @@ void ReadControl() {
     if (HexOn) {
       //Translate mode
       if (PS2.ButtonPressed(PSB_L1) && !GaitInMotion) { //L1 button
-        SoundEvent(3);
-        if (ControlMode != TRANSLATEMODE) {
-          ControlMode = TRANSLATEMODE;
+        SoundEvent(2);
+        if (ControlMode != TRANSLATE_MODE) {
+          ControlMode = TRANSLATE_MODE;
 #ifdef DEBUG_MODE
-          DBGSerial.printf(F("ControlMode: TRANSLATEMODE\n"));
+          DBGSerial.printf(F("ControlMode: Translate\n"));
 #endif
         }
         else if (SelectedLeg == NOT_SELECTED) {
-          ControlMode = WALKMODE;
+          ControlMode = WALK_MODE;
 #ifdef DEBUG_MODE
-          DBGSerial.printf(F("ControlMode: WALKMODE\n"));
+          DBGSerial.printf(F("ControlMode: Walk\n"));
 #endif
         }
         else {
-          ControlMode = SINGLELEGMODE;
+          ControlMode = SINGLELEG_MODE;
 #ifdef DEBUG_MODE
-          DBGSerial.printf(F("ControlMode: SINGLELEGMODE\n"));
+          DBGSerial.printf(F("ControlMode: SingleLeg\n"));
 #endif
         }
       }
 
       //Rotate mode
       if (PS2.ButtonPressed(PSB_L2) && !GaitInMotion) { //L2 button
-        SoundEvent(3);
-        if (ControlMode != ROTATEMODE) {
-          ControlMode = ROTATEMODE;
+        SoundEvent(2);
+        if (ControlMode != ROTATE_MODE) {
+          ControlMode = ROTATE_MODE;
 #ifdef DEBUG_MODE
-          DBGSerial.printf(F("ControlMode: ROTATEMODE\n"));
+          DBGSerial.printf(F("ControlMode: Rotate\n"));
 #endif
         }
         else if (SelectedLeg == NOT_SELECTED) {
-          ControlMode = WALKMODE;
+          ControlMode = WALK_MODE;
 #ifdef DEBUG_MODE
-          DBGSerial.printf(F("ControlMode: WALKMODE\n"));
+          DBGSerial.printf(F("ControlMode: Walk\n"));
 #endif
         }
         else {
-          ControlMode = SINGLELEGMODE;
+          ControlMode = SINGLELEG_MODE;
 #ifdef DEBUG_MODE
-          DBGSerial.printf(F("ControlMode: SINGLELEGMODE\n"));
+          DBGSerial.printf(F("ControlMode: SingleLeg\n"));
 #endif
         }
       }
@@ -134,30 +134,30 @@ void ReadControl() {
       if (PS2.ButtonPressed(PSB_L3) && !GaitInMotion) { //L3 button
         DebugOutput = !DebugOutput;
         if (DebugOutput) {
-          SoundEvent(3);
+          SoundEvent(2);
         }
         else {
-          SoundEvent(4);
+          SoundEvent(3);
         }
       }
 #endif
 
       //Single leg mode
       if (PS2.ButtonPressed(PSB_CIRCLE) && !GaitInMotion) { //Circle button
-        SoundEvent(3);
-        if (ControlMode != SINGLELEGMODE) {
-          ControlMode = SINGLELEGMODE;
+        SoundEvent(2);
+        if (ControlMode != SINGLELEG_MODE) {
+          ControlMode = SINGLELEG_MODE;
 #ifdef DEBUG_MODE
-          DBGSerial.printf(F("ControlMode: SINGLELEGMODE\n"));
+          DBGSerial.printf(F("ControlMode: SingleLeg\n"));
 #endif
           if (SelectedLeg == NOT_SELECTED) {
             SelectedLeg = RR; //Start leg
           }
         }
         else {
-          ControlMode = WALKMODE;
+          ControlMode = WALK_MODE;
 #ifdef DEBUG_MODE
-          DBGSerial.printf(F("ControlMode: WALKMODE\n"));
+          DBGSerial.printf(F("ControlMode: Walk\n"));
 #endif
           SelectedLeg = NOT_SELECTED;
         }
@@ -168,13 +168,13 @@ void ReadControl() {
       if (PS2.ButtonPressed(PSB_SQUARE) && !GaitInMotion) { //Square button
         BalanceMode = !BalanceMode;
         if (BalanceMode) {
-          SoundEvent(3);
+          SoundEvent(2);
 #ifdef DEBUG_MODE
           DBGSerial.printf(F("BalanceMode: On\n"));
 #endif
         }
         else {
-          SoundEvent(4);
+          SoundEvent(3);
 #ifdef DEBUG_MODE
           DBGSerial.printf(F("BalanceMode: Off\n"));
 #endif
@@ -231,7 +231,7 @@ void ReadControl() {
       //Slow down
       if (PS2.ButtonPressed(PSB_PAD_RIGHT)) { //D-Right button
         if (SpeedControl < 1000) {
-          SoundEvent(3);
+          SoundEvent(2);
           SpeedControl += 50;
 #ifdef DEBUG_MODE
           DBGSerial.printf(F("SpeedControl: %d\n"), SpeedControl);
@@ -242,7 +242,7 @@ void ReadControl() {
       //Speed up
       if (PS2.ButtonPressed(PSB_PAD_LEFT)) { //D-Left button
         if (SpeedControl > 0) {
-          SoundEvent(3);
+          SoundEvent(2);
           SpeedControl -= 50;
 #ifdef DEBUG_MODE
           DBGSerial.printf(F("SpeedControl: %d\n"), SpeedControl);
@@ -251,15 +251,15 @@ void ReadControl() {
       }
 
       //[Walk functions]
-      if (ControlMode == WALKMODE) {
+      if (ControlMode == WALK_MODE) {
         //Switch gates
         if (PS2.ButtonPressed(PSB_SELECT) && !GaitInMotion) { //Select button
           if (GaitType < GaitsLength - 1) {
-            SoundEvent(3);
+            SoundEvent(2);
             GaitType++;
           }
           else {
-            SoundEvent(4);
+            SoundEvent(3);
             GaitType = 0;
           }
 #ifdef DEBUG_MODE
@@ -285,21 +285,21 @@ void ReadControl() {
             break;
           }
 #endif
-          GaitSelect();
+          InitGait();
         }
 
         //Double leg lift height
         if (PS2.ButtonPressed(PSB_R1) && !GaitInMotion) { //R1 button
           DoubleHeight = !DoubleHeight;
           if (DoubleHeight) {
-            SoundEvent(3);
+            SoundEvent(2);
             LegLiftHeight = 80;
 #ifdef DEBUG_MODE
             DBGSerial.printf(F("DoubleHeight: On\n"));
 #endif
           }
           else {
-            SoundEvent(4);
+            SoundEvent(3);
             LegLiftHeight = 50;
 #ifdef DEBUG_MODE
             DBGSerial.printf(F("DoubleHeight: Off\n"));
@@ -311,32 +311,32 @@ void ReadControl() {
         if (PS2.ButtonPressed(PSB_R2) && !GaitInMotion) { //R2 button
           DoubleTravel = !DoubleTravel;
           if (DoubleTravel) {
-            SoundEvent(3);
+            SoundEvent(2);
 #ifdef DEBUG_MODE
             DBGSerial.printf(F("DoubleTravel: On\n"));
 #endif
           }
           else {
-            SoundEvent(4);
+            SoundEvent(3);
 #ifdef DEBUG_MODE
             DBGSerial.printf(F("DoubleTravel: Off\n"));
 #endif
           }
         }
 
-        //Switch between Walk method 1 and Walk method 2
+        //Switch between Walk method YZ and Walk method XYZ
         if (PS2.ButtonPressed(PSB_R3) && !GaitInMotion) { //R3 button
           WalkMethod = !WalkMethod;
           if (WalkMethod) {
-            SoundEvent(3);
+            SoundEvent(2);
 #ifdef DEBUG_MODE
-            DBGSerial.printf(F("WalkMethod: 1\n"));
+            DBGSerial.printf(F("WalkMethod: YZ\n"));
 #endif
           }
           else {
-            SoundEvent(4);
+            SoundEvent(3);
 #ifdef DEBUG_MODE
-            DBGSerial.printf(F("WalkMethod: 2\n"));
+            DBGSerial.printf(F("WalkMethod: XYZ\n"));
 #endif
           }
         }
@@ -358,7 +358,7 @@ void ReadControl() {
       }
 
       //[Translate functions]
-      else if (ControlMode == TRANSLATEMODE) {
+      else if (ControlMode == TRANSLATE_MODE) {
         BodyPosX = (PS2.Analog(PSS_LX) - 128) / 2;
         BodyPosZ = -(PS2.Analog(PSS_LY) - 128) / 3;
         BodyRotY = (PS2.Analog(PSS_RX) - 128) / 6;
@@ -366,7 +366,7 @@ void ReadControl() {
       }
 
       //[Rotate functions]
-      else if (ControlMode == ROTATEMODE) {
+      else if (ControlMode == ROTATE_MODE) {
         BodyRotX = (PS2.Analog(PSS_LY) - 128) / 8;
         BodyRotY = (PS2.Analog(PSS_RX) - 128) / 6;
         BodyRotZ = (PS2.Analog(PSS_LX) - 128) / 8;
@@ -374,15 +374,15 @@ void ReadControl() {
       }
 
       //[Single leg functions]
-      else if (ControlMode == SINGLELEGMODE) {
+      else if (ControlMode == SINGLELEG_MODE) {
         //Switch leg for single leg control
         if (PS2.ButtonPressed(PSB_SELECT)) { //Select button
           if (SelectedLeg < 5) {
-            SoundEvent(3);
+            SoundEvent(2);
             SelectedLeg++;
           }
           else {
-            SoundEvent(4);
+            SoundEvent(3);
             SelectedLeg = 0;
           }
 #ifdef DEBUG_MODE
@@ -412,28 +412,28 @@ void ReadControl() {
 
         //Hold single leg in place
         if (PS2.ButtonPressed(PSB_R2)) { //R2 button
-          SLHold = !SLHold;
-          if (SLHold) {
-            SoundEvent(3);
+          SingleLegHold = !SingleLegHold;
+          if (SingleLegHold) {
+            SoundEvent(2);
 #ifdef DEBUG_MODE
-            DBGSerial.printf(F("SLHold: On\n"));
+            DBGSerial.printf(F("SingleLegHold: On\n"));
 #endif
           }
           else {
-            SoundEvent(4);
+            SoundEvent(3);
 #ifdef DEBUG_MODE
-            DBGSerial.printf(F("SLHold: Off\n"));
+            DBGSerial.printf(F("SingleLegHold: Off\n"));
 #endif
           }
         }
 
-        SLLegX = (PS2.Analog(PSS_LX) - 128) / 2;
-        SLLegY = (PS2.Analog(PSS_RY) - 128) / 10;
-        SLLegZ = (PS2.Analog(PSS_LY) - 128) / 2;
+        SingleLegX = (PS2.Analog(PSS_LX) - 128) / 2;
+        SingleLegY = (PS2.Analog(PSS_RY) - 128) / 10;
+        SingleLegZ = (PS2.Analog(PSS_LY) - 128) / 2;
       }
 
       //Reset BodyYShift
-      if (ControlMode != TRANSLATEMODE && ControlMode != ROTATEMODE) {
+      if (ControlMode != TRANSLATE_MODE && ControlMode != ROTATE_MODE) {
         BodyYShift = 0;
       }
 

@@ -113,15 +113,15 @@ int16_t   TotalTransY;
 int16_t   TotalTransZ;
 
 //Single leg
-bool      SLHold;
+bool      SingleLegHold;
 uint8_t   PrevSelectedLeg = NOT_SELECTED;
 uint8_t   SelectedLeg = NOT_SELECTED;
 int16_t   LegPosX[6];
 int16_t   LegPosY[6];
 int16_t   LegPosZ[6];
-int16_t   SLLegX;
-int16_t   SLLegY;
-int16_t   SLLegZ;
+int16_t   SingleLegX;
+int16_t   SingleLegY;
+int16_t   SingleLegZ;
 
 //Gait
 gait      GaitCurrent;
