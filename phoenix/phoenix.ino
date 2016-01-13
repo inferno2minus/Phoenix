@@ -35,18 +35,19 @@ void setup() {
 
 #ifdef DEBUG_MODE
   DBGSerial.begin(DBG_BAUD);
-  DBGSerial.printf(F("Ver: %s %s %s\n"), VERSION, __DATE__, __TIME__);
-  DBGSerial.printf(F(" _____                       _ \n"));
-  DBGSerial.printf(F("|  |  |___ _ _ ___ ___ ___ _| |\n"));
-  DBGSerial.printf(F("|     | -_|_'_| .'| . | . | . |\n"));
-  DBGSerial.printf(F("|__|__|___|_,_|__,|  _|___|___|\n"));
-  DBGSerial.printf(F("       Lynxmotion |_| Phoenix  \n\n"));
-  DBGSerial.printf(F("Press 'Start' to initialize... \n\n"));
 #endif
 
 #ifdef SOUND_MODE
   Sound.begin(BUZZER);
 #endif
+
+  DebugPrint(F("Ver: %s %s %s\n"), VERSION, __DATE__, __TIME__);
+  DebugPrint(F(" _____                       _ \n"));
+  DebugPrint(F("|  |  |___ _ _ ___ ___ ___ _| |\n"));
+  DebugPrint(F("|     | -_|_'_| .'| . | . | . |\n"));
+  DebugPrint(F("|__|__|___|_,_|__,|  _|___|___|\n"));
+  DebugPrint(F("       Lynxmotion |_| Phoenix  \n\n"));
+  DebugPrint(F("Press 'Start' to initialize... \n\n"));
 
   //Initialize leg positions
   InitLegPosition();
@@ -408,12 +409,12 @@ void ServoDriverUpdate() {
 
 #ifdef DEBUG_MODE
     if (DebugOutput) {
-      DBGSerial.printf(F("%d: %04d %04d %04d"), LegIndex + 1, CoxaPWM, FemurPWM, TibiaPWM);
+      DebugPrint(F("%d: %04d %04d %04d"), LegIndex + 1, CoxaPWM, FemurPWM, TibiaPWM);
       if (LegIndex != 5) {
-        DBGSerial.printf(F(" | "));
+        DebugPrint(F(" | "));
       }
       else {
-        DBGSerial.printf(F("\n"));
+        DebugPrint(F("\n"));
       }
     }
 #endif
@@ -457,11 +458,11 @@ void ServoDriver() {
 
 #ifdef DEBUG_MODE
       if (Walking && !PrevWalking) {
-        DBGSerial.printf(F("Walking: Start\n"));
+        DebugPrint(F("Walking: Start\n"));
         PrevWalking = true;
       }
       else if (!Walking) {
-        DBGSerial.printf(F("Walking: Finish\n"));
+        DebugPrint(F("Walking: Finish\n"));
         PrevWalking = false;
       }
 #endif

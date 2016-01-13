@@ -48,17 +48,13 @@ void InitControl() {
 
 void TurnRobotOn() {
   SoundEvent(0);
-#ifdef DEBUG_MODE
-  DBGSerial.printf(F("TurnRobot: On\n"));
-#endif
+  DebugPrint(F("TurnRobot: On\n"));
   HexOn = true;
 }
 
 void TurnRobotOff() {
   SoundEvent(1);
-#ifdef DEBUG_MODE
-  DBGSerial.printf(F("TurnRobot: Off\n"));
-#endif
+  DebugPrint(F("TurnRobot: Off\n"));
   HexOn = false;
   SingleLegHold = false;
   BodyPosX = 0;
@@ -89,21 +85,15 @@ void ReadControl() {
         SoundEvent(2);
         if (ControlMode != TRANSLATE_MODE) {
           ControlMode = TRANSLATE_MODE;
-#ifdef DEBUG_MODE
-          DBGSerial.printf(F("ControlMode: Translate\n"));
-#endif
+          DebugPrint(F("ControlMode: Translate\n"));
         }
         else if (SelectedLeg == NOT_SELECTED) {
           ControlMode = WALK_MODE;
-#ifdef DEBUG_MODE
-          DBGSerial.printf(F("ControlMode: Walk\n"));
-#endif
+          DebugPrint(F("ControlMode: Walk\n"));
         }
         else {
           ControlMode = SINGLELEG_MODE;
-#ifdef DEBUG_MODE
-          DBGSerial.printf(F("ControlMode: SingleLeg\n"));
-#endif
+          DebugPrint(F("ControlMode: SingleLeg\n"));
         }
       }
 
@@ -112,21 +102,15 @@ void ReadControl() {
         SoundEvent(2);
         if (ControlMode != ROTATE_MODE) {
           ControlMode = ROTATE_MODE;
-#ifdef DEBUG_MODE
-          DBGSerial.printf(F("ControlMode: Rotate\n"));
-#endif
+          DebugPrint(F("ControlMode: Rotate\n"));
         }
         else if (SelectedLeg == NOT_SELECTED) {
           ControlMode = WALK_MODE;
-#ifdef DEBUG_MODE
-          DBGSerial.printf(F("ControlMode: Walk\n"));
-#endif
+          DebugPrint(F("ControlMode: Walk\n"));
         }
         else {
           ControlMode = SINGLELEG_MODE;
-#ifdef DEBUG_MODE
-          DBGSerial.printf(F("ControlMode: SingleLeg\n"));
-#endif
+          DebugPrint(F("ControlMode: SingleLeg\n"));
         }
       }
 
@@ -147,18 +131,14 @@ void ReadControl() {
         SoundEvent(2);
         if (ControlMode != SINGLELEG_MODE) {
           ControlMode = SINGLELEG_MODE;
-#ifdef DEBUG_MODE
-          DBGSerial.printf(F("ControlMode: SingleLeg\n"));
-#endif
+          DebugPrint(F("ControlMode: SingleLeg\n"));
           if (SelectedLeg == NOT_SELECTED) {
             SelectedLeg = RR; //Start leg
           }
         }
         else {
           ControlMode = WALK_MODE;
-#ifdef DEBUG_MODE
-          DBGSerial.printf(F("ControlMode: Walk\n"));
-#endif
+          DebugPrint(F("ControlMode: Walk\n"));
           SelectedLeg = NOT_SELECTED;
         }
       }
@@ -169,15 +149,11 @@ void ReadControl() {
         BalanceMode = !BalanceMode;
         if (BalanceMode) {
           SoundEvent(2);
-#ifdef DEBUG_MODE
-          DBGSerial.printf(F("BalanceMode: On\n"));
-#endif
+          DebugPrint(F("BalanceMode: On\n"));
         }
         else {
           SoundEvent(3);
-#ifdef DEBUG_MODE
-          DBGSerial.printf(F("BalanceMode: Off\n"));
-#endif
+          DebugPrint(F("BalanceMode: Off\n"));
         }
       }
 
@@ -189,18 +165,14 @@ void ReadControl() {
         else {
           BodyYOffset = 40;
         }
-#ifdef DEBUG_MODE
-        DBGSerial.printf(F("BodyYOffset: %d\n"), BodyYOffset);
-#endif
+        DebugPrint(F("BodyYOffset: %d\n"), BodyYOffset);
       }
 
       //Stand up
       if (PS2.ButtonPressed(PSB_PAD_UP)) { //D-Up button
         if (BodyYOffset < 100) {
           BodyYOffset += 10;
-#ifdef DEBUG_MODE
-          DBGSerial.printf(F("BodyYOffset: %d\n"), BodyYOffset);
-#endif
+          DebugPrint(F("BodyYOffset: %d\n"), BodyYOffset);
         }
       }
 
@@ -208,9 +180,7 @@ void ReadControl() {
       if (PS2.ButtonPressed(PSB_PAD_DOWN)) { //D-Down button
         if (BodyYOffset > 0) {
           BodyYOffset -= 10;
-#ifdef DEBUG_MODE
-          DBGSerial.printf(F("BodyYOffset: %d\n"), BodyYOffset);
-#endif
+          DebugPrint(F("BodyYOffset: %d\n"), BodyYOffset);
         }
       }
 
@@ -223,9 +193,7 @@ void ReadControl() {
         else {
           SpeedControl = PrevSpeedControl;
         }
-#ifdef DEBUG_MODE
-        DBGSerial.printf(F("SpeedControl: %d\n"), SpeedControl);
-#endif
+        DebugPrint(F("SpeedControl: %d\n"), SpeedControl);
       }
 
       //Slow down
@@ -233,9 +201,7 @@ void ReadControl() {
         if (SpeedControl < 1000) {
           SoundEvent(2);
           SpeedControl += 50;
-#ifdef DEBUG_MODE
-          DBGSerial.printf(F("SpeedControl: %d\n"), SpeedControl);
-#endif
+          DebugPrint(F("SpeedControl: %d\n"), SpeedControl);
         }
       }
 
@@ -244,9 +210,7 @@ void ReadControl() {
         if (SpeedControl > 0) {
           SoundEvent(2);
           SpeedControl -= 50;
-#ifdef DEBUG_MODE
-          DBGSerial.printf(F("SpeedControl: %d\n"), SpeedControl);
-#endif
+          DebugPrint(F("SpeedControl: %d\n"), SpeedControl);
         }
       }
 
@@ -263,25 +227,25 @@ void ReadControl() {
             GaitType = 0;
           }
 #ifdef DEBUG_MODE
-          DBGSerial.printf(F("GaitType: "));
+          DebugPrint(F("GaitType: "));
           switch (GaitType) {
           case 0:
-            DBGSerial.printf(F("Ripple 12\n"));
+            DebugPrint(F("Ripple 12\n"));
             break;
           case 1:
-            DBGSerial.printf(F("Tripod 6\n"));
+            DebugPrint(F("Tripod 6\n"));
             break;
           case 2:
-            DBGSerial.printf(F("Tripod 8\n"));
+            DebugPrint(F("Tripod 8\n"));
             break;
           case 3:
-            DBGSerial.printf(F("Tripod 12\n"));
+            DebugPrint(F("Tripod 12\n"));
             break;
           case 4:
-            DBGSerial.printf(F("Tripod 16\n"));
+            DebugPrint(F("Tripod 16\n"));
             break;
           case 5:
-            DBGSerial.printf(F("Wave 24\n"));
+            DebugPrint(F("Wave 24\n"));
             break;
           }
 #endif
@@ -294,16 +258,12 @@ void ReadControl() {
           if (DoubleHeight) {
             SoundEvent(2);
             LegLiftHeight = 80;
-#ifdef DEBUG_MODE
-            DBGSerial.printf(F("DoubleHeight: On\n"));
-#endif
+            DebugPrint(F("DoubleHeight: On\n"));
           }
           else {
             SoundEvent(3);
             LegLiftHeight = 50;
-#ifdef DEBUG_MODE
-            DBGSerial.printf(F("DoubleHeight: Off\n"));
-#endif
+            DebugPrint(F("DoubleHeight: Off\n"));
           }
         }
 
@@ -312,15 +272,11 @@ void ReadControl() {
           DoubleTravel = !DoubleTravel;
           if (DoubleTravel) {
             SoundEvent(2);
-#ifdef DEBUG_MODE
-            DBGSerial.printf(F("DoubleTravel: On\n"));
-#endif
+            DebugPrint(F("DoubleTravel: On\n"));
           }
           else {
             SoundEvent(3);
-#ifdef DEBUG_MODE
-            DBGSerial.printf(F("DoubleTravel: Off\n"));
-#endif
+            DebugPrint(F("DoubleTravel: Off\n"));
           }
         }
 
@@ -329,15 +285,11 @@ void ReadControl() {
           WalkMethod = !WalkMethod;
           if (WalkMethod) {
             SoundEvent(2);
-#ifdef DEBUG_MODE
-            DBGSerial.printf(F("WalkMethod: YZ\n"));
-#endif
+            DebugPrint(F("WalkMethod: YZ\n"));
           }
           else {
             SoundEvent(3);
-#ifdef DEBUG_MODE
-            DBGSerial.printf(F("WalkMethod: XYZ\n"));
-#endif
+            DebugPrint(F("WalkMethod: XYZ\n"));
           }
         }
 
@@ -386,25 +338,25 @@ void ReadControl() {
             SelectedLeg = 0;
           }
 #ifdef DEBUG_MODE
-          DBGSerial.printf(F("SelectedLeg: "));
+          DebugPrint(F("SelectedLeg: "));
           switch (SelectedLeg) {
           case 0:
-            DBGSerial.printf(F("RR\n"));
+            DebugPrint(F("RR\n"));
             break;
           case 1:
-            DBGSerial.printf(F("RM\n"));
+            DebugPrint(F("RM\n"));
             break;
           case 2:
-            DBGSerial.printf(F("RF\n"));
+            DebugPrint(F("RF\n"));
             break;
           case 3:
-            DBGSerial.printf(F("LR\n"));
+            DebugPrint(F("LR\n"));
             break;
           case 4:
-            DBGSerial.printf(F("LM\n"));
+            DebugPrint(F("LM\n"));
             break;
           case 5:
-            DBGSerial.printf(F("LF\n"));
+            DebugPrint(F("LF\n"));
             break;
           }
 #endif
@@ -415,15 +367,11 @@ void ReadControl() {
           SingleLegHold = !SingleLegHold;
           if (SingleLegHold) {
             SoundEvent(2);
-#ifdef DEBUG_MODE
-            DBGSerial.printf(F("SingleLegHold: On\n"));
-#endif
+            DebugPrint(F("SingleLegHold: On\n"));
           }
           else {
             SoundEvent(3);
-#ifdef DEBUG_MODE
-            DBGSerial.printf(F("SingleLegHold: Off\n"));
-#endif
+            DebugPrint(F("SingleLegHold: Off\n"));
           }
         }
 
