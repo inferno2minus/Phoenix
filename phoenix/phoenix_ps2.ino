@@ -20,8 +20,8 @@ bool    DoubleHeight;
 bool    DoubleTravel;
 bool    WalkMethod;
 uint8_t ControlMode;
-int16_t BodyYOffset;
-int16_t BodyYShift;
+int16_t BodyOffsetY;
+int16_t BodyShiftY;
 
 void SoundEvent(uint8_t SoundType) {
 #ifdef SOUND_MODE
@@ -46,15 +46,15 @@ void InitControl() {
   PS2.ConfigGamepad(PS2_DAT, PS2_CMD, PS2_ATT, PS2_CLK);
 }
 
-void TurnRobotOn() {
+void TurnHexapodOn() {
   SoundEvent(0);
-  DebugPrint(F("TurnRobot: On\n"));
+  DebugPrint(F("TurnHexapod: On\n"));
   HexOn = true;
 }
 
-void TurnRobotOff() {
+void TurnHexapodOff() {
   SoundEvent(1);
-  DebugPrint(F("TurnRobot: Off\n"));
+  DebugPrint(F("TurnHexapod: Off\n"));
   HexOn = false;
   SingleLegHold = false;
   BodyPosX = 0;
@@ -63,8 +63,8 @@ void TurnRobotOff() {
   BodyRotX = 0;
   BodyRotY = 0;
   BodyRotZ = 0;
-  BodyYOffset = 0;
-  BodyYShift = 0;
+  BodyOffsetY = 0;
+  BodyShiftY = 0;
 }
 
 void ReadControl() {
@@ -72,10 +72,10 @@ void ReadControl() {
     //Switch bot on/off
     if (PS2.ButtonPressed(PSB_START) && !GaitInMotion) { //Start button
       if (HexOn) {
-        TurnRobotOff();
+        TurnHexapodOff();
       }
       else {
-        TurnRobotOn();
+        TurnHexapodOn();
       }
     }
 
@@ -159,28 +159,28 @@ void ReadControl() {
 
       //Stand up, sit down
       if (PS2.ButtonPressed(PSB_TRIANGLE)) { //Triangle button
-        if (BodyYOffset > 0) {
-          BodyYOffset = 0;
+        if (BodyOffsetY > 0) {
+          BodyOffsetY = 0;
         }
         else {
-          BodyYOffset = 40;
+          BodyOffsetY = 40;
         }
-        DebugPrint(F("BodyYOffset: %d\n"), BodyYOffset);
+        DebugPrint(F("BodyOffsetY: %d\n"), BodyOffsetY);
       }
 
       //Stand up
       if (PS2.ButtonPressed(PSB_PAD_UP)) { //D-Up button
-        if (BodyYOffset < 100) {
-          BodyYOffset += 10;
-          DebugPrint(F("BodyYOffset: %d\n"), BodyYOffset);
+        if (BodyOffsetY < 100) {
+          BodyOffsetY += 10;
+          DebugPrint(F("BodyOffsetY: %d\n"), BodyOffsetY);
         }
       }
 
       //Sit down
       if (PS2.ButtonPressed(PSB_PAD_DOWN)) { //D-Down button
-        if (BodyYOffset > 0) {
-          BodyYOffset -= 10;
-          DebugPrint(F("BodyYOffset: %d\n"), BodyYOffset);
+        if (BodyOffsetY > 0) {
+          BodyOffsetY -= 10;
+          DebugPrint(F("BodyOffsetY: %d\n"), BodyOffsetY);
         }
       }
 
@@ -280,7 +280,7 @@ void ReadControl() {
           }
         }
 
-        //Switch between Walk method YZ and Walk method XYZ
+        //Switch between walk method YZ and XYZ
         if (PS2.ButtonPressed(PSB_R3) && !GaitInMotion) { //R3 button
           WalkMethod = !WalkMethod;
           if (WalkMethod) {
@@ -314,7 +314,7 @@ void ReadControl() {
         BodyPosX = (PS2.Analog(PSS_LX) - 128) / 2;
         BodyPosZ = -(PS2.Analog(PSS_LY) - 128) / 3;
         BodyRotY = (PS2.Analog(PSS_RX) - 128) / 6;
-        BodyYShift = -(PS2.Analog(PSS_RY) - 128) / 2;
+        BodyShiftY = -(PS2.Analog(PSS_RY) - 128) / 2;
       }
 
       //[Rotate functions]
@@ -322,7 +322,7 @@ void ReadControl() {
         BodyRotX = (PS2.Analog(PSS_LY) - 128) / 8;
         BodyRotY = (PS2.Analog(PSS_RX) - 128) / 6;
         BodyRotZ = (PS2.Analog(PSS_LX) - 128) / 8;
-        BodyYShift = -(PS2.Analog(PSS_RY) - 128) / 2;
+        BodyShiftY = -(PS2.Analog(PSS_RY) - 128) / 2;
       }
 
       //[Single leg functions]
@@ -380,13 +380,13 @@ void ReadControl() {
         SingleLegZ = (PS2.Analog(PSS_LY) - 128) / 2;
       }
 
-      //Reset BodyYShift
+      //Reset BodyShiftY
       if (ControlMode != TRANSLATE_MODE && ControlMode != ROTATE_MODE) {
-        BodyYShift = 0;
+        BodyShiftY = 0;
       }
 
       //Calculate BodyPosY
-      BodyPosY = min(max(BodyYOffset + BodyYShift, 0), 100);
+      BodyPosY = min(max(BodyOffsetY + BodyShiftY, 0), 100);
 
       //Calculate InputTimeDelay
       InputTimeDelay = 128 - max(max(abs(PS2.Analog(PSS_LX) - 128),
@@ -408,6 +408,7 @@ void ReadControl() {
     }
   }
   else if (HexOn) {
-    TurnRobotOff();
+    DebugPrint(F("The controller is not detected!\n"));
+    TurnHexapodOff();
   }
 }

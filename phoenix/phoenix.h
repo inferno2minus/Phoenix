@@ -25,7 +25,7 @@
 #define LF              5 //Left Front
 #define NOT_SELECTED    255
 
-//Mathematical constants
+//Math constants
 #define PI              3.1415926535897932384626433832795
 #define DEG_IN_RAD      0.0174532925199432957692369076848
 #define RAD_IN_DEG      57.295779513082320876798154814105
