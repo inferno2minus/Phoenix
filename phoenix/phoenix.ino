@@ -207,7 +207,7 @@ void Gait(uint8_t LegIndex) {
 
 void GaitSequence() {
   //Check if the gait is in motion
-  GaitInMotion = Walking ||
+  GaitInMotion = WalkStatus ||
     (abs(TravelLengthX) > TRAVEL_DEADZONE) ||
     (abs(TravelLengthZ) > TRAVEL_DEADZONE) ||
     (abs(TravelLengthY) > TRAVEL_DEADZONE);
@@ -454,16 +454,16 @@ void ServoDriver() {
 
     if (ExtraCycle > 0) {
       ExtraCycle--;
-      Walking = !(ExtraCycle == 0);
+      WalkStatus = !(ExtraCycle == 0);
 
 #ifdef DEBUG_MODE
-      if (Walking && !PrevWalking) {
-        DebugPrint(F("Walking: Start\n"));
-        PrevWalking = true;
+      if (WalkStatus && !PrevWalkStatus) {
+        DebugPrint(F("WalkStatus: Start\n"));
+        PrevWalkStatus = true;
       }
-      else if (!Walking) {
-        DebugPrint(F("Walking: Finish\n"));
-        PrevWalking = false;
+      else if (!WalkStatus) {
+        DebugPrint(F("WalkStatus: Stop\n"));
+        PrevWalkStatus = false;
       }
 #endif
 

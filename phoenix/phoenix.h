@@ -126,7 +126,7 @@ int16_t   SingleLegZ;
 //Gait
 gait      GaitCurrent;
 bool      GaitInMotion;
-bool      Walking;
+bool      WalkStatus;
 uint8_t   ExtraCycle;
 uint8_t   GaitStep = 1;
 uint8_t   GaitType;
@@ -140,7 +140,7 @@ int16_t   TravelLengthY;
 int16_t   TravelLengthZ;
 
 #ifdef DEBUG_MODE
-bool      PrevWalking;
+bool      PrevWalkStatus;
 bool      DebugOutput;
 #endif
 
