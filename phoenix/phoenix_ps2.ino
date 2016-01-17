@@ -408,7 +408,7 @@ void ReadControl() {
     }
   }
   else if (HexOn) {
-    DebugPrint(F("The controller is not detected!\n"));
+    DebugPrint(F("PS2 controller is not detected!\n"));
     TurnHexapodOff();
   }
 }

@@ -86,7 +86,7 @@ void loop() {
 }
 
 void InitLegPosition() {
-  for (uint8_t LegIndex = 0; LegIndex <= 5; LegIndex++) {
+  for (uint8_t LegIndex = 0; LegIndex < 6; LegIndex++) {
     //All legs to the init position
     LegPosX[LegIndex] = (int16_t)pgm_read_word(&InitPosX[LegIndex]);
     LegPosY[LegIndex] = (int16_t)pgm_read_word(&InitPosY[LegIndex]);
@@ -95,7 +95,7 @@ void InitLegPosition() {
 }
 
 void InitGait() {
-  if (GaitType < GaitsLength - 1) {
+  if (GaitType < GaitsLength) {
     GaitCurrent = Gaits[GaitType];
   }
 }
@@ -109,7 +109,7 @@ void SingleLegControl() {
     (LegPosY[LM] == (int16_t)pgm_read_word(&InitPosY[LM])) &&
     (LegPosY[LF] == (int16_t)pgm_read_word(&InitPosY[LF]));
 
-  if (SelectedLeg <= 5) {
+  if (SelectedLeg < 6) {
     if (SelectedLeg != PrevSelectedLeg) {
       if (AllDown) {
         //Lift leg a bit when it got selected
@@ -220,7 +220,7 @@ void GaitSequence() {
   }
 
   //Calculate gait sequence
-  for (uint8_t LegIndex = 0; LegIndex <= 5; LegIndex++) {
+  for (uint8_t LegIndex = 0; LegIndex < 6; LegIndex++) {
     Gait(LegIndex);
   }
 
@@ -287,7 +287,7 @@ void BalanceCalc() {
   TotalTransZ = 0;
 
   if (BalanceMode) {
-    for (uint8_t LegIndex = 0; LegIndex <= 5; LegIndex++) {
+    for (uint8_t LegIndex = 0; LegIndex < 6; LegIndex++) {
       int8_t Sign = sign(LegIndex);
       //Balance calculations for all legs
       BalanceLeg(Sign * LegPosX[LegIndex] + GaitPosX[LegIndex],
@@ -365,7 +365,7 @@ void LegIK(int16_t PosX, int16_t PosY, int16_t PosZ, uint8_t LegIndex) {
 }
 
 void KinematicCalc() {
-  for (uint8_t LegIndex = 0; LegIndex <= 5; LegIndex++) {
+  for (uint8_t LegIndex = 0; LegIndex < 6; LegIndex++) {
     int8_t Sign = sign(LegIndex);
     //Kinematic calculations for all legs
     BodyFK(Sign * (LegPosX[LegIndex] + BodyPosX) + GaitPosX[LegIndex] - TotalTransX,
@@ -381,7 +381,7 @@ void KinematicCalc() {
 }
 
 void CheckAngles() {
-  for (uint8_t LegIndex = 0; LegIndex <= 5; LegIndex++) {
+  for (uint8_t LegIndex = 0; LegIndex < 6; LegIndex++) {
     CoxaAngle[LegIndex] = min(max(CoxaAngle[LegIndex],
       (int16_t)pgm_read_word(&CoxaMin[LegIndex])), (int16_t)pgm_read_word(&CoxaMax[LegIndex]));
     FemurAngle[LegIndex] = min(max(FemurAngle[LegIndex],
@@ -400,7 +400,7 @@ void SSCWrite(uint8_t Command, uint16_t Data) {
 }
 
 void ServoDriverUpdate() {
-  for (uint8_t LegIndex = 0; LegIndex <= 5; LegIndex++) {
+  for (uint8_t LegIndex = 0; LegIndex < 6; LegIndex++) {
     int8_t Sign = sign(LegIndex);
     //Update all legs
     uint16_t CoxaPWM = (Sign * CoxaAngle[LegIndex] + 90) / 0.0991 + 592;
@@ -430,7 +430,7 @@ void ServoDriverCommit() {
 }
 
 void ServoDriverFree() {
-  for (uint8_t LegIndex = 0; LegIndex <= 31; LegIndex++) {
+  for (uint8_t LegIndex = 0; LegIndex < 32; LegIndex++) {
     SSCWrite(LegIndex + 0x80, 0x00);
   }
   SSCWrite(0xA1, 0xC8);
@@ -442,7 +442,7 @@ void ServoDriver() {
     ServoDriverUpdate();
 
     //Finding any the biggest value for GaitPos/Rot
-    for (uint8_t LegIndex = 0; LegIndex <= 5; LegIndex++) {
+    for (uint8_t LegIndex = 0; LegIndex < 6; LegIndex++) {
       if ((GaitPosX[LegIndex] > 2) || (GaitPosX[LegIndex] < -2) ||
           (GaitPosZ[LegIndex] > 2) || (GaitPosZ[LegIndex] < -2) ||
           (GaitRotY[LegIndex] > 2) || (GaitRotY[LegIndex] < -2)) {
