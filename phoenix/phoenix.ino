@@ -7,28 +7,7 @@
  *              Kompanets Konstantin (aka I2M)
  */
 
-#include "phoenix_cfg.h"
 #include "phoenix.h"
-
-//[0] NrLiftedPos    — Number of positions that a single leg is lifted (1-5)
-//[1] FrontDownPos   — Where the leg should be put down to ground
-//[2] LiftDivFactor  — Default: 2, when NrLiftedPos = 5: 4
-//[3] HalfLiftHeight — How high to lift at halfway up
-//[4] TLDivFactor    — Number of steps that a leg is on the floor while walking
-//[5] StepsInGait    — Number of steps in gait
-//[6] NomGaitSpeed   — Nominal speed of the gait
-//[7] GaitLegNr[6]   — Init position of the leg (LR, RF, LM, RR, LF, RM)
-
-const gait Gaits[] = {
-  { 3,  2,  2,  3,  8, 12, 70, {  1,  3,  5,  7,  9, 11 } }, //Ripple 12 steps
-  { 2,  1,  2,  1,  4,  6, 60, {  4,  1,  1,  1,  4,  4 } }, //Tripod 6 steps
-  { 3,  2,  2,  3,  4,  8, 70, {  5,  1,  1,  1,  5,  5 } }, //Tripod 8 steps
-  { 3,  2,  2,  3,  8, 12, 60, { 11,  3,  4,  5,  9, 10 } }, //Tripod 12 steps
-  { 5,  3,  4,  1, 10, 16, 60, { 14,  4,  5,  6, 12, 13 } }, //Tripod 16 steps
-  { 3,  2,  2,  3, 20, 24, 70, {  1, 21,  5, 13,  9, 17 } }  //Wave 24 steps
-};
-
-const uint8_t GaitsLength = sizeof(Gaits)/sizeof(Gaits[0]);
 
 void setup() {
   SSCSerial.begin(SSC_BAUD);
@@ -95,7 +74,7 @@ void InitLegPosition() {
 }
 
 void InitGait() {
-  if (GaitType < GaitsLength) {
+  if (GaitType < GaitsNumber) {
     GaitCurrent = Gaits[GaitType];
   }
 }

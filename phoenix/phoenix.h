@@ -12,6 +12,7 @@
 
 #include <MiniTone.h>
 #include <PrintfSerial.h>
+#include "phoenix_cfg.h"
 
 //Changing the sign, depending on the legs
 #define sign(x) ((x) <= (2) ? (-1) : (1))
@@ -29,6 +30,35 @@
 #define PI              3.1415926535897932384626433832795
 #define DEG_IN_RAD      0.0174532925199432957692369076848
 #define RAD_IN_DEG      57.295779513082320876798154814105
+
+//Structs
+typedef struct {
+  float   Cos;
+  float   Sin;
+} trig;
+
+typedef struct {
+  uint8_t NrLiftedPos;    //Number of positions that a single leg is lifted (1-5)
+  uint8_t FrontDownPos;   //Where the leg should be put down to ground
+  uint8_t LiftDivFactor;  //Default: 2, when NrLiftedPos = 5: 4
+  uint8_t HalfLiftHeight; //How high to lift at halfway up
+  uint8_t TLDivFactor;    //Number of steps that a leg is on the floor while walking
+  uint8_t StepsInGait;    //Number of steps in gait
+  uint8_t NomGaitSpeed;   //Nominal speed of the gait
+  uint8_t GaitLegNr[6];   //Init position of the leg (LR, RF, LM, RR, LF, RM)
+} gait;
+
+//Gaits type
+const gait Gaits[] = {
+  { 3,  2,  2,  3,  8, 12, 70, {  1,  3,  5,  7,  9, 11 } }, //Ripple 12 steps
+  { 2,  1,  2,  1,  4,  6, 60, {  4,  1,  1,  1,  4,  4 } }, //Tripod 6 steps
+  { 3,  2,  2,  3,  4,  8, 70, {  5,  1,  1,  1,  5,  5 } }, //Tripod 8 steps
+  { 3,  2,  2,  3,  8, 12, 60, { 11,  3,  4,  5,  9, 10 } }, //Tripod 12 steps
+  { 5,  3,  4,  1, 10, 16, 60, { 14,  4,  5,  6, 12, 13 } }, //Tripod 16 steps
+  { 3,  2,  2,  3, 20, 24, 70, {  1, 21,  5, 13,  9, 17 } }  //Wave 24 steps
+};
+
+const uint8_t GaitsNumber = sizeof(Gaits)/sizeof(Gaits[0]);
 
 //Build tables for leg configuration like I/O and Min/Max values to easy access values using a for loop
 //Constants are still defined as single values in the cfg file to make it easy to read/configure
@@ -57,23 +87,6 @@ const int16_t LegAngle[] PROGMEM = { RRLegAngle, RMLegAngle, RFLegAngle, LRLegAn
 const int16_t InitPosX[] PROGMEM = { RRInitPosX, RMInitPosX, RFInitPosX, LRInitPosX, LMInitPosX, LFInitPosX };
 const int16_t InitPosY[] PROGMEM = { RRInitPosY, RMInitPosY, RFInitPosY, LRInitPosY, LMInitPosY, LFInitPosY };
 const int16_t InitPosZ[] PROGMEM = { RRInitPosZ, RMInitPosZ, RFInitPosZ, LRInitPosZ, LMInitPosZ, LFInitPosZ };
-
-//Structs
-typedef struct {
-  float   Cos;
-  float   Sin;
-} trig;
-
-typedef struct {
-  uint8_t NrLiftedPos;    //Number of positions that a single leg is lifted (1-5)
-  uint8_t FrontDownPos;   //Where the leg should be put down to ground
-  uint8_t LiftDivFactor;  //Default: 2, when NrLiftedPos = 5: 4
-  uint8_t HalfLiftHeight; //How high to lift at halfway up
-  uint8_t TLDivFactor;    //Number of steps that a leg is on the floor while walking
-  uint8_t StepsInGait;    //Number of steps in gait
-  uint8_t NomGaitSpeed;   //Nominal speed of the gait
-  uint8_t GaitLegNr[6];   //Init position of the leg (LR, RF, LM, RR, LF, RM)
-} gait;
 
 //Angles
 float     CoxaAngle[6];

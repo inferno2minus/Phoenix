@@ -7,21 +7,11 @@
  *              Kompanets Konstantin (aka I2M)
  */
 
-#include <PS2X.h>
+#include "phoenix_ps2.h"
 
-//Control mode
-#define WALK_MODE         0
-#define ROTATE_MODE       1
-#define TRANSLATE_MODE    2
-#define SINGLELEG_MODE    3
-
-PS2X    PS2;
-bool    DoubleHeight;
-bool    DoubleTravel;
-bool    WalkMethod;
-uint8_t ControlMode;
-int16_t BodyOffsetY;
-int16_t BodyShiftY;
+void InitControl() {
+  PS2.ConfigGamepad(PS2_DAT, PS2_CMD, PS2_ATT, PS2_CLK);
+}
 
 void SoundEvent(uint8_t SoundType) {
 #ifdef SOUND_MODE
@@ -40,10 +30,6 @@ void SoundEvent(uint8_t SoundType) {
     break;
   }
 #endif
-}
-
-void InitControl() {
-  PS2.ConfigGamepad(PS2_DAT, PS2_CMD, PS2_ATT, PS2_CLK);
 }
 
 void TurnHexapodOn() {
@@ -218,7 +204,7 @@ void ReadControl() {
       if (ControlMode == WALK_MODE) {
         //Switch gates
         if (PS2.ButtonPressed(PSB_SELECT) && !GaitInMotion) { //Select button
-          if (GaitType < GaitsLength - 1) {
+          if (GaitType < GaitsNumber - 1) {
             SoundEvent(2);
             GaitType++;
           }
