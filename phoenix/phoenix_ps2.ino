@@ -32,37 +32,32 @@ void SoundEvent(uint8_t SoundType) {
 #endif
 }
 
-void TurnHexapodOn() {
-  SoundEvent(0);
-  DebugPrint(F("TurnHexapod: On\n"));
-  HexOn = true;
-}
-
-void TurnHexapodOff() {
-  SoundEvent(1);
-  DebugPrint(F("TurnHexapod: Off\n"));
-  HexOn = false;
-  SingleLegHold = false;
-  BodyPosX = 0;
-  BodyPosY = 0;
-  BodyPosZ = 0;
-  BodyRotX = 0;
-  BodyRotY = 0;
-  BodyRotZ = 0;
-  BodyOffsetY = 0;
-  BodyShiftY = 0;
+void TurnHexapod() {
+  HexOn = !HexOn;
+  if (HexOn) {
+    SoundEvent(0);
+    DebugPrint(F("TurnHexapod: On\n"));
+  }
+  else {
+    SoundEvent(1);
+    DebugPrint(F("TurnHexapod: Off\n"));
+    SingleLegHold = false;
+    BodyPosX = 0;
+    BodyPosY = 0;
+    BodyPosZ = 0;
+    BodyRotX = 0;
+    BodyRotY = 0;
+    BodyRotZ = 0;
+    BodyOffsetY = 0;
+    BodyShiftY = 0;
+  }
 }
 
 void ReadControl() {
   if (PS2.ReadGamepad()) {
-    //Switch bot on/off
+    //Switch hexapod on/off
     if (PS2.ButtonPressed(PSB_START) && !GaitInMotion) { //Start button
-      if (HexOn) {
-        TurnHexapodOff();
-      }
-      else {
-        TurnHexapodOn();
-      }
+      TurnHexapod();
     }
 
     if (HexOn) {
@@ -295,19 +290,19 @@ void ReadControl() {
         TravelLengthY = -(PS2.Analog(PSS_RX) - 128) / 4;
       }
 
-      //[Translate functions]
-      else if (ControlMode == TRANSLATE_MODE) {
-        BodyPosX = (PS2.Analog(PSS_LX) - 128) / 2;
-        BodyPosZ = -(PS2.Analog(PSS_LY) - 128) / 3;
-        BodyRotY = (PS2.Analog(PSS_RX) - 128) / 6;
-        BodyShiftY = -(PS2.Analog(PSS_RY) - 128) / 2;
-      }
-
       //[Rotate functions]
       else if (ControlMode == ROTATE_MODE) {
         BodyRotX = (PS2.Analog(PSS_LY) - 128) / 8;
         BodyRotY = (PS2.Analog(PSS_RX) - 128) / 6;
         BodyRotZ = (PS2.Analog(PSS_LX) - 128) / 8;
+        BodyShiftY = -(PS2.Analog(PSS_RY) - 128) / 2;
+      }
+
+      //[Translate functions]
+      else if (ControlMode == TRANSLATE_MODE) {
+        BodyPosX = (PS2.Analog(PSS_LX) - 128) / 2;
+        BodyPosZ = -(PS2.Analog(PSS_LY) - 128) / 3;
+        BodyRotY = (PS2.Analog(PSS_RX) - 128) / 6;
         BodyShiftY = -(PS2.Analog(PSS_RY) - 128) / 2;
       }
 
@@ -395,6 +390,6 @@ void ReadControl() {
   }
   else if (HexOn) {
     DebugPrint(F("PS2 controller is not detected!\n"));
-    TurnHexapodOff();
+    TurnHexapod();
   }
 }

@@ -15,7 +15,7 @@
 #include "phoenix_cfg.h"
 
 //Changing the sign, depending on the legs
-#define sign(x) ((x) <= (2) ? (-1) : (1))
+#define SIGN(x) ((x) <= (2) ? (-1) : (1))
 
 //Legs constants
 #define RR              0 //Right Rear

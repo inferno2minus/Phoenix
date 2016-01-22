@@ -74,7 +74,7 @@ void InitLegPosition() {
 }
 
 void InitGait() {
-  if (GaitType < GaitsNumber) {
+  if (GaitType <= GaitsNumber - 1) {
     GaitCurrent = Gaits[GaitType];
   }
 }
@@ -267,7 +267,7 @@ void BalanceCalc() {
 
   if (BalanceMode) {
     for (uint8_t LegIndex = 0; LegIndex < 6; LegIndex++) {
-      int8_t Sign = sign(LegIndex);
+      int8_t Sign = SIGN(LegIndex);
       //Balance calculations for all legs
       BalanceLeg(Sign * LegPosX[LegIndex] + GaitPosX[LegIndex],
         LegPosY[LegIndex] - (int16_t)pgm_read_word(&InitPosY[LegIndex]) + GaitPosY[LegIndex],
@@ -345,7 +345,7 @@ void LegIK(int16_t PosX, int16_t PosY, int16_t PosZ, uint8_t LegIndex) {
 
 void KinematicCalc() {
   for (uint8_t LegIndex = 0; LegIndex < 6; LegIndex++) {
-    int8_t Sign = sign(LegIndex);
+    int8_t Sign = SIGN(LegIndex);
     //Kinematic calculations for all legs
     BodyFK(Sign * (LegPosX[LegIndex] + BodyPosX) + GaitPosX[LegIndex] - TotalTransX,
       LegPosY[LegIndex] + BodyPosY + GaitPosY[LegIndex] - TotalTransY,
@@ -380,7 +380,7 @@ void SSCWrite(uint8_t Command, uint16_t Data) {
 
 void ServoDriverUpdate() {
   for (uint8_t LegIndex = 0; LegIndex < 6; LegIndex++) {
-    int8_t Sign = sign(LegIndex);
+    int8_t Sign = SIGN(LegIndex);
     //Update all legs
     uint16_t CoxaPWM = (Sign * CoxaAngle[LegIndex] + 90) / 0.0991 + 592;
     uint16_t FemurPWM = (Sign * FemurAngle[LegIndex] + 90) / 0.0991 + 592;
