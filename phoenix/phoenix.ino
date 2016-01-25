@@ -446,11 +446,11 @@ void ServoDriver() {
       }
 #endif
 
-      //Get end time and calculate wait time
+      //Calculate time cycle
       uint8_t TimeCycle = (millis() - TimeStart);
 
       //Wait for previous commands to be completed while walking
-      delay(PrevSSCTime - TimeCycle);
+      delay(abs(PrevSSCTime - TimeCycle));
     }
 
     //Commit servo positions
