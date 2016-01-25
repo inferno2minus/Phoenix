@@ -1,7 +1,7 @@
 /**
  * Project:     Lynxmotion Phoenix
  * Description: Phoenix configuration file
- * Version:     v2.5
+ * Version:     v2.6
  * Author:      Jeroen Janssen (aka Xan)
  *              Kåre Halvorsen (aka Zenta)
  *              Kompanets Konstantin (aka I2M)
@@ -11,7 +11,7 @@
 #define PHOENIX_CFG_H
 
 //[SOFTWARE VERSION]
-#define VERSION            "2.5.9"
+#define VERSION            "2.6.0"
 
 //[COMPILATION OPTIONS]
 #define DEBUG_MODE

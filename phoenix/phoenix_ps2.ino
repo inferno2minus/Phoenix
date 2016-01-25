@@ -1,7 +1,7 @@
 /**
  * Project:     Lynxmotion Phoenix
  * Description: Phoenix control file
- * Version:     v2.5
+ * Version:     v2.6
  * Author:      Jeroen Janssen (aka Xan)
  *              Kåre Halvorsen (aka Zenta)
  *              Kompanets Konstantin (aka I2M)
@@ -32,15 +32,15 @@ void SoundEvent(uint8_t SoundType) {
 #endif
 }
 
-void TurnHexapod() {
+void PowerSwitch() {
   HexOn = !HexOn;
   if (HexOn) {
     SoundEvent(0);
-    DebugPrint(F("TurnHexapod: On\n"));
+    DebugPrint(F("PowerSwitch: On\n"));
   }
   else {
     SoundEvent(1);
-    DebugPrint(F("TurnHexapod: Off\n"));
+    DebugPrint(F("PowerSwitch: Off\n"));
     SingleLegHold = false;
     BodyPosX = 0;
     BodyPosY = 0;
@@ -57,7 +57,7 @@ void ReadControl() {
   if (PS2.ReadGamepad()) {
     //Switch hexapod on/off
     if (PS2.ButtonPressed(PSB_START) && !GaitInMotion) { //Start button
-      TurnHexapod();
+      PowerSwitch();
     }
 
     if (HexOn) {
@@ -390,6 +390,6 @@ void ReadControl() {
   }
   else if (HexOn) {
     DebugPrint(F("PS2 controller is not detected!\n"));
-    TurnHexapod();
+    PowerSwitch();
   }
 }

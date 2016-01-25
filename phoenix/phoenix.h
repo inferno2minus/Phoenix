@@ -1,7 +1,7 @@
 /**
  * Project:     Lynxmotion Phoenix
  * Description: Phoenix software
- * Version:     v2.5
+ * Version:     v2.6
  * Author:      Jeroen Janssen (aka Xan)
  *              Kåre Halvorsen (aka Zenta)
  *              Kompanets Konstantin (aka I2M)
