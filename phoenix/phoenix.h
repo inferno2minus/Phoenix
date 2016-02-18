@@ -17,6 +17,9 @@
 //Changing the sign, depending on the legs
 #define SIGN(x) ((x) <= (2) ? (-1) : (1))
 
+//Software version
+#define VERSION         "2.6.3"
+
 //Legs constants
 #define RR              0 //Right Rear
 #define RM              1 //Right Middle
@@ -24,7 +27,7 @@
 #define LR              3 //Left Rear
 #define LM              4 //Left Middle
 #define LF              5 //Left Front
-#define NOT_SELECTED    255
+#define NOT_SELECTED    0xFF
 
 //Math constants
 #define PI              3.1415926535897932384626433832795
