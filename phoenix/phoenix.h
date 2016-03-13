@@ -48,7 +48,7 @@ typedef struct {
   uint8_t TLDivFactor;    //Number of steps that a leg is on the floor while walking
   uint8_t StepsInGait;    //Number of steps in gait
   uint8_t NomGaitSpeed;   //Nominal speed of the gait
-  uint8_t GaitLegNr[6];   //Init position of the leg (LR, RF, LM, RR, LF, RM)
+  uint8_t GaitLegNr[6];   //Init position of the leg (RR, RM, RF, LR, LM, LF)
 } gait;
 
 //Gaits type
