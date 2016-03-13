@@ -18,7 +18,7 @@
 #define SIGN(x) ((x) <= (2) ? (-1) : (1))
 
 //Software version
-#define VERSION         "2.6.3"
+#define VERSION         "2.6.4"
 
 //Legs constants
 #define RR              0 //Right Rear
@@ -53,12 +53,12 @@ typedef struct {
 
 //Gaits type
 const gait Gaits[] = {
-  { 3,  2,  2,  3,  8, 12, 70, {  1,  3,  5,  7,  9, 11 } }, //Ripple 12 steps
-  { 2,  1,  2,  1,  4,  6, 60, {  4,  1,  1,  1,  4,  4 } }, //Tripod 6 steps
-  { 3,  2,  2,  3,  4,  8, 70, {  5,  1,  1,  1,  5,  5 } }, //Tripod 8 steps
-  { 3,  2,  2,  3,  8, 12, 60, { 11,  3,  4,  5,  9, 10 } }, //Tripod 12 steps
-  { 5,  3,  4,  1, 10, 16, 60, { 14,  4,  5,  6, 12, 13 } }, //Tripod 16 steps
-  { 3,  2,  2,  3, 20, 24, 70, {  1, 21,  5, 13,  9, 17 } }  //Wave 24 steps
+  { 3,  2,  2,  3,  8, 12, 70, {  7, 11,  3,  1,  5,  9 } }, //Ripple 12 steps
+  { 2,  1,  2,  1,  4,  6, 60, {  1,  4,  1,  4,  1,  4 } }, //Tripod 6 steps
+  { 3,  2,  2,  3,  4,  8, 70, {  1,  5,  1,  5,  1,  5 } }, //Tripod 8 steps
+  { 3,  2,  2,  3,  8, 12, 60, {  5, 10,  3, 11,  4,  9 } }, //Tripod 12 steps
+  { 5,  3,  4,  1, 10, 16, 60, {  6, 13,  4, 14,  5, 12 } }, //Tripod 16 steps
+  { 3,  2,  2,  3, 20, 24, 70, { 13, 17, 21,  1,  5,  9 } }  //Wave 24 steps
 };
 
 const uint8_t GaitsNumber = sizeof(Gaits)/sizeof(Gaits[0]);
