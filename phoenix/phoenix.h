@@ -18,7 +18,7 @@
 #define SIGN(x) ((x) <= (2) ? (-1) : (1))
 
 //Software version
-#define VERSION         "2.6.4"
+#define VERSION         "2.6.5"
 
 //Legs constants
 #define RR              0 //Right Rear
