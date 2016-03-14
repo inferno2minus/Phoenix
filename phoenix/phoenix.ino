@@ -457,6 +457,12 @@ void ServoDriver() {
     ServoDriverCommit();
   }
   else if (PrevHexOn) {
+    //Turn off the hexapod
+    SSCTime = 600;
+    ServoDriverUpdate();
+    ServoDriverCommit();
+    delay(SSCTime);
+
     //Free servo positions
     ServoDriverFree();
   }
