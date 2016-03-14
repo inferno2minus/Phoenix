@@ -278,7 +278,7 @@ void ReadControl() {
           TravelLengthZ = -(PS2.Analog(PSS_RY) - 128);
         }
         else {
-          TravelLengthX = (PS2.Analog(PSS_LX) - 128);
+          TravelLengthX =  (PS2.Analog(PSS_LX) - 128);
           TravelLengthZ = -(PS2.Analog(PSS_LY) - 128);
         }
 
@@ -300,9 +300,9 @@ void ReadControl() {
 
       //[Translate functions]
       else if (ControlMode == TRANSLATE_MODE) {
-        BodyPosX = (PS2.Analog(PSS_LX) - 128) / 2;
+        BodyPosX =  (PS2.Analog(PSS_LX) - 128) / 2;
         BodyPosZ = -(PS2.Analog(PSS_LY) - 128) / 3;
-        BodyRotY = (PS2.Analog(PSS_RX) - 128) / 6;
+        BodyRotY =  (PS2.Analog(PSS_RX) - 128) / 6;
         BodyShiftY = -(PS2.Analog(PSS_RY) - 128) / 2;
       }
 

@@ -160,10 +160,10 @@ void Gait(uint8_t LegIndex) {
   //Optional half height Front (5 lifted positions)
   else if ((GaitCurrent.NrLiftedPos == 5) && ((LegStep == 2) ||
     (LegStep == -(GaitCurrent.StepsInGait - 2))) && GaitInMotion) {
-    GaitPosX[LegIndex] = TravelLengthX / 2;
+    GaitPosX[LegIndex] =  TravelLengthX / 2;
     GaitPosY[LegIndex] = -LegLiftHeight / 2;
-    GaitPosZ[LegIndex] = TravelLengthZ / 2;
-    GaitRotY[LegIndex] = TravelLengthY / 2;
+    GaitPosZ[LegIndex] =  TravelLengthZ / 2;
+    GaitRotY[LegIndex] =  TravelLengthY / 2;
   }
 
   //Leg front down position
@@ -253,7 +253,7 @@ void BalanceBody() {
   //Balance rotation
   TotalBalX = -TotalBalX / 6;
   TotalBalY = -TotalBalY / 6;
-  TotalBalZ = TotalBalZ / 6;
+  TotalBalZ =  TotalBalZ / 6;
 }
 
 void BalanceCalc() {
@@ -293,14 +293,14 @@ trig GetSinCos(int16_t AngleDeg) {
   if (AngleDeg < 180) {
     //Subtract 90 to shift range
     AngleDeg = AngleDeg - 90;
-    Trig.Sin = cos(AngleDeg * DEG_IN_RAD);
+    Trig.Sin =  cos(AngleDeg * DEG_IN_RAD);
     Trig.Cos = -sin(AngleDeg * DEG_IN_RAD);
   }
   else {
     //Subtract 270 to shift range
     AngleDeg = AngleDeg - 270;
     Trig.Sin = -cos(AngleDeg * DEG_IN_RAD);
-    Trig.Cos = sin(AngleDeg * DEG_IN_RAD);
+    Trig.Cos =  sin(AngleDeg * DEG_IN_RAD);
   }
   return Trig;
 }
@@ -382,7 +382,7 @@ void ServoDriverUpdate() {
   for (uint8_t LegIndex = 0; LegIndex < 6; LegIndex++) {
     int8_t Sign = SIGN(LegIndex);
     //Update all legs
-    uint16_t CoxaPWM = (Sign * CoxaAngle[LegIndex] + 90) / 0.0991 + 592;
+    uint16_t CoxaPWM  = (Sign * CoxaAngle[LegIndex]  + 90) / 0.0991 + 592;
     uint16_t FemurPWM = (Sign * FemurAngle[LegIndex] + 90) / 0.0991 + 592;
     uint16_t TibiaPWM = (Sign * TibiaAngle[LegIndex] + 90) / 0.0991 + 592;
 
@@ -398,7 +398,7 @@ void ServoDriverUpdate() {
     }
 #endif
 
-    SSCWrite(pgm_read_byte(&CoxaPin[LegIndex]) + 0x80, CoxaPWM);
+    SSCWrite(pgm_read_byte(&CoxaPin[LegIndex])  + 0x80, CoxaPWM);
     SSCWrite(pgm_read_byte(&FemurPin[LegIndex]) + 0x80, FemurPWM);
     SSCWrite(pgm_read_byte(&TibiaPin[LegIndex]) + 0x80, TibiaPWM);
   }

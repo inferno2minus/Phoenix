@@ -114,23 +114,23 @@
 #define TibiaLength        125 //Length of the tibia
 
 //[BODY DIMENSIONS]
-#define RROffsetX         -40  //Distance X from center of the body to the Right Rear coxa
-#define RROffsetZ          75  //Distance Z from center of the body to the Right Rear coxa
+#define RROffsetX         -40 //Distance X from center of the body to the Right Rear coxa
+#define RROffsetZ          75 //Distance Z from center of the body to the Right Rear coxa
 
-#define RMOffsetX         -65  //Distance X from center of the body to the Right Middle coxa
-#define RMOffsetZ          0   //Distance Z from center of the body to the Right Middle coxa
+#define RMOffsetX         -65 //Distance X from center of the body to the Right Middle coxa
+#define RMOffsetZ          0  //Distance Z from center of the body to the Right Middle coxa
 
-#define RFOffsetX         -40  //Distance X from center of the body to the Right Front coxa
-#define RFOffsetZ         -75  //Distance Z from center of the body to the Right Front coxa
+#define RFOffsetX         -40 //Distance X from center of the body to the Right Front coxa
+#define RFOffsetZ         -75 //Distance Z from center of the body to the Right Front coxa
 
-#define LROffsetX          40  //Distance X from center of the body to the Left Rear coxa
-#define LROffsetZ          75  //Distance Z from center of the body to the Left Rear coxa
+#define LROffsetX          40 //Distance X from center of the body to the Left Rear coxa
+#define LROffsetZ          75 //Distance Z from center of the body to the Left Rear coxa
 
-#define LMOffsetX          65  //Distance X from center of the body to the Left Middle coxa
-#define LMOffsetZ          0   //Distance Z from center of the body to the Left Middle coxa
+#define LMOffsetX          65 //Distance X from center of the body to the Left Middle coxa
+#define LMOffsetZ          0  //Distance Z from center of the body to the Left Middle coxa
 
-#define LFOffsetX          40  //Distance X from center of the body to the Left Front coxa
-#define LFOffsetZ         -75  //Distance Z from center of the body to the Left Front coxa
+#define LFOffsetX          40 //Distance X from center of the body to the Left Front coxa
+#define LFOffsetZ         -75 //Distance Z from center of the body to the Left Front coxa
 
 //[START POSITIONS]
 #define InitXZ             105

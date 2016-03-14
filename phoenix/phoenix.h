@@ -67,21 +67,21 @@ const uint8_t GaitsNumber = sizeof(Gaits)/sizeof(Gaits[0]);
 //Constants are still defined as single values in the cfg file to make it easy to read/configure
 
 //SSC pin numbers
-const uint8_t CoxaPin[] PROGMEM = { RRCoxaPin, RMCoxaPin, RFCoxaPin, LRCoxaPin, LMCoxaPin, LFCoxaPin };
+const uint8_t CoxaPin[]  PROGMEM = { RRCoxaPin,  RMCoxaPin,  RFCoxaPin,  LRCoxaPin,  LMCoxaPin,  LFCoxaPin  };
 const uint8_t FemurPin[] PROGMEM = { RRFemurPin, RMFemurPin, RFFemurPin, LRFemurPin, LMFemurPin, LFFemurPin };
 const uint8_t TibiaPin[] PROGMEM = { RRTibiaPin, RMTibiaPin, RFTibiaPin, LRTibiaPin, LMTibiaPin, LFTibiaPin };
 
 //Min/Max values
-const int16_t CoxaMin[] PROGMEM = { RRCoxaMin, RMCoxaMin, RFCoxaMin, LRCoxaMin, LMCoxaMin, LFCoxaMin };
-const int16_t CoxaMax[] PROGMEM = { RRCoxaMax, RMCoxaMax, RFCoxaMax, LRCoxaMax, LMCoxaMax, LFCoxaMax };
+const int16_t CoxaMin[]  PROGMEM = { RRCoxaMin,  RMCoxaMin,  RFCoxaMin,  LRCoxaMin,  LMCoxaMin,  LFCoxaMin  };
+const int16_t CoxaMax[]  PROGMEM = { RRCoxaMax,  RMCoxaMax,  RFCoxaMax,  LRCoxaMax,  LMCoxaMax,  LFCoxaMax  };
 const int16_t FemurMin[] PROGMEM = { RRFemurMin, RMFemurMin, RFFemurMin, LRFemurMin, LMFemurMin, LFFemurMin };
 const int16_t FemurMax[] PROGMEM = { RRFemurMax, RMFemurMax, RFFemurMax, LRFemurMax, LMFemurMax, LFFemurMax };
 const int16_t TibiaMin[] PROGMEM = { RRTibiaMin, RMTibiaMin, RFTibiaMin, LRTibiaMin, LMTibiaMin, LFTibiaMin };
 const int16_t TibiaMax[] PROGMEM = { RRTibiaMax, RMTibiaMax, RFTibiaMax, LRTibiaMax, LMTibiaMax, LFTibiaMax };
 
 //Body offsets (distance between the center of the body and the center of the coxa)
-const int16_t OffsetX[] PROGMEM = { RROffsetX, RMOffsetX, RFOffsetX, LROffsetX, LMOffsetX, LFOffsetX };
-const int16_t OffsetZ[] PROGMEM = { RROffsetZ, RMOffsetZ, RFOffsetZ, LROffsetZ, LMOffsetZ, LFOffsetZ };
+const int16_t OffsetX[]  PROGMEM = { RROffsetX,  RMOffsetX,  RFOffsetX,  LROffsetX,  LMOffsetX,  LFOffsetX  };
+const int16_t OffsetZ[]  PROGMEM = { RROffsetZ,  RMOffsetZ,  RFOffsetZ,  LROffsetZ,  LMOffsetZ,  LFOffsetZ  };
 
 //Default leg angle
 const int16_t LegAngle[] PROGMEM = { RRLegAngle, RMLegAngle, RFLegAngle, LRLegAngle, LMLegAngle, LFLegAngle };
