@@ -274,17 +274,17 @@ void ReadControl() {
           }
         }
 
-        if (WalkMethod) {
-          TravelLengthZ = -(PS2.Analog(PSS_RY) - 128);
-        }
-        else {
+        if (!WalkMethod) {
           TravelLengthX =  (PS2.Analog(PSS_LX) - 128);
           TravelLengthZ = -(PS2.Analog(PSS_LY) - 128);
         }
+        else {
+          TravelLengthZ = -(PS2.Analog(PSS_RY) - 128);
+        }
 
         if (!DoubleTravel) {
-          TravelLengthX /= 2;
-          TravelLengthZ /= 2;
+          TravelLengthX = TravelLengthX / 2;
+          TravelLengthZ = TravelLengthZ / 2;
         }
 
         TravelLengthY = -(PS2.Analog(PSS_RX) - 128) / 4;

@@ -40,7 +40,7 @@ void setup() {
 
 void loop() {
   //Start time
-  TimeStart = millis();
+  StartTime = millis();
 
   //Read controller
   ReadControl();
@@ -446,11 +446,11 @@ void ServoDriver() {
       }
 #endif
 
-      //Calculate time cycle
-      uint8_t TimeCycle = (millis() - TimeStart);
+      //Calculate cycle time
+      uint8_t CycleTime = (millis() - StartTime);
 
       //Wait for previous commands to be completed while walking
-      delay(abs(PrevSSCTime - TimeCycle));
+      delay(abs(PrevSSCTime - CycleTime));
     }
 
     //Commit servo positions

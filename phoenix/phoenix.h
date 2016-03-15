@@ -18,7 +18,7 @@
 #define SIGN(x) ((x) <= (2) ? (-1) : (1))
 
 //Software version
-#define VERSION         "2.6.5"
+#define VERSION         "2.6.6"
 
 //Legs constants
 #define RR              0 //Right Rear
@@ -113,7 +113,7 @@ uint16_t  PrevSpeedControl;
 uint16_t  SpeedControl;
 uint16_t  PrevSSCTime;
 uint16_t  SSCTime;
-uint32_t  TimeStart;
+uint32_t  StartTime;
 
 //Power
 bool      PrevHexOn;
