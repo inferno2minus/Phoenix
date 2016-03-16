@@ -350,15 +350,15 @@ void ReadControl() {
       //Calculate BodyPosY
       BodyPosY = min(max(BodyOffsetY + BodyShiftY, 0), 100);
 
-      //Calculate InputTimeDelay
-      InputTimeDelay = 128 - max(max(abs(PS2.Analog(PSS_LX) - 128),
+      //Calculate InputDelayTime
+      InputDelayTime = 128 - max(max(abs(PS2.Analog(PSS_LX) - 128),
         abs(PS2.Analog(PSS_LY) - 128)), abs(PS2.Analog(PSS_RX) - 128));
 
       //Calculate SSCTime
       if ((abs(TravelLengthX) > TRAVEL_DEADZONE) ||
           (abs(TravelLengthZ) > TRAVEL_DEADZONE) ||
           (abs(TravelLengthY) > TRAVEL_DEADZONE / 2)) {
-        SSCTime = GaitCurrent.NomGaitSpeed + (InputTimeDelay * 2) + SpeedControl;
+        SSCTime = GaitCurrent.NomGaitSpeed + (InputDelayTime * 2) + SpeedControl;
         //Add additional delay when balance mode is on
         if (BalanceMode) {
           SSCTime += 100;

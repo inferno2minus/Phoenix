@@ -18,11 +18,18 @@
 #define TRANSLATE_MODE    2
 #define SINGLELEG_MODE    3
 
-PS2X    PS2;
-bool    DoubleHeight;
-bool    DoubleTravel;
-uint8_t ControlMode;
-int16_t BodyOffsetY;
-int16_t BodyShiftY;
+PS2X     PS2;
+bool     DoubleHeight;
+bool     DoubleTravel;
+uint8_t  ControlMode;
+
+//Body position
+int16_t  BodyOffsetY;
+int16_t  BodyShiftY;
+
+//Timing
+uint8_t  InputDelayTime;
+uint16_t PrevSpeedControl;
+uint16_t SpeedControl;
 
 #endif

@@ -18,7 +18,7 @@
 #define SIGN(x) ((x) <= (2) ? (-1) : (1))
 
 //Software version
-#define VERSION         "2.6.6"
+#define VERSION         "2.6.7"
 
 //Legs constants
 #define RR              0 //Right Rear
@@ -108,9 +108,6 @@ int16_t   BodyFKPosY;
 int16_t   BodyFKPosZ;
 
 //Timing
-uint8_t   InputTimeDelay;
-uint16_t  PrevSpeedControl;
-uint16_t  SpeedControl;
 uint16_t  PrevSSCTime;
 uint16_t  SSCTime;
 uint32_t  StartTime;
