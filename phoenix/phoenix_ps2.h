@@ -21,7 +21,6 @@
 PS2X    PS2;
 bool    DoubleHeight;
 bool    DoubleTravel;
-bool    WalkMethod;
 uint8_t ControlMode;
 int16_t BodyOffsetY;
 int16_t BodyShiftY;

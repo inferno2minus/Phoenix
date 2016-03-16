@@ -261,33 +261,14 @@ void ReadControl() {
           }
         }
 
-        //Switch between walk method YZ and XYZ
-        if (PS2.ButtonPressed(PSB_R3) && !GaitInMotion) { //R3 button
-          WalkMethod = !WalkMethod;
-          if (WalkMethod) {
-            SoundEvent(2);
-            DebugPrint(F("WalkMethod: YZ\n"));
-          }
-          else {
-            SoundEvent(3);
-            DebugPrint(F("WalkMethod: XYZ\n"));
-          }
-        }
-
-        if (!WalkMethod) {
-          TravelLengthX =  (PS2.Analog(PSS_LX) - 128);
-          TravelLengthZ = -(PS2.Analog(PSS_LY) - 128);
-        }
-        else {
-          TravelLengthZ = -(PS2.Analog(PSS_RY) - 128);
-        }
+        TravelLengthX =  (PS2.Analog(PSS_LX) - 128);
+        TravelLengthZ = -(PS2.Analog(PSS_LY) - 128);
+        TravelLengthY = -(PS2.Analog(PSS_RX) - 128) / 4;
 
         if (!DoubleTravel) {
           TravelLengthX = TravelLengthX / 2;
           TravelLengthZ = TravelLengthZ / 2;
         }
-
-        TravelLengthY = -(PS2.Analog(PSS_RX) - 128) / 4;
       }
 
       //[Rotate functions]
