@@ -30,7 +30,6 @@ int16_t  BodyOffsetY;
 int16_t  BodyShiftY;
 
 //Timing
-uint8_t  InputDelayTime;
 uint16_t PrevSpeedControl;
 uint16_t SpeedControl;
 

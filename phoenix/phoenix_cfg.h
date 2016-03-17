@@ -30,7 +30,7 @@
 #define SSC_BAUD           115200 //SSC32 baud rate
 
 //[ANALOG INPUT]
-#define TRAVEL_DEADZONE    4 //Dead zone for the analog input
+#define TRAVEL_DEADZONE    4 //Dead zone for the analog input from the remote
 
 //[SSC PIN NUMBERS]
 #define RRCoxaPin          0  //Right Rear leg hip horizontal

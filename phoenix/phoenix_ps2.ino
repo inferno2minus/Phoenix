@@ -350,15 +350,16 @@ void ReadControl() {
       //Calculate BodyPosY
       BodyPosY = min(max(BodyOffsetY + BodyShiftY, 0), 100);
 
-      //Calculate InputDelayTime
-      InputDelayTime = 128 - max(max(abs(PS2.Analog(PSS_LX) - 128),
-        abs(PS2.Analog(PSS_LY) - 128)), abs(PS2.Analog(PSS_RX) - 128));
-
       //Calculate SSCTime
       if ((abs(TravelLengthX) > TRAVEL_DEADZONE) ||
           (abs(TravelLengthZ) > TRAVEL_DEADZONE) ||
           (abs(TravelLengthY) > TRAVEL_DEADZONE / 2)) {
+        //Delay that depends on the input to get the "sneaking" effect
+        uint8_t InputDelayTime = 128 - max(max(abs(PS2.Analog(PSS_LX) - 128),
+          abs(PS2.Analog(PSS_LY) - 128)), abs(PS2.Analog(PSS_RX) - 128));
+
         SSCTime = GaitCurrent.NomGaitSpeed + (InputDelayTime * 2) + SpeedControl;
+
         //Add additional delay when balance mode is on
         if (BalanceMode) {
           SSCTime += 100;
