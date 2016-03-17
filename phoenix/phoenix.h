@@ -18,12 +18,12 @@
 #define SIGN(x) ((x) <= (2) ? (-1) : (1))
 
 //Software version
-#define VERSION         "2.6.7"
+#define VERSION       "2.6.8"
 
 //Math constants
-#define PI              3.1415926535897932384626433832795
-#define DEG_IN_RAD      0.0174532925199432957692369076848
-#define RAD_IN_DEG      57.295779513082320876798154814105
+#define PI            3.1415926535897932384626433832795
+#define DEG_IN_RAD    0.0174532925199432957692369076848
+#define RAD_IN_DEG    57.295779513082320876798154814105
 
 //Legs constants
 enum {
