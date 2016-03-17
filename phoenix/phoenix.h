@@ -92,73 +92,73 @@ const int16_t InitPosY[] PROGMEM = { RRInitPosY, RMInitPosY, RFInitPosY, LRInitP
 const int16_t InitPosZ[] PROGMEM = { RRInitPosZ, RMInitPosZ, RFInitPosZ, LRInitPosZ, LMInitPosZ, LFInitPosZ };
 
 //Angles
-float     CoxaAngle[6];
-float     FemurAngle[6];
-float     TibiaAngle[6];
+float    CoxaAngle[6];
+float    FemurAngle[6];
+float    TibiaAngle[6];
 
 //Body position
-int16_t   BodyPosX;
-int16_t   BodyPosY;
-int16_t   BodyPosZ;
-int16_t   BodyRotX;
-int16_t   BodyRotY;
-int16_t   BodyRotZ;
-int16_t   BodyFKPosX;
-int16_t   BodyFKPosY;
-int16_t   BodyFKPosZ;
+int16_t  BodyPosX;
+int16_t  BodyPosY;
+int16_t  BodyPosZ;
+int16_t  BodyRotX;
+int16_t  BodyRotY;
+int16_t  BodyRotZ;
+int16_t  BodyFKPosX;
+int16_t  BodyFKPosY;
+int16_t  BodyFKPosZ;
 
 //Timing
-uint16_t  PrevSSCTime;
-uint16_t  SSCTime;
-uint32_t  StartTime;
+uint16_t PrevSSCTime;
+uint16_t SSCTime;
+uint32_t StartTime;
 
 //Power
-bool      PrevHexOn;
-bool      HexOn;
+bool     PrevHexOn;
+bool     HexOn;
 
 //Balance
-bool      BalanceMode;
-int16_t   TotalBalX;
-int16_t   TotalBalY;
-int16_t   TotalBalZ;
-int16_t   TotalTransX;
-int16_t   TotalTransY;
-int16_t   TotalTransZ;
+bool     BalanceMode;
+int16_t  TotalBalX;
+int16_t  TotalBalY;
+int16_t  TotalBalZ;
+int16_t  TotalTransX;
+int16_t  TotalTransY;
+int16_t  TotalTransZ;
 
 //Single leg
-bool      SingleLegHold;
-uint8_t   PrevSelectedLeg = NOT_SELECTED;
-uint8_t   SelectedLeg = NOT_SELECTED;
-int16_t   LegPosX[6];
-int16_t   LegPosY[6];
-int16_t   LegPosZ[6];
-int16_t   SingleLegX;
-int16_t   SingleLegY;
-int16_t   SingleLegZ;
+bool     SingleLegHold;
+uint8_t  PrevSelectedLeg = NOT_SELECTED;
+uint8_t  SelectedLeg = NOT_SELECTED;
+int16_t  LegPosX[6];
+int16_t  LegPosY[6];
+int16_t  LegPosZ[6];
+int16_t  SingleLegX;
+int16_t  SingleLegY;
+int16_t  SingleLegZ;
 
 //Gait
-gait      GaitCurrent;
-bool      GaitInMotion;
-bool      WalkStatus;
-uint8_t   ExtraCycle;
-uint8_t   GaitStep = 1;
-uint8_t   GaitType;
-uint8_t   LegLiftHeight = 50;
-int16_t   GaitPosX[6];
-int16_t   GaitPosY[6];
-int16_t   GaitPosZ[6];
-int16_t   GaitRotY[6];
-int16_t   TravelLengthX;
-int16_t   TravelLengthY;
-int16_t   TravelLengthZ;
+gait     GaitCurrent;
+bool     GaitInMotion;
+bool     WalkStatus;
+uint8_t  ExtraCycle;
+uint8_t  GaitStep = 1;
+uint8_t  GaitType;
+uint8_t  LegLiftHeight = 50;
+int16_t  GaitPosX[6];
+int16_t  GaitPosY[6];
+int16_t  GaitPosZ[6];
+int16_t  GaitRotY[6];
+int16_t  TravelLengthX;
+int16_t  TravelLengthY;
+int16_t  TravelLengthZ;
 
 #ifdef DEBUG_MODE
-bool      PrevWalkStatus;
-bool      DebugOutput;
+bool     PrevWalkStatus;
+bool     DebugOutput;
 #endif
 
 #ifdef SOUND_MODE
-MiniTone  Sound;
+MiniTone Sound;
 #endif
 
 #ifdef DEBUG_MODE
