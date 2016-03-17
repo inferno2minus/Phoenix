@@ -13,10 +13,12 @@
 #include <PS2X.h>
 
 //Control mode
-#define WALK_MODE         0
-#define ROTATE_MODE       1
-#define TRANSLATE_MODE    2
-#define SINGLELEG_MODE    3
+enum {
+  WALK_MODE,
+  ROTATE_MODE,
+  TRANSLATE_MODE,
+  SINGLELEG_MODE
+};
 
 PS2X     PS2;
 bool     DoubleHeight;

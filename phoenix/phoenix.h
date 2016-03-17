@@ -20,19 +20,21 @@
 //Software version
 #define VERSION         "2.6.7"
 
-//Legs constants
-#define RR              0 //Right Rear
-#define RM              1 //Right Middle
-#define RF              2 //Right Front
-#define LR              3 //Left Rear
-#define LM              4 //Left Middle
-#define LF              5 //Left Front
-#define NOT_SELECTED    0xFF
-
 //Math constants
 #define PI              3.1415926535897932384626433832795
 #define DEG_IN_RAD      0.0174532925199432957692369076848
 #define RAD_IN_DEG      57.295779513082320876798154814105
+
+//Legs constants
+enum {
+  RR, //Right Rear
+  RM, //Right Middle
+  RF, //Right Front
+  LR, //Left Rear
+  LM, //Left Middle
+  LF, //Left Front
+  NOT_SELECTED = 0xFF
+};
 
 //Structs
 typedef struct {
