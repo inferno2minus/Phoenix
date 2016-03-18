@@ -350,7 +350,7 @@ void ReadControl() {
       //Calculate BodyPosY
       BodyPosY = min(max(BodyOffsetY + BodyShiftY, 0), 100);
 
-      //Calculate SSCTime
+      //Calculate time for the servo updates
       if ((abs(TravelLengthX) > TRAVEL_DEADZONE) ||
           (abs(TravelLengthZ) > TRAVEL_DEADZONE) ||
           (abs(TravelLengthY) > TRAVEL_DEADZONE / 2)) {

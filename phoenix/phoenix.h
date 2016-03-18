@@ -14,7 +14,7 @@
 #include <PrintfSerial.h>
 #include "phoenix_cfg.h"
 
-//Changing the sign, depending on the legs
+//Changing the sign depending on the legs
 #define SIGN(x) ((x) <= (2) ? (-1) : (1))
 
 //Software version
@@ -45,7 +45,7 @@ typedef struct {
 typedef struct {
   uint8_t NrLiftedPos;    //Number of positions that a single leg is lifted (1-5)
   uint8_t FrontDownPos;   //Where the leg should be put down to ground
-  uint8_t LiftDivFactor;  //Default: 2, when NrLiftedPos = 5: 4
+  uint8_t LiftDivFactor;  //Result of the operation (NrLiftedPos == 5 ? 4 : 2)
   uint8_t HalfLiftHeight; //How high to lift at halfway up
   uint8_t TLDivFactor;    //Number of steps that a leg is on the floor while walking
   uint8_t StepsInGait;    //Number of steps in gait
