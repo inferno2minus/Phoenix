@@ -16,18 +16,18 @@ void InitControl() {
 void SoundEvent(uint8_t SoundType) {
 #ifdef SOUND_MODE
   switch (SoundType) {
-  case 0:
-    Sound.play(3, 1568, 80, 2093, 80, 2794, 80);
-    break;
-  case 1:
-    Sound.play(3, 2794, 80, 2093, 80, 1568, 80);
-    break;
-  case 2:
-    Sound.play(2093, 80);
-    break;
-  case 3:
-    Sound.play(1568, 80);
-    break;
+    case 0:
+      Sound.play(3, 1568, 80, 2093, 80, 2794, 80);
+      break;
+    case 1:
+      Sound.play(3, 2794, 80, 2093, 80, 1568, 80);
+      break;
+    case 2:
+      Sound.play(2093, 80);
+      break;
+    case 3:
+      Sound.play(1568, 80);
+      break;
   }
 #endif
 }
@@ -210,24 +210,24 @@ void ReadControl() {
 #ifdef DEBUG_MODE
           DebugPrint(F("GaitType: "));
           switch (GaitType) {
-          case 0:
-            DebugPrint(F("Ripple 12\n"));
-            break;
-          case 1:
-            DebugPrint(F("Tripod 6\n"));
-            break;
-          case 2:
-            DebugPrint(F("Tripod 8\n"));
-            break;
-          case 3:
-            DebugPrint(F("Tripod 12\n"));
-            break;
-          case 4:
-            DebugPrint(F("Tripod 16\n"));
-            break;
-          case 5:
-            DebugPrint(F("Wave 24\n"));
-            break;
+            case 0:
+              DebugPrint(F("Ripple 12\n"));
+              break;
+            case 1:
+              DebugPrint(F("Tripod 6\n"));
+              break;
+            case 2:
+              DebugPrint(F("Tripod 8\n"));
+              break;
+            case 3:
+              DebugPrint(F("Tripod 12\n"));
+              break;
+            case 4:
+              DebugPrint(F("Tripod 16\n"));
+              break;
+            case 5:
+              DebugPrint(F("Wave 24\n"));
+              break;
           }
 #endif
           InitGait();
@@ -302,24 +302,24 @@ void ReadControl() {
 #ifdef DEBUG_MODE
           DebugPrint(F("SelectedLeg: "));
           switch (SelectedLeg) {
-          case 0:
-            DebugPrint(F("RR\n"));
-            break;
-          case 1:
-            DebugPrint(F("RM\n"));
-            break;
-          case 2:
-            DebugPrint(F("RF\n"));
-            break;
-          case 3:
-            DebugPrint(F("LR\n"));
-            break;
-          case 4:
-            DebugPrint(F("LM\n"));
-            break;
-          case 5:
-            DebugPrint(F("LF\n"));
-            break;
+            case 0:
+              DebugPrint(F("RR\n"));
+              break;
+            case 1:
+              DebugPrint(F("RM\n"));
+              break;
+            case 2:
+              DebugPrint(F("RF\n"));
+              break;
+            case 3:
+              DebugPrint(F("LR\n"));
+              break;
+            case 4:
+              DebugPrint(F("LM\n"));
+              break;
+            case 5:
+              DebugPrint(F("LF\n"));
+              break;
           }
 #endif
         }
