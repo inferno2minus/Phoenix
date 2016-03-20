@@ -14,9 +14,6 @@
 #include <PrintfSerial.h>
 #include "phoenix_cfg.h"
 
-//Changing the sign depending on the legs
-#define SIGN(x) ((x) <= (2) ? (-1) : (1))
-
 //Software version
 #define VERSION       "2.6.8"
 
@@ -24,6 +21,9 @@
 #define PI            3.1415926535897932384626433832795
 #define DEG_IN_RAD    0.0174532925199432957692369076848
 #define RAD_IN_DEG    57.295779513082320876798154814105
+
+//Legs sign
+#define SIGN(leg)     ((leg) <= (2) ? (-1) : (1))
 
 //Legs constants
 enum {
@@ -81,7 +81,7 @@ const int16_t FemurMax[] PROGMEM = { RRFemurMax, RMFemurMax, RFFemurMax, LRFemur
 const int16_t TibiaMin[] PROGMEM = { RRTibiaMin, RMTibiaMin, RFTibiaMin, LRTibiaMin, LMTibiaMin, LFTibiaMin };
 const int16_t TibiaMax[] PROGMEM = { RRTibiaMax, RMTibiaMax, RFTibiaMax, LRTibiaMax, LMTibiaMax, LFTibiaMax };
 
-//Body offsets (distance between the center of the body and the center of the coxa)
+//Body offsets
 const int16_t OffsetX[]  PROGMEM = { RROffsetX,  RMOffsetX,  RFOffsetX,  LROffsetX,  LMOffsetX,  LFOffsetX  };
 const int16_t OffsetZ[]  PROGMEM = { RROffsetZ,  RMOffsetZ,  RFOffsetZ,  LROffsetZ,  LMOffsetZ,  LFOffsetZ  };
 
