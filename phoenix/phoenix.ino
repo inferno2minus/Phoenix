@@ -370,12 +370,12 @@ void CheckAngles() {
   }
 }
 
-void SSCWrite(uint8_t Command, uint16_t Data) {
-  uint8_t Array[3];
-  Array[0] = Command;
-  Array[1] = Data >> 8;
-  Array[2] = Data & 0xFF;
-  SSCSerial.write(Array, 3);
+void SerialOutput(uint8_t Command, uint16_t Data) {
+  uint8_t Buffer[3];
+  Buffer[0] = Command;
+  Buffer[1] = Data >> 8;
+  Buffer[2] = Data & 0xFF;
+  SSCSerial.write(Buffer, 3);
 }
 
 void ServoDriverUpdate() {
@@ -398,21 +398,21 @@ void ServoDriverUpdate() {
     }
 #endif
 
-    SSCWrite(pgm_read_byte(&CoxaPin[LegIndex])  + 0x80, CoxaPWM);
-    SSCWrite(pgm_read_byte(&FemurPin[LegIndex]) + 0x80, FemurPWM);
-    SSCWrite(pgm_read_byte(&TibiaPin[LegIndex]) + 0x80, TibiaPWM);
+    SerialOutput(pgm_read_byte(&CoxaPin[LegIndex])  + 0x80, CoxaPWM);
+    SerialOutput(pgm_read_byte(&FemurPin[LegIndex]) + 0x80, FemurPWM);
+    SerialOutput(pgm_read_byte(&TibiaPin[LegIndex]) + 0x80, TibiaPWM);
   }
 }
 
 void ServoDriverCommit() {
-  SSCWrite(0xA1, SSCTime);
+  SerialOutput(0xA1, SSCTime);
 }
 
 void ServoDriverFree() {
   for (uint8_t LegIndex = 0; LegIndex < 32; LegIndex++) {
-    SSCWrite(LegIndex + 0x80, 0x00);
+    SerialOutput(LegIndex + 0x80, 0x00);
   }
-  SSCWrite(0xA1, 0xC8);
+  SerialOutput(0xA1, 0xC8);
 }
 
 void ServoDriver() {
