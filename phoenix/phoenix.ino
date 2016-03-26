@@ -382,9 +382,9 @@ void ServoDriverUpdate() {
   for (uint8_t LegIndex = 0; LegIndex < 6; LegIndex++) {
     int8_t Sign = SIGN(LegIndex);
     //Update all legs
-    uint16_t CoxaPWM  = (Sign * CoxaAngle[LegIndex]  + 90) * 10 + 600;
-    uint16_t FemurPWM = (Sign * FemurAngle[LegIndex] + 90) * 10 + 600;
-    uint16_t TibiaPWM = (Sign * TibiaAngle[LegIndex] + 90) * 10 + 600;
+    uint16_t CoxaPWM  = (Sign * CoxaAngle[LegIndex]  + 90) / PWM_FACTOR + PWM_OFFSET;
+    uint16_t FemurPWM = (Sign * FemurAngle[LegIndex] + 90) / PWM_FACTOR + PWM_OFFSET;
+    uint16_t TibiaPWM = (Sign * TibiaAngle[LegIndex] + 90) / PWM_FACTOR + PWM_OFFSET;
 
 #ifdef DEBUG_MODE
     if (DebugOutput) {

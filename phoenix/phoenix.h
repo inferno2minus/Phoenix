@@ -15,7 +15,7 @@
 #include "phoenix_cfg.h"
 
 //Software version
-#define VERSION       "2.6.8"
+#define VERSION       "2.6.9"
 
 //Math constants
 #define PI            3.1415926535897932384626433832795
