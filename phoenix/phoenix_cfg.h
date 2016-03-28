@@ -30,8 +30,8 @@
 #define SSC_BAUD           115200 //SSC32 baud rate
 
 //[SERVO DRIVER]
-#define PWM_FACTOR         0.1
-#define PWM_OFFSET         600
+#define PWM_OFFSET         600 //Minimum pulse width of the servo
+#define PWM_FACTOR         0.1 //Factor = 90 / (1500 - PWM_OFFSET)
 
 //[ANALOG INPUT]
 #define TRAVEL_DEADZONE    4 //Dead zone for the analog input from the remote
