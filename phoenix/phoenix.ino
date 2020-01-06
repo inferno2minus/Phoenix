@@ -10,7 +10,7 @@
 #include "phoenix.h"
 
 void setup() {
-  SSCSerial.begin(SSC_BAUD);
+  Servo.begin(SSC_BAUD);
 
 #ifdef DEBUG_MODE
   DBGSerial.begin(DBG_BAUD);
@@ -370,14 +370,6 @@ void CheckAngles() {
   }
 }
 
-void SerialOutput(uint8_t Command, uint16_t Data) {
-  uint8_t Buffer[3];
-  Buffer[0] = Command;
-  Buffer[1] = Data >> 8;
-  Buffer[2] = Data & 0xFF;
-  SSCSerial.write(Buffer, 3);
-}
-
 void ServoDriverUpdate() {
   for (uint8_t LegIndex = 0; LegIndex < 6; LegIndex++) {
     int8_t Sign = SIGN(LegIndex);
@@ -398,21 +390,10 @@ void ServoDriverUpdate() {
     }
 #endif
 
-    SerialOutput(pgm_read_byte(&CoxaPin[LegIndex])  + 0x80, CoxaPWM);
-    SerialOutput(pgm_read_byte(&FemurPin[LegIndex]) + 0x80, FemurPWM);
-    SerialOutput(pgm_read_byte(&TibiaPin[LegIndex]) + 0x80, TibiaPWM);
+    Servo.Write(pgm_read_byte(&CoxaPin[LegIndex]  + 0x80), CoxaPWM);
+    Servo.Write(pgm_read_byte(&FemurPin[LegIndex] + 0x80), FemurPWM);
+    Servo.Write(pgm_read_byte(&TibiaPin[LegIndex] + 0x80), TibiaPWM);
   }
-}
-
-void ServoDriverCommit() {
-  SerialOutput(0xA1, SSCTime);
-}
-
-void ServoDriverFree() {
-  for (uint8_t LegIndex = 0; LegIndex < 32; LegIndex++) {
-    SerialOutput(LegIndex + 0x80, 0x00);
-  }
-  SerialOutput(0xA1, 0xC8);
 }
 
 void ServoDriver() {
@@ -455,17 +436,16 @@ void ServoDriver() {
     }
 
     //Commit servo positions
-    ServoDriverCommit();
+    Servo.Commit(SSCTime);
   }
   else if (PrevHexOn) {
     //Turn off the hexapod
-    SSCTime = 600;
     ServoDriverUpdate();
-    ServoDriverCommit();
-    delay(SSCTime);
+    Servo.Commit(600);
+    delay(600);
 
     //Free servo positions
-    ServoDriverFree();
+    Servo.Free();
   }
 
   //Store previous state

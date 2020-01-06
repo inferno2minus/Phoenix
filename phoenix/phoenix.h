@@ -10,6 +10,7 @@
 #ifndef PHOENIX_H
 #define PHOENIX_H
 
+#include <SSC32.h>
 #include <MiniTone.h>
 #include <PrintfSerial.h>
 #include "phoenix_cfg.h"
@@ -169,6 +170,6 @@ PrintfSerial DBGSerial(0, 1);
 #else
 #define DebugPrint(msg, ...)
 #endif
-PrintfSerial SSCSerial(SSC_RX, SSC_TX);
+SSC32 Servo(SSC_RX, SSC_TX);
 
 #endif
