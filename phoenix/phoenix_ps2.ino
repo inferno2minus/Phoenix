@@ -42,10 +42,10 @@ void PowerSwitch() {
     SoundEvent(1);
     DebugPrint(F("PowerSwitch: Off\n"));
     SingleLegHold = false;
-    BodyPos = { 0 };
-    BodyRot = { 0 };
-    BodyOffset = { 0 };
-    BodyShift = { 0 };
+    BodyPos = {0};
+    BodyRot = {0};
+    BodyOffset = {0};
+    BodyShift = {0};
   }
 }
 
@@ -257,7 +257,7 @@ void ReadControl() {
           }
         }
 
-        TravelLength.X =  (PS2.Analog(PSS_LX) - 128);
+        TravelLength.X = (PS2.Analog(PSS_LX) - 128);
         TravelLength.Z = -(PS2.Analog(PSS_LY) - 128);
         TravelLength.Y = -(PS2.Analog(PSS_RX) - 128) / 4;
 
@@ -277,9 +277,9 @@ void ReadControl() {
 
       //[Translate functions]
       else if (ControlMode == TRANSLATE_MODE) {
-        BodyPos.X =  (PS2.Analog(PSS_LX) - 128) / 2;
+        BodyPos.X = (PS2.Analog(PSS_LX) - 128) / 2;
         BodyPos.Z = -(PS2.Analog(PSS_LY) - 128) / 3;
-        BodyRot.Y =  (PS2.Analog(PSS_RX) - 128) / 6;
+        BodyRot.Y = (PS2.Analog(PSS_RX) - 128) / 6;
         BodyShift.Y = -(PS2.Analog(PSS_RY) - 128) / 2;
       }
 
@@ -345,13 +345,13 @@ void ReadControl() {
       BodyPos.Y = min(max(BodyOffset.Y + BodyShift.Y, 0), 100);
 
       //Calculate time for the servo updates
-      if ((abs(TravelLength.X) > TRAVEL_DEADZONE) ||
-          (abs(TravelLength.Z) > TRAVEL_DEADZONE) ||
-          (abs(TravelLength.Y) > TRAVEL_DEADZONE / 2)) {
+      if (abs(TravelLength.X) > TRAVEL_DEADZONE ||
+          abs(TravelLength.Z) > TRAVEL_DEADZONE ||
+          abs(TravelLength.Y) > TRAVEL_DEADZONE / 2) {
 
         //Delay that depends on the input to get the "sneaking" effect
-        uint8_t InputDelayTime = 128 - max(max(abs(PS2.Analog(PSS_LX) - 128),
-          abs(PS2.Analog(PSS_LY) - 128)), abs(PS2.Analog(PSS_RX) - 128));
+        uint8_t InputDelayTime = 128 - max(max(abs(PS2.Analog(PSS_LX) - 128), abs(PS2.Analog(PSS_LY) - 128)),
+          abs(PS2.Analog(PSS_RX) - 128));
 
         SSCTime = GaitCurrent.NomGaitSpeed + (InputDelayTime * 2) + SpeedControl;
 

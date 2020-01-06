@@ -81,12 +81,12 @@ void InitGait() {
 
 void SingleLegControl() {
   //Check if all legs are down
-  bool AllDown = (LegPos[RF].Y == (int16_t)pgm_read_word(&InitPosY[RF])) &&
-    (LegPos[RM].Y == (int16_t)pgm_read_word(&InitPosY[RM])) &&
-    (LegPos[RR].Y == (int16_t)pgm_read_word(&InitPosY[RR])) &&
-    (LegPos[LR].Y == (int16_t)pgm_read_word(&InitPosY[LR])) &&
-    (LegPos[LM].Y == (int16_t)pgm_read_word(&InitPosY[LM])) &&
-    (LegPos[LF].Y == (int16_t)pgm_read_word(&InitPosY[LF]));
+  bool AllDown = LegPos[RF].Y == (int16_t)pgm_read_word(&InitPosY[RF]) &&
+                 LegPos[RM].Y == (int16_t)pgm_read_word(&InitPosY[RM]) &&
+                 LegPos[RR].Y == (int16_t)pgm_read_word(&InitPosY[RR]) &&
+                 LegPos[LR].Y == (int16_t)pgm_read_word(&InitPosY[LR]) &&
+                 LegPos[LM].Y == (int16_t)pgm_read_word(&InitPosY[LM]) &&
+                 LegPos[LF].Y == (int16_t)pgm_read_word(&InitPosY[LF]);
 
   if (SelectedLeg < 6) {
     if (SelectedLeg != PrevSelectedLeg) {
@@ -119,11 +119,17 @@ void SingleLegControl() {
 
 void GaitCalc(uint8_t LegIndex) {
   int16_t LegStep = GaitStep - GaitCurrent.GaitLegNr[LegIndex];
+  uint8_t NrLiftedPos = GaitCurrent.NrLiftedPos;
+  uint8_t FrontDownPos = GaitCurrent.FrontDownPos;
+  uint8_t LiftDivFactor = GaitCurrent.LiftDivFactor;
+  uint8_t HalfLiftHeight = GaitCurrent.HalfLiftHeight;
+  uint8_t TLDivFactor = GaitCurrent.TLDivFactor;
+  uint8_t StepsInGait = GaitCurrent.StepsInGait;
 
   //Leg middle up position
-  if ((GaitInMotion && (GaitCurrent.NrLiftedPos & 1) && (LegStep == 0)) ||
-    (!GaitInMotion && (LegStep == 0) && ((abs(Gait[LegIndex].Pos.X) > 2) ||
-    (abs(Gait[LegIndex].Pos.Z) > 2) || (abs(Gait[LegIndex].Rot.Y) > 2)))) {
+  if (GaitInMotion && NrLiftedPos & 1 && LegStep == 0 ||
+     !GaitInMotion && LegStep == 0 && (abs(Gait[LegIndex].Pos.X) > 2 || abs(Gait[LegIndex].Pos.Z) > 2 || abs(Gait[LegIndex].Rot.Y) > 2))
+  {
     Gait[LegIndex].Pos.X = 0;
     Gait[LegIndex].Pos.Y = -LegLiftHeight;
     Gait[LegIndex].Pos.Z = 0;
@@ -131,26 +137,23 @@ void GaitCalc(uint8_t LegIndex) {
   }
 
   //Optional half height rear (2, 3, 5 lifted positions)
-  else if ((((GaitCurrent.NrLiftedPos == 2) && (LegStep == 0)) ||
-    ((GaitCurrent.NrLiftedPos >= 3) && ((LegStep == -1) ||
-    (LegStep == (GaitCurrent.StepsInGait - 1))))) && GaitInMotion) {
-    Gait[LegIndex].Pos.X = -TravelLength.X / GaitCurrent.LiftDivFactor;
-    Gait[LegIndex].Pos.Y = -3 * LegLiftHeight / (3 + GaitCurrent.HalfLiftHeight);
-    Gait[LegIndex].Pos.Z = -TravelLength.Z / GaitCurrent.LiftDivFactor;
-    Gait[LegIndex].Rot.Y = -TravelLength.Y / GaitCurrent.LiftDivFactor;
+  else if ((NrLiftedPos == 2 && LegStep == 0 || NrLiftedPos >= 3 && (LegStep == -1 || LegStep == StepsInGait - 1)) && GaitInMotion) {
+    Gait[LegIndex].Pos.X = -TravelLength.X / LiftDivFactor;
+    Gait[LegIndex].Pos.Y = -3 * LegLiftHeight / (3 + HalfLiftHeight);
+    Gait[LegIndex].Pos.Z = -TravelLength.Z / LiftDivFactor;
+    Gait[LegIndex].Rot.Y = -TravelLength.Y / LiftDivFactor;
   }
 
   //Optional half height front (2, 3, 5 lifted positions)
-  else if ((GaitCurrent.NrLiftedPos >= 2) && ((LegStep == 1) ||
-    (LegStep == -(GaitCurrent.StepsInGait - 1))) && GaitInMotion) {
-    Gait[LegIndex].Pos.X = TravelLength.X / GaitCurrent.LiftDivFactor;
-    Gait[LegIndex].Pos.Y = -3 * LegLiftHeight / (3 + GaitCurrent.HalfLiftHeight);
-    Gait[LegIndex].Pos.Z = TravelLength.Z / GaitCurrent.LiftDivFactor;
-    Gait[LegIndex].Rot.Y = TravelLength.Y / GaitCurrent.LiftDivFactor;
+  else if (NrLiftedPos >= 2 && (LegStep == 1 || LegStep == -(StepsInGait - 1)) && GaitInMotion) {
+    Gait[LegIndex].Pos.X = TravelLength.X / LiftDivFactor;
+    Gait[LegIndex].Pos.Y = -3 * LegLiftHeight / (3 + HalfLiftHeight);
+    Gait[LegIndex].Pos.Z = TravelLength.Z / LiftDivFactor;
+    Gait[LegIndex].Rot.Y = TravelLength.Y / LiftDivFactor;
   }
 
   //Optional half height rear (5 lifted positions)
-  else if ((GaitCurrent.NrLiftedPos == 5) && (LegStep == -2) && GaitInMotion) {
+  else if (NrLiftedPos == 5 && LegStep == -2 && GaitInMotion) {
     Gait[LegIndex].Pos.X = -TravelLength.X / 2;
     Gait[LegIndex].Pos.Y = -LegLiftHeight / 2;
     Gait[LegIndex].Pos.Z = -TravelLength.Z / 2;
@@ -158,17 +161,15 @@ void GaitCalc(uint8_t LegIndex) {
   }
 
   //Optional half height front (5 lifted positions)
-  else if ((GaitCurrent.NrLiftedPos == 5) && ((LegStep == 2) ||
-    (LegStep == -(GaitCurrent.StepsInGait - 2))) && GaitInMotion) {
-    Gait[LegIndex].Pos.X =  TravelLength.X / 2;
+  else if (NrLiftedPos == 5 && (LegStep == 2 || LegStep == -(StepsInGait - 2)) && GaitInMotion) {
+    Gait[LegIndex].Pos.X = TravelLength.X / 2;
     Gait[LegIndex].Pos.Y = -LegLiftHeight / 2;
-    Gait[LegIndex].Pos.Z =  TravelLength.Z / 2;
-    Gait[LegIndex].Rot.Y =  TravelLength.Y / 2;
+    Gait[LegIndex].Pos.Z = TravelLength.Z / 2;
+    Gait[LegIndex].Rot.Y = TravelLength.Y / 2;
   }
 
   //Leg front down position
-  else if (((LegStep == GaitCurrent.FrontDownPos) ||
-    (LegStep == -(GaitCurrent.StepsInGait - GaitCurrent.FrontDownPos))) && (Gait[LegIndex].Pos.Y < 0)) {
+  else if ((LegStep == FrontDownPos || LegStep == -(StepsInGait - FrontDownPos)) && Gait[LegIndex].Pos.Y < 0) {
     Gait[LegIndex].Pos.X = TravelLength.X / 2;
     Gait[LegIndex].Pos.Y = 0;
     Gait[LegIndex].Pos.Z = TravelLength.Z / 2;
@@ -177,23 +178,23 @@ void GaitCalc(uint8_t LegIndex) {
 
   //Move body forward
   else {
-    Gait[LegIndex].Pos.X = Gait[LegIndex].Pos.X - (TravelLength.X / GaitCurrent.TLDivFactor);
+    Gait[LegIndex].Pos.X -= TravelLength.X / TLDivFactor;
     Gait[LegIndex].Pos.Y = 0;
-    Gait[LegIndex].Pos.Z = Gait[LegIndex].Pos.Z - (TravelLength.Z / GaitCurrent.TLDivFactor);
-    Gait[LegIndex].Rot.Y = Gait[LegIndex].Rot.Y - (TravelLength.Y / GaitCurrent.TLDivFactor);
+    Gait[LegIndex].Pos.Z -= TravelLength.Z / TLDivFactor;
+    Gait[LegIndex].Rot.Y -= TravelLength.Y / TLDivFactor;
   }
 }
 
 void GaitSequence() {
   //Check if the gait is in motion
   GaitInMotion = WalkStatus ||
-    (abs(TravelLength.X) > TRAVEL_DEADZONE) ||
-    (abs(TravelLength.Z) > TRAVEL_DEADZONE) ||
-    (abs(TravelLength.Y) > TRAVEL_DEADZONE);
+                 abs(TravelLength.X) > TRAVEL_DEADZONE ||
+                 abs(TravelLength.Z) > TRAVEL_DEADZONE ||
+                 abs(TravelLength.Y) > TRAVEL_DEADZONE;
 
   //Clear values under the TRAVEL_DEADZONE
   if (!GaitInMotion) {
-    TravelLength = { 0 };
+    TravelLength = {0};
   }
 
   //Calculate gait sequence
@@ -257,8 +258,8 @@ void BalanceBody() {
 
 void BalanceCalc() {
   //Reset values used for calculation of balance
-  TotalBalance = { 0 };
-  TotalTranslate = { 0 };
+  TotalBalance = {0};
+  TotalTranslate = {0};
 
   if (BalanceMode) {
     for (uint8_t LegIndex = 0; LegIndex < 6; LegIndex++) {
@@ -292,19 +293,19 @@ trig GetSinCos(int16_t AngleDeg) {
   if (AngleDeg < 180) {
     //Subtract 90 to shift range
     AngleDeg = AngleDeg - 90;
-    Trig.Sin =  cos(AngleDeg * DEG_IN_RAD);
+    Trig.Sin = cos(AngleDeg * DEG_IN_RAD);
     Trig.Cos = -sin(AngleDeg * DEG_IN_RAD);
   }
   else {
     //Subtract 270 to shift range
     AngleDeg = AngleDeg - 270;
     Trig.Sin = -cos(AngleDeg * DEG_IN_RAD);
-    Trig.Cos =  sin(AngleDeg * DEG_IN_RAD);
+    Trig.Cos = sin(AngleDeg * DEG_IN_RAD);
   }
   return Trig;
 }
 
-void BodyFKCalc(point3d Pos, int16_t RotY, uint8_t LegIndex) {
+void BodyFKCalc(point3d Pos, ordinate Rot, uint8_t LegIndex) {
   //Calculating totals from center of the body to the feet
   point3d Total;
   Total.X = (int16_t)pgm_read_word(&OffsetX[LegIndex]) + Pos.X;
@@ -314,14 +315,27 @@ void BodyFKCalc(point3d Pos, int16_t RotY, uint8_t LegIndex) {
   //First calculate sinus and cosinus for each rotation
   trig G = GetSinCos(BodyRot.X + TotalBalance.X);
   trig B = GetSinCos(BodyRot.Z + TotalBalance.Z);
-  trig A = GetSinCos(BodyRot.Y + TotalBalance.Y + RotY);
+  trig A = GetSinCos(BodyRot.Y + TotalBalance.Y + Rot.Y);
 
   //Calculation of rotation matrix
-  BodyFKPos.X = Total.X - (Total.X * A.Cos * B.Cos - Total.Z * B.Cos * A.Sin + Total.Y * B.Sin);
-  BodyFKPos.Y = Total.Y - (Total.X * A.Sin * G.Sin - Total.X * A.Cos * G.Cos * B.Sin + Total.Z *
-    A.Cos * G.Sin + Total.Z * G.Cos * A.Sin * B.Sin + Total.Y * B.Cos * G.Cos);
-  BodyFKPos.Z = Total.Z - (Total.X * G.Cos * A.Sin + Total.X * A.Cos * B.Sin * G.Sin + Total.Z *
-    A.Cos * G.Cos - Total.Z * A.Sin * B.Sin * G.Sin - Total.Y * B.Cos * G.Sin);
+  BodyFKPos.X = Total.X -
+               (Total.X * A.Cos * B.Cos -
+                Total.Z * B.Cos * A.Sin +
+                Total.Y * B.Sin);
+
+  BodyFKPos.Y = Total.Y -
+               (Total.X * A.Sin * G.Sin -
+                Total.X * A.Cos * G.Cos * B.Sin +
+                Total.Z * A.Cos * G.Sin +
+                Total.Z * G.Cos * A.Sin * B.Sin +
+                Total.Y * B.Cos * G.Cos);
+
+  BodyFKPos.Z = Total.Z -
+               (Total.X * G.Cos * A.Sin +
+                Total.X * A.Cos * B.Sin * G.Sin +
+                Total.Z * A.Cos * G.Cos -
+                Total.Z * A.Sin * B.Sin * G.Sin -
+                Total.Y * B.Cos * G.Sin);
 }
 
 void LegIKCalc(point3d Pos, uint8_t LegIndex) {
@@ -339,8 +353,7 @@ void LegIKCalc(point3d Pos, uint8_t LegIndex) {
 
   CoxaAngle[LegIndex] = atan2(Pos.Z, Pos.X) * RAD_IN_DEG + (int16_t)pgm_read_word(&LegAngle[LegIndex]);
   FemurAngle[LegIndex] = -(IKA1 + IKA2) * RAD_IN_DEG + 90;
-  TibiaAngle[LegIndex] = -(90 - acos((pow(FemurLength, 2) + pow(TibiaLength, 2) - pow(IKSW, 2)) /
-    (2 * FemurLength * TibiaLength)) * RAD_IN_DEG);
+  TibiaAngle[LegIndex] = -(90 - acos((pow(FemurLength, 2) + pow(TibiaLength, 2) - pow(IKSW, 2)) / (2 * FemurLength * TibiaLength)) * RAD_IN_DEG);
 }
 
 void KinematicCalc() {
@@ -352,24 +365,26 @@ void KinematicCalc() {
     BodyPosition.X = Sign * (LegPos[LegIndex].X + BodyPos.X) + Gait[LegIndex].Pos.X - TotalTranslate.X;
     BodyPosition.Y = LegPos[LegIndex].Y + BodyPos.Y + Gait[LegIndex].Pos.Y - TotalTranslate.Y;
     BodyPosition.Z = LegPos[LegIndex].Z + BodyPos.Z + Gait[LegIndex].Pos.Z - TotalTranslate.Z;
-    BodyFKCalc(BodyPosition, Gait[LegIndex].Rot.Y, LegIndex);
+
+    BodyFKCalc(BodyPosition, Gait[LegIndex].Rot, LegIndex);
 
     point3d LegPosition;
     LegPosition.X = LegPos[LegIndex].X + Sign * (BodyPos.X - BodyFKPos.X + Gait[LegIndex].Pos.X) - TotalTranslate.X;
     LegPosition.Y = LegPos[LegIndex].Y + BodyPos.Y - BodyFKPos.Y + Gait[LegIndex].Pos.Y - TotalTranslate.Y;
     LegPosition.Z = LegPos[LegIndex].Z + BodyPos.Z - BodyFKPos.Z + Gait[LegIndex].Pos.Z - TotalTranslate.Z;
+
     LegIKCalc(LegPosition, LegIndex);
   }
 }
 
 void CheckAngles() {
   for (uint8_t LegIndex = 0; LegIndex < 6; LegIndex++) {
-    CoxaAngle[LegIndex] = min(max(CoxaAngle[LegIndex],
-      (int16_t)pgm_read_word(&CoxaMin[LegIndex])), (int16_t)pgm_read_word(&CoxaMax[LegIndex]));
-    FemurAngle[LegIndex] = min(max(FemurAngle[LegIndex],
-      (int16_t)pgm_read_word(&FemurMin[LegIndex])), (int16_t)pgm_read_word(&FemurMax[LegIndex]));
-    TibiaAngle[LegIndex] = min(max(TibiaAngle[LegIndex],
-      (int16_t)pgm_read_word(&TibiaMin[LegIndex])), (int16_t)pgm_read_word(&TibiaMax[LegIndex]));
+    CoxaAngle[LegIndex] = min(max(CoxaAngle[LegIndex], (int16_t)pgm_read_word(&CoxaMin[LegIndex])),
+      (int16_t)pgm_read_word(&CoxaMax[LegIndex]));
+    FemurAngle[LegIndex] = min(max(FemurAngle[LegIndex], (int16_t)pgm_read_word(&FemurMin[LegIndex])),
+      (int16_t)pgm_read_word(&FemurMax[LegIndex]));
+    TibiaAngle[LegIndex] = min(max(TibiaAngle[LegIndex], (int16_t)pgm_read_word(&TibiaMin[LegIndex])),
+      (int16_t)pgm_read_word(&TibiaMax[LegIndex]));
   }
 }
 
@@ -377,7 +392,7 @@ void ServoDriverUpdate() {
   for (uint8_t LegIndex = 0; LegIndex < 6; LegIndex++) {
     int8_t Sign = SIGN(LegIndex);
     //Update all legs
-    uint16_t CoxaPWM  = (Sign * CoxaAngle[LegIndex]  + 90) / PWM_FACTOR + PWM_OFFSET;
+    uint16_t CoxaPWM = (Sign * CoxaAngle[LegIndex] + 90) / PWM_FACTOR + PWM_OFFSET;
     uint16_t FemurPWM = (Sign * FemurAngle[LegIndex] + 90) / PWM_FACTOR + PWM_OFFSET;
     uint16_t TibiaPWM = (Sign * TibiaAngle[LegIndex] + 90) / PWM_FACTOR + PWM_OFFSET;
 
@@ -393,7 +408,7 @@ void ServoDriverUpdate() {
     }
 #endif
 
-    Servo.Write(pgm_read_byte(&CoxaPin[LegIndex]  + 0x80), CoxaPWM);
+    Servo.Write(pgm_read_byte(&CoxaPin[LegIndex] + 0x80), CoxaPWM);
     Servo.Write(pgm_read_byte(&FemurPin[LegIndex] + 0x80), FemurPWM);
     Servo.Write(pgm_read_byte(&TibiaPin[LegIndex] + 0x80), TibiaPWM);
   }
@@ -406,9 +421,9 @@ void ServoDriver() {
 
     //Finding any the biggest value for GaitPos/Rot
     for (uint8_t LegIndex = 0; LegIndex < 6; LegIndex++) {
-      if ((Gait[LegIndex].Pos.X > 2) || (Gait[LegIndex].Pos.X < -2) ||
-          (Gait[LegIndex].Pos.Z > 2) || (Gait[LegIndex].Pos.Z < -2) ||
-          (Gait[LegIndex].Rot.Y > 2) || (Gait[LegIndex].Rot.Y < -2)) {
+      if (Gait[LegIndex].Pos.X > 2 || Gait[LegIndex].Pos.X < -2 ||
+          Gait[LegIndex].Pos.Z > 2 || Gait[LegIndex].Pos.Z < -2 ||
+          Gait[LegIndex].Rot.Y > 2 || Gait[LegIndex].Rot.Y < -2) {
 
         //For making sure that we are using timed move until all legs are down
         ExtraCycle = GaitCurrent.NrLiftedPos + 1;
