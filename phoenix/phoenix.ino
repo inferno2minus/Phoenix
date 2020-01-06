@@ -408,9 +408,9 @@ void ServoDriverUpdate() {
     }
 #endif
 
-    Servo.Write(pgm_read_byte(&CoxaPin[LegIndex] + 0x80), CoxaPWM);
-    Servo.Write(pgm_read_byte(&FemurPin[LegIndex] + 0x80), FemurPWM);
-    Servo.Write(pgm_read_byte(&TibiaPin[LegIndex] + 0x80), TibiaPWM);
+    Servo.write(pgm_read_byte(&CoxaPin[LegIndex] + 0x80), CoxaPWM);
+    Servo.write(pgm_read_byte(&FemurPin[LegIndex] + 0x80), FemurPWM);
+    Servo.write(pgm_read_byte(&TibiaPin[LegIndex] + 0x80), TibiaPWM);
   }
 }
 
@@ -454,16 +454,16 @@ void ServoDriver() {
     }
 
     //Commit servo positions
-    Servo.Commit(SSCTime);
+    Servo.commit(SSCTime);
   }
   else if (PrevHexOn) {
     //Turn off the hexapod
     ServoDriverUpdate();
-    Servo.Commit(600);
+    Servo.commit(600);
     delay(600);
 
     //Free servo positions
-    Servo.Free();
+    Servo.free();
   }
 
   //Store previous state

@@ -166,6 +166,8 @@ PrintfSerial DBGSerial(0, 1);
 #else
 #define DebugPrint(msg, ...)
 #endif
-SSC32 Servo(SSC_RX, SSC_TX);
+
+SoftwareSerial softwareSerial(SSC_RX, SSC_TX);
+SSC32 Servo(&softwareSerial);
 
 #endif
