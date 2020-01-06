@@ -42,14 +42,10 @@ void PowerSwitch() {
     SoundEvent(1);
     DebugPrint(F("PowerSwitch: Off\n"));
     SingleLegHold = false;
-    BodyPosX = 0;
-    BodyPosY = 0;
-    BodyPosZ = 0;
-    BodyRotX = 0;
-    BodyRotY = 0;
-    BodyRotZ = 0;
-    BodyOffsetY = 0;
-    BodyShiftY = 0;
+    BodyPos = { 0 };
+    BodyRot = { 0 };
+    BodyOffset = { 0 };
+    BodyShift = { 0 };
   }
 }
 
@@ -140,28 +136,28 @@ void ReadControl() {
 
       //Stand up, sit down
       if (PS2.ButtonPressed(PSB_TRIANGLE)) { //Triangle button
-        if (BodyOffsetY > 0) {
-          BodyOffsetY = 0;
+        if (BodyOffset.Y > 0) {
+          BodyOffset.Y = 0;
         }
         else {
-          BodyOffsetY = 40;
+          BodyOffset.Y = 40;
         }
-        DebugPrint(F("BodyOffsetY: %d\n"), BodyOffsetY);
+        DebugPrint(F("BodyOffsetY: %d\n"), BodyOffset.Y);
       }
 
       //Stand up
       if (PS2.ButtonPressed(PSB_PAD_UP)) { //D-Up button
-        if (BodyOffsetY < 100) {
-          BodyOffsetY += 10;
-          DebugPrint(F("BodyOffsetY: %d\n"), BodyOffsetY);
+        if (BodyOffset.Y < 100) {
+          BodyOffset.Y += 10;
+          DebugPrint(F("BodyOffsetY: %d\n"), BodyOffset.Y);
         }
       }
 
       //Sit down
       if (PS2.ButtonPressed(PSB_PAD_DOWN)) { //D-Down button
-        if (BodyOffsetY > 0) {
-          BodyOffsetY -= 10;
-          DebugPrint(F("BodyOffsetY: %d\n"), BodyOffsetY);
+        if (BodyOffset.Y > 0) {
+          BodyOffset.Y -= 10;
+          DebugPrint(F("BodyOffsetY: %d\n"), BodyOffset.Y);
         }
       }
 
@@ -261,30 +257,30 @@ void ReadControl() {
           }
         }
 
-        TravelLengthX =  (PS2.Analog(PSS_LX) - 128);
-        TravelLengthZ = -(PS2.Analog(PSS_LY) - 128);
-        TravelLengthY = -(PS2.Analog(PSS_RX) - 128) / 4;
+        TravelLength.X =  (PS2.Analog(PSS_LX) - 128);
+        TravelLength.Z = -(PS2.Analog(PSS_LY) - 128);
+        TravelLength.Y = -(PS2.Analog(PSS_RX) - 128) / 4;
 
         if (!DoubleTravel) {
-          TravelLengthX = TravelLengthX / 2;
-          TravelLengthZ = TravelLengthZ / 2;
+          TravelLength.X /= 2;
+          TravelLength.Z /= 2;
         }
       }
 
       //[Rotate functions]
       else if (ControlMode == ROTATE_MODE) {
-        BodyRotX = (PS2.Analog(PSS_LY) - 128) / 8;
-        BodyRotY = (PS2.Analog(PSS_RX) - 128) / 6;
-        BodyRotZ = (PS2.Analog(PSS_LX) - 128) / 8;
-        BodyShiftY = -(PS2.Analog(PSS_RY) - 128) / 2;
+        BodyRot.X = (PS2.Analog(PSS_LY) - 128) / 8;
+        BodyRot.Y = (PS2.Analog(PSS_RX) - 128) / 6;
+        BodyRot.Z = (PS2.Analog(PSS_LX) - 128) / 8;
+        BodyShift.Y = -(PS2.Analog(PSS_RY) - 128) / 2;
       }
 
       //[Translate functions]
       else if (ControlMode == TRANSLATE_MODE) {
-        BodyPosX =  (PS2.Analog(PSS_LX) - 128) / 2;
-        BodyPosZ = -(PS2.Analog(PSS_LY) - 128) / 3;
-        BodyRotY =  (PS2.Analog(PSS_RX) - 128) / 6;
-        BodyShiftY = -(PS2.Analog(PSS_RY) - 128) / 2;
+        BodyPos.X =  (PS2.Analog(PSS_LX) - 128) / 2;
+        BodyPos.Z = -(PS2.Analog(PSS_LY) - 128) / 3;
+        BodyRot.Y =  (PS2.Analog(PSS_RX) - 128) / 6;
+        BodyShift.Y = -(PS2.Analog(PSS_RY) - 128) / 2;
       }
 
       //[Single leg functions]
@@ -337,23 +333,21 @@ void ReadControl() {
           }
         }
 
-        SingleLegX = (PS2.Analog(PSS_LX) - 128) / 2;
-        SingleLegY = (PS2.Analog(PSS_RY) - 128) / 10;
-        SingleLegZ = (PS2.Analog(PSS_LY) - 128) / 2;
+        SingleLegPos.X = (PS2.Analog(PSS_LX) - 128) / 2;
+        SingleLegPos.Y = (PS2.Analog(PSS_RY) - 128) / 10;
+        SingleLegPos.Z = (PS2.Analog(PSS_LY) - 128) / 2;
       }
 
-      //Reset BodyShiftY
       if (ControlMode != TRANSLATE_MODE && ControlMode != ROTATE_MODE) {
-        BodyShiftY = 0;
+        BodyShift.Y = 0;
       }
 
-      //Calculate BodyPosY
-      BodyPosY = min(max(BodyOffsetY + BodyShiftY, 0), 100);
+      BodyPos.Y = min(max(BodyOffset.Y + BodyShift.Y, 0), 100);
 
       //Calculate time for the servo updates
-      if ((abs(TravelLengthX) > TRAVEL_DEADZONE) ||
-          (abs(TravelLengthZ) > TRAVEL_DEADZONE) ||
-          (abs(TravelLengthY) > TRAVEL_DEADZONE / 2)) {
+      if ((abs(TravelLength.X) > TRAVEL_DEADZONE) ||
+          (abs(TravelLength.Z) > TRAVEL_DEADZONE) ||
+          (abs(TravelLength.Y) > TRAVEL_DEADZONE / 2)) {
 
         //Delay that depends on the input to get the "sneaking" effect
         uint8_t InputDelayTime = 128 - max(max(abs(PS2.Analog(PSS_LX) - 128),

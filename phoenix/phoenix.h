@@ -44,6 +44,21 @@ typedef struct {
 } trig;
 
 typedef struct {
+  uint16_t X;
+  uint16_t Y;
+  uint16_t Z;
+} point3d;
+
+typedef struct {
+  uint16_t Y;
+} ordinate;
+
+typedef struct {
+  point3d Pos;
+  ordinate Rot;
+} gait3d;
+
+typedef struct {
   uint8_t NrLiftedPos;    //Number of positions that a single leg is lifted (1-5)
   uint8_t FrontDownPos;   //Where the leg should be put down to ground
   uint8_t LiftDivFactor;  //Result of the operation (NrLiftedPos == 5 ? 4 : 2)
@@ -100,15 +115,9 @@ float    FemurAngle[6];
 float    TibiaAngle[6];
 
 //Body position
-int16_t  BodyPosX;
-int16_t  BodyPosY;
-int16_t  BodyPosZ;
-int16_t  BodyRotX;
-int16_t  BodyRotY;
-int16_t  BodyRotZ;
-int16_t  BodyFKPosX;
-int16_t  BodyFKPosY;
-int16_t  BodyFKPosZ;
+point3d  BodyPos;
+point3d  BodyRot;
+point3d  BodyFKPos;
 
 //Timing
 uint16_t PrevSSCTime;
@@ -121,23 +130,15 @@ bool     HexOn;
 
 //Balance
 bool     BalanceMode;
-int16_t  TotalBalX;
-int16_t  TotalBalY;
-int16_t  TotalBalZ;
-int16_t  TotalTransX;
-int16_t  TotalTransY;
-int16_t  TotalTransZ;
+point3d  TotalBalance;
+point3d  TotalTranslate;
 
 //Single leg
 bool     SingleLegHold;
 uint8_t  PrevSelectedLeg = NOT_SELECTED;
 uint8_t  SelectedLeg = NOT_SELECTED;
-int16_t  LegPosX[6];
-int16_t  LegPosY[6];
-int16_t  LegPosZ[6];
-int16_t  SingleLegX;
-int16_t  SingleLegY;
-int16_t  SingleLegZ;
+point3d  LegPos[6];
+point3d  SingleLegPos;
 
 //Gait
 gait     GaitCurrent;
@@ -147,13 +148,8 @@ uint8_t  ExtraCycle;
 uint8_t  GaitStep = 1;
 uint8_t  GaitType;
 uint8_t  LegLiftHeight = 50;
-int16_t  GaitPosX[6];
-int16_t  GaitPosY[6];
-int16_t  GaitPosZ[6];
-int16_t  GaitRotY[6];
-int16_t  TravelLengthX;
-int16_t  TravelLengthY;
-int16_t  TravelLengthZ;
+gait3d   Gait[6];
+point3d  TravelLength;
 
 #ifdef DEBUG_MODE
 bool     PrevWalkStatus;

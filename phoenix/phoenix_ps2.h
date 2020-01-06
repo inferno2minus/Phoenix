@@ -26,8 +26,8 @@ bool     DoubleTravel;
 uint8_t  ControlMode;
 
 //Body position
-int16_t  BodyOffsetY;
-int16_t  BodyShiftY;
+ordinate BodyOffset;
+ordinate BodyShift;
 
 //Timing
 uint16_t PrevSpeedControl;
