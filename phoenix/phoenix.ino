@@ -277,9 +277,9 @@ void BalanceCalc() {
   }
 }
 
-trig GetSinCos(int16_t AngleDeg) {
+trig GetSinCos(float AngleDeg) {
   //Get the absolute value of AngleDeg
-  int16_t ABSAngleDeg = abs(AngleDeg);
+  float ABSAngleDeg = abs(AngleDeg);
 
   //Shift rotation to a full circle of 360 deg
   if (AngleDeg < 0) {
@@ -391,6 +391,7 @@ void CheckAngles() {
 void ServoDriverUpdate() {
   for (uint8_t LegIndex = 0; LegIndex < 6; LegIndex++) {
     int8_t Sign = SIGN(LegIndex);
+
     //Update all legs
     uint16_t CoxaPWM = (Sign * CoxaAngle[LegIndex] + 90) / PWM_FACTOR + PWM_OFFSET;
     uint16_t FemurPWM = (Sign * FemurAngle[LegIndex] + 90) / PWM_FACTOR + PWM_OFFSET;

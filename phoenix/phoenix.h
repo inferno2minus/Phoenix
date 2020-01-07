@@ -39,18 +39,18 @@ enum {
 
 //Structs
 typedef struct {
-  float   Cos;
-  float   Sin;
+  float Cos;
+  float Sin;
 } trig;
 
 typedef struct {
-  uint16_t X;
-  uint16_t Y;
-  uint16_t Z;
+  float X;
+  float Y;
+  float Z;
 } point3d;
 
 typedef struct {
-  uint16_t Y;
+  float Y;
 } ordinate;
 
 typedef struct {
