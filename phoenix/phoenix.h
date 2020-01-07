@@ -142,7 +142,7 @@ point3d  SingleLegPos;
 
 //Gait
 gait     GaitCurrent;
-bool     GaitInMotion;
+bool     TravelRequest;
 bool     WalkStatus;
 uint8_t  ExtraCycle;
 uint8_t  GaitStep = 1;

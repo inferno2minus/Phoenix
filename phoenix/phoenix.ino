@@ -127,8 +127,8 @@ void GaitCalc(uint8_t LegIndex) {
   uint8_t StepsInGait = GaitCurrent.StepsInGait;
 
   //Leg middle up position
-  if (GaitInMotion && NrLiftedPos & 1 && LegStep == 0 ||
-     !GaitInMotion && LegStep == 0 && (abs(Gait[LegIndex].Pos.X) > 2 || abs(Gait[LegIndex].Pos.Z) > 2 || abs(Gait[LegIndex].Rot.Y) > 2))
+  if (TravelRequest && NrLiftedPos & 1 && LegStep == 0 ||
+     !TravelRequest && LegStep == 0 && (abs(Gait[LegIndex].Pos.X) > 2 || abs(Gait[LegIndex].Pos.Z) > 2 || abs(Gait[LegIndex].Rot.Y) > 2))
   {
     Gait[LegIndex].Pos.X = 0;
     Gait[LegIndex].Pos.Y = -LegLiftHeight;
@@ -137,7 +137,7 @@ void GaitCalc(uint8_t LegIndex) {
   }
 
   //Optional half height rear (2, 3, 5 lifted positions)
-  else if ((NrLiftedPos == 2 && LegStep == 0 || NrLiftedPos >= 3 && (LegStep == -1 || LegStep == StepsInGait - 1)) && GaitInMotion) {
+  else if ((NrLiftedPos == 2 && LegStep == 0 || NrLiftedPos >= 3 && (LegStep == -1 || LegStep == StepsInGait - 1)) && TravelRequest) {
     Gait[LegIndex].Pos.X = -TravelLength.X / LiftDivFactor;
     Gait[LegIndex].Pos.Y = -3 * LegLiftHeight / (3 + HalfLiftHeight);
     Gait[LegIndex].Pos.Z = -TravelLength.Z / LiftDivFactor;
@@ -145,7 +145,7 @@ void GaitCalc(uint8_t LegIndex) {
   }
 
   //Optional half height front (2, 3, 5 lifted positions)
-  else if (NrLiftedPos >= 2 && (LegStep == 1 || LegStep == -(StepsInGait - 1)) && GaitInMotion) {
+  else if (NrLiftedPos >= 2 && (LegStep == 1 || LegStep == -(StepsInGait - 1)) && TravelRequest) {
     Gait[LegIndex].Pos.X = TravelLength.X / LiftDivFactor;
     Gait[LegIndex].Pos.Y = -3 * LegLiftHeight / (3 + HalfLiftHeight);
     Gait[LegIndex].Pos.Z = TravelLength.Z / LiftDivFactor;
@@ -153,7 +153,7 @@ void GaitCalc(uint8_t LegIndex) {
   }
 
   //Optional half height rear (5 lifted positions)
-  else if (NrLiftedPos == 5 && LegStep == -2 && GaitInMotion) {
+  else if (NrLiftedPos == 5 && LegStep == -2 && TravelRequest) {
     Gait[LegIndex].Pos.X = -TravelLength.X / 2;
     Gait[LegIndex].Pos.Y = -LegLiftHeight / 2;
     Gait[LegIndex].Pos.Z = -TravelLength.Z / 2;
@@ -161,7 +161,7 @@ void GaitCalc(uint8_t LegIndex) {
   }
 
   //Optional half height front (5 lifted positions)
-  else if (NrLiftedPos == 5 && (LegStep == 2 || LegStep == -(StepsInGait - 2)) && GaitInMotion) {
+  else if (NrLiftedPos == 5 && (LegStep == 2 || LegStep == -(StepsInGait - 2)) && TravelRequest) {
     Gait[LegIndex].Pos.X = TravelLength.X / 2;
     Gait[LegIndex].Pos.Y = -LegLiftHeight / 2;
     Gait[LegIndex].Pos.Z = TravelLength.Z / 2;
@@ -187,13 +187,13 @@ void GaitCalc(uint8_t LegIndex) {
 
 void GaitSequence() {
   //Check if the gait is in motion
-  GaitInMotion = WalkStatus ||
+  TravelRequest = WalkStatus ||
                  abs(TravelLength.X) > TRAVEL_DEADZONE ||
                  abs(TravelLength.Z) > TRAVEL_DEADZONE ||
                  abs(TravelLength.Y) > TRAVEL_DEADZONE;
 
   //Clear values under the TRAVEL_DEADZONE
-  if (!GaitInMotion) {
+  if (!TravelRequest) {
     TravelLength = {0};
   }
 
