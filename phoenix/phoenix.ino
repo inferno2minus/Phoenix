@@ -188,9 +188,9 @@ void GaitCalc(uint8_t LegIndex) {
 void GaitSequence() {
   //Check if the gait is in motion
   TravelRequest = WalkStatus ||
-                 abs(TravelLength.X) > TRAVEL_DEADZONE ||
-                 abs(TravelLength.Z) > TRAVEL_DEADZONE ||
-                 abs(TravelLength.Y) > TRAVEL_DEADZONE;
+                  abs(TravelLength.X) > TRAVEL_DEADZONE ||
+                  abs(TravelLength.Z) > TRAVEL_DEADZONE ||
+                  abs(TravelLength.Y) > TRAVEL_DEADZONE;
 
   //Clear values under the TRAVEL_DEADZONE
   if (!TravelRequest) {
@@ -211,7 +211,7 @@ void GaitSequence() {
   }
 }
 
-void BalanceLeg(point3d Pos, uint8_t LegIndex) {
+void BalanceLegCalc(point3d Pos, uint8_t LegIndex) {
   //Calculating totals from center of the body to the feet
   point3d Total;
   Total.X = (int16_t)pgm_read_word(&OffsetX[LegIndex]) + Pos.X;
@@ -227,7 +227,7 @@ void BalanceLeg(point3d Pos, uint8_t LegIndex) {
   TotalBalance.Z += atan2(Total.Y, Total.X) * RAD_IN_DEG - 90; //Rotate balance circle 90 deg
 }
 
-void BalanceBody() {
+void BalanceBodyCalc() {
   TotalTranslate.X /= 6;
   TotalTranslate.Y /= 6;
   TotalTranslate.Z /= 6;
@@ -270,10 +270,10 @@ void BalanceCalc() {
       Position.X = Sign * LegPos[LegIndex].X + Gait[LegIndex].Pos.X;
       Position.Y = LegPos[LegIndex].Y - (int16_t)pgm_read_word(&InitPosY[LegIndex]) + Gait[LegIndex].Pos.Y;
       Position.Z = LegPos[LegIndex].Z + Gait[LegIndex].Pos.Z;
-      BalanceLeg(Position, LegIndex);
+      BalanceLegCalc(Position, LegIndex);
     }
 
-    BalanceBody();
+    BalanceBodyCalc();
   }
 }
 
