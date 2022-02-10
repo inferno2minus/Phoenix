@@ -126,9 +126,10 @@ void GaitCalc(uint8_t LegIndex) {
   uint8_t TLDivFactor = GaitCurrent.TLDivFactor;
   uint8_t StepsInGait = GaitCurrent.StepsInGait;
 
+  bool LegInMotion = abs(Gait[LegIndex].Pos.X) > 2 || abs(Gait[LegIndex].Pos.Z) > 2 || abs(Gait[LegIndex].Rot.Y) > 2;
+
   //Leg middle up position
-  if (TravelRequest && NrLiftedPos & 1 && LegStep == 0 ||
-     !TravelRequest && LegStep == 0 && (abs(Gait[LegIndex].Pos.X) > 2 || abs(Gait[LegIndex].Pos.Z) > 2 || abs(Gait[LegIndex].Rot.Y) > 2))
+  if (TravelRequest && NrLiftedPos & 1 && LegStep == 0 || !TravelRequest && LegStep == 0 && LegInMotion)
   {
     Gait[LegIndex].Pos.X = 0;
     Gait[LegIndex].Pos.Y = -LegLiftHeight;
